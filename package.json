@@ -1,0 +1,35 @@
+{
+  "name": "fusionauth-react-sdk",
+  "version": "1.0.0",
+  "description": "FusionAuth solves the problem of building essential security without adding risk or distracting from your primary application",
+  "scripts": {
+    "rollup": "rollup -c"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FusionAuth/fusionauth-react-sdk.git"
+  },
+  "author": "Woodridge Software",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/FusionAuth/fusionauth-react-sdk/issues"
+  },
+  "homepage": "https://github.com/FusionAuth/fusionauth-react-sdk#readme",
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^22.0.2",
+    "@rollup/plugin-node-resolve": "^14.1.0",
+    "@rollup/plugin-typescript": "^8.5.0",
+    "@types/react": "^18.0.21",
+    "react": "^18.2.0",
+    "rollup": "^2.79.1",
+    "rollup-plugin-dts": "^4.2.2",
+    "tslib": "^2.4.0",
+    "typescript": "^4.8.4"
+  },
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "files": [
+    "dist"
+  ],
+  "types": "dist/index.d.ts"
+}
