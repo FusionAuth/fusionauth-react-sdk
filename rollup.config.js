@@ -27,7 +27,7 @@ export default [
     ],
   },
   {
-    input: "dist/esm/components/index.d.ts",
+    input: "dist/esm/providers/index.d.ts",
     output: [{ file: "dist/index.d.ts", format: "esm" }],
     plugins: [dts()],
   },
