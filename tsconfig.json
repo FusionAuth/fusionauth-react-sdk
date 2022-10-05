@@ -17,7 +17,5 @@
     "allowSyntheticDefaultImports": true,
     "emitDeclarationOnly": true
   },
-  "exclude": [
-    "./src/__tests__"
-  ]
+  "exclude": ["./src/__tests__"]
 }

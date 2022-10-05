@@ -1,1 +1,1 @@
-export * from './providers/FusionAuthProvider'
+export * from './providers/FusionAuthProvider';
