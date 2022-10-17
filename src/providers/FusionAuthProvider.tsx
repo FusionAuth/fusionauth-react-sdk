@@ -34,7 +34,7 @@ export const FusionAuthProvider: React.FC<Props> = ({
             );
             window.location.assign(fullURL);
         },
-        [baseURL, clientID, scope, children],
+        [baseURL, clientID, scope],
     );
 
     const providerValue = useMemo(
