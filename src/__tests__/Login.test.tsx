@@ -52,7 +52,7 @@ describe('urlBuilder', () => {
         await fireEvent.click(screen.getByText('Login'));
 
         const expectedUrl =
-            'https://sandbox.fusionauth.io/oauth2/authorize?client_id=85a03867-dccf-4882-adde-1a79aeec50df&scope=openid offline_access&response_type=code&redirect_url=https%3A%2F%2Ffusionauth.io&code_challenge=vQOsFCjw6ob0uDpzH_x5Z7uChm2FRTIviI0vboV__Bg&code_challenge_method=S256&state=00000000000000000000000000000000000000000000000000000000:state';
+            'https://sandbox.fusionauth.io/oauth2/authorize?client_id=85a03867-dccf-4882-adde-1a79aeec50df&scope=openid offline_access&response_type=code&redirect_uri=https%3A%2F%2Ffusionauth.io&code_challenge=vQOsFCjw6ob0uDpzH_x5Z7uChm2FRTIviI0vboV__Bg&code_challenge_method=S256&state=00000000000000000000000000000000000000000000000000000000:state';
         await waitFor(() =>
             expect(mockedLocation.assign).toBeCalledWith(expectedUrl),
         );

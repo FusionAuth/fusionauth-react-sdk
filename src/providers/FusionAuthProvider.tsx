@@ -72,7 +72,7 @@ async function generateURL(
     fullURL += `client_id=${clientID}&`;
     fullURL += `scope=${scope}&`;
     fullURL += `response_type=code&`;
-    fullURL += `redirect_url=${redirectURI}&`;
+    fullURL += `redirect_uri=${redirectURI}&`;
     fullURL += `code_challenge=${await generatePKCE()}&`;
     fullURL += `code_challenge_method=S256&`;
     fullURL += `state=${generateRandomString()}:${state}`;
