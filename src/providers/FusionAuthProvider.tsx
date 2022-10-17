@@ -31,7 +31,6 @@ export const FusionAuthProvider: React.FC<Props> = ({
             redirectURI,
             state,
         );
-        console.log(fullURL);
         window.location.assign(fullURL);
     }, []);
 
