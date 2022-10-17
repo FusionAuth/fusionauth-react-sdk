@@ -2,7 +2,6 @@ import React from 'react';
 import { screen, render, fireEvent, waitFor } from '@testing-library/react';
 import { FusionAuthLoginButton } from '../components/FusionAuthLoginButton';
 import { FusionAuthProvider } from '../providers/FusionAuthProvider';
-
 import { createHash } from 'crypto';
 
 afterEach(() => {
@@ -30,41 +29,32 @@ Object.defineProperty(global.self, 'crypto', {
     },
 });
 
-Object.defineProperty(global.self, 'window', {
-    value: {
-        location: {
-            assign: url => {
-                console.log(url);
-            },
-        },
-    },
-});
-
-const Provider = () => (
-    <FusionAuthProvider
-        baseURL="https://sandbox.fusionauth.io/oauth2"
-        clientID="85a03867-dccf-4882-adde-1a79aeec50df"
-        scope="openid offline_access"
-    >
-        <FusionAuthLoginButton
-            redirectURI="https%3A%2F%2Ffusionauth.io"
-            state="state"
-        />
-    </FusionAuthProvider>
-);
-
 test('Login buttons renders the correct text', async () => {
     await renderProvider();
-    console.log('TEST FIRST');
-    expect(screen.queryAllByText('Login')).toHaveLength(1);
-    console.log('TEST LAST');
+    expect(await screen.findByText('Login')).toBeInTheDocument();
 });
 
-test('Login button goes to the correct URL', async () => {
-    const handleClick = jest.fn();
-    await renderProvider();
-    await fireEvent.click(screen.getByText('Login'));
-    expect(handleClick).toHaveBeenCalledTimes(1);
+let location: Location;
+describe('urlBuilder', () => {
+    beforeEach(() => {
+        location = window.location;
+        jest.spyOn(window, 'location', 'get').mockRestore();
+    });
+
+    test('Login button will generate the correct url when clicked', async () => {
+        const mockedLocation = {
+            ...location,
+            assign: jest.fn(),
+        };
+        jest.spyOn(window, 'location', 'get').mockReturnValue(mockedLocation);
+
+        await renderProvider();
+        await fireEvent.click(screen.getByText('Login'));
+
+        const expectedUrl =
+            'https://sandbox.fusionauth.io/oauth2/authorize?client_id=85a03867-dccf-4882-adde-1a79aeec50df&scope=openid offline_access&response_type=code&redirect_url=https%3A%2F%2Ffusionauth.io&code_challenge=vQOsFCjw6ob0uDpzH_x5Z7uChm2FRTIviI0vboV__Bg&code_challenge_method=S256&state=00000000000000000000000000000000000000000000000000000000:state';
+        expect(mockedLocation.assign).toBeCalledWith(expectedUrl);
+    });
 });
 
 const renderProvider = async () => {
