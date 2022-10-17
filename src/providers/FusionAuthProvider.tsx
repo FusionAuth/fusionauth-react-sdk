@@ -3,16 +3,19 @@ import { TextEncoder } from 'util';
 
 export interface IFusionAuthContext {
     login: (redirectURI: string, state: string) => void;
+    logout: (redirectURI: string) => void;
 }
 
 export const FusionAuthContext = React.createContext<IFusionAuthContext>({
     login: () => {},
+    logout: () => {},
 });
 
 interface Props {
     baseURL: string;
     clientID: string;
     scope: string;
+    idTokenHint: string;
     children: React.ReactNode;
 }
 
@@ -20,6 +23,7 @@ export const FusionAuthProvider: React.FC<Props> = ({
     baseURL,
     clientID,
     scope,
+    idTokenHint,
     children,
 }) => {
     const login = useCallback(async (redirectURI: string, state: string) => {
@@ -27,9 +31,23 @@ export const FusionAuthProvider: React.FC<Props> = ({
             FunctionType.login,
             baseURL,
             clientID,
-            scope,
             redirectURI,
+            scope,
             state,
+        );
+        console.log(fullURL);
+        window.location.assign(fullURL);
+    }, []);
+
+    const logout = useCallback(async (redirectURI: string) => {
+        const fullURL = await generateURL(
+            FunctionType.login,
+            baseURL,
+            clientID,
+            redirectURI,
+            '',
+            '',
+            idTokenHint,
         );
         console.log(fullURL);
         window.location.assign(fullURL);
@@ -38,8 +56,9 @@ export const FusionAuthProvider: React.FC<Props> = ({
     const providerValue = useMemo(
         () => ({
             login,
+            logout,
         }),
-        [login],
+        [login, logout],
     );
 
     return (
@@ -61,19 +80,28 @@ async function generateURL(
     functionType: FunctionType,
     baseURL: string,
     clientID: string,
-    scope: string,
     redirectURI: string,
-    state: string,
+    scope?: string,
+    state?: string,
+    idTokenHint?: string,
 ) {
     let fullURL = baseURL;
     fullURL += `/${functionType}?`;
     fullURL += `client_id=${clientID}&`;
-    fullURL += `scope=${scope}&`;
-    fullURL += `response_type=code&`;
-    fullURL += `redirect_url=${redirectURI}&`;
-    fullURL += `code_challenge=${await generatePKCE()}&`;
-    fullURL += `code_challenge_method=S256&`;
-    fullURL += `state=${generateRandomString()}:${state}`;
+    if (
+        functionType == FunctionType.login ||
+        functionType == FunctionType.register
+    ) {
+        fullURL += `scope=${scope}&`;
+        fullURL += `response_type=code&`;
+        fullURL += `redirect_url=${redirectURI}&`;
+        fullURL += `code_challenge=${await generatePKCE()}&`;
+        fullURL += `code_challenge_method=S256&`;
+        fullURL += `state=${generateRandomString()}:${state}`;
+    } else if (functionType == FunctionType.logout) {
+        fullURL += `post_logout_redirect_uri=${redirectURI}&`;
+        fullURL += `Id_token_hint=${idTokenHint}`;
+    }
 
     return fullURL;
 }

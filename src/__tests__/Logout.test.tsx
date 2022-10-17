@@ -1,6 +1,6 @@
 import React from 'react';
 import { screen, render, fireEvent, waitFor } from '@testing-library/react';
-import { FusionAuthLoginButton } from '../components/FusionAuthLoginButton';
+import { FusionAuthLogoutButton } from '../components/FusionAuthLogoutButton';
 import { FusionAuthProvider } from '../providers/FusionAuthProvider';
 
 import { createHash } from 'crypto';
@@ -45,26 +45,23 @@ const Provider = () => (
         baseURL="https://sandbox.fusionauth.io/oauth2"
         clientID="85a03867-dccf-4882-adde-1a79aeec50df"
         scope="openid offline_access"
-        idTokenHint=""
+        idTokenHint="token"
     >
-        <FusionAuthLoginButton
-            redirectURI="https%3A%2F%2Ffusionauth.io"
-            state="state"
-        />
+        <FusionAuthLogoutButton redirectURI="https%3A%2F%2Ffusionauth.io" />
     </FusionAuthProvider>
 );
 
-test('Login buttons renders the correct text', async () => {
+test('Logout buttons renders the correct text', async () => {
     await renderProvider();
     console.log('TEST FIRST');
-    expect(screen.queryAllByText('Login')).toHaveLength(1);
+    expect(screen.queryAllByText('Logout')).toHaveLength(1);
     console.log('TEST LAST');
 });
 
-test('Login button goes to the correct URL', async () => {
+test('Logout button goes to the correct URL', async () => {
     const handleClick = jest.fn();
     await renderProvider();
-    await fireEvent.click(screen.getByText('Login'));
+    await fireEvent.click(screen.getByText('Logout'));
     expect(handleClick).toHaveBeenCalledTimes(1);
 });
 
@@ -75,12 +72,9 @@ const renderProvider = async () => {
                 baseURL="https://sandbox.fusionauth.io/oauth2"
                 clientID="85a03867-dccf-4882-adde-1a79aeec50df"
                 scope="openid offline_access"
-                idTokenHint=""
+                idTokenHint="token"
             >
-                <FusionAuthLoginButton
-                    redirectURI="https%3A%2F%2Ffusionauth.io"
-                    state="state"
-                />
+                <FusionAuthLogoutButton redirectURI="https%3A%2F%2Ffusionauth.io" />
             </FusionAuthProvider>,
         ),
     );
