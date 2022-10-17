@@ -22,17 +22,20 @@ export const FusionAuthProvider: React.FC<Props> = ({
     scope,
     children,
 }) => {
-    const login = useCallback(async (redirectURI: string, state: string) => {
-        const fullURL = await generateURL(
-            FunctionType.login,
-            baseURL,
-            clientID,
-            scope,
-            redirectURI,
-            state,
-        );
-        window.location.assign(fullURL);
-    }, []);
+    const login = useCallback(
+        async (redirectURI: string, state: string) => {
+            const fullURL = await generateURL(
+                FunctionType.login,
+                baseURL,
+                clientID,
+                scope,
+                redirectURI,
+                state,
+            );
+            window.location.assign(fullURL);
+        },
+        [baseURL, clientID, scope, children],
+    );
 
     const providerValue = useMemo(
         () => ({

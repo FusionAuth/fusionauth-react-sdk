@@ -12,7 +12,7 @@ Object.defineProperty(global.self, 'crypto', {
     value: {
         subtle: {
             digest: (algorithm: string, data: Uint8Array) => {
-                return new Promise((resolve, reject) =>
+                return new Promise(resolve =>
                     resolve(
                         createHash(algorithm.toLowerCase().replace('-', ''))
                             .update(data)
@@ -23,7 +23,7 @@ Object.defineProperty(global.self, 'crypto', {
         },
         getRandomValues: array => {
             for (const num of array) {
-                return Math.random();
+                return Math.random() * num;
             }
         },
     },
