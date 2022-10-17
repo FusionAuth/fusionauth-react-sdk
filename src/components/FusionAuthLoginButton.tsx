@@ -1,13 +1,19 @@
-import React, { FC } from "react";
-import {FusionAuthProvider} from '../providers/FusionAuthProvider'
+import React, { FC } from 'react';
+import { useFusionAuthContext } from '../providers/FusionAuthProvider';
 
-export const FusionAuthLoginButton: FC = (props) => {
+interface Props {
+    redirectURI: string;
+    state: string;
+}
+
+export const FusionAuthLoginButton: FC<Props> = ({ redirectURI, state }) => {
+    const { login } = useFusionAuthContext();
+
     return (
         <button
-            {...props}
-            className='fusionAuthButton'
-            type='button'
-            onClick={FusionAuthProvider.login()}
+            className="fusionAuthButton"
+            type="button"
+            onClick={() => login(redirectURI, state)}
         >
             Login
         </button>
