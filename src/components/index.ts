@@ -1,1 +1,1 @@
-export {default as FusionAuthLoginButton} from './FusionAuthLoginButton'
+export { default as FusionAuthLoginButton } from './FusionAuthLoginButton';

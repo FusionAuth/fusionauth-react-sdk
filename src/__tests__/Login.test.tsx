@@ -52,7 +52,7 @@ describe('urlBuilder', () => {
         await fireEvent.click(screen.getByText('Login'));
 
         const expectedUrl =
-            'https://sandbox.fusionauth.io/oauth2/authorize?client_id=85a03867-dccf-4882-adde-1a79aeec50df&scope=openid offline_access&response_type=code&redirect_uri=https%3A%2F%2Ffusionauth.io&code_challenge=vQOsFCjw6ob0uDpzH_x5Z7uChm2FRTIviI0vboV__Bg&code_challenge_method=S256&state=00000000000000000000000000000000000000000000000000000000:state';
+            'https://woodridge-theme.fusionauth.io/oauth2/authorize?client_id=17cafba1-c0c1-430a-bfe8-3ed438df9fc0&scope=openid offline_access&response_type=code&redirect_uri=http://localhost&code_challenge=vQOsFCjw6ob0uDpzH_x5Z7uChm2FRTIviI0vboV__Bg&code_challenge_method=S256&state=00000000000000000000000000000000000000000000000000000000:state';
         await waitFor(() =>
             expect(mockedLocation.assign).toBeCalledWith(expectedUrl),
         );
@@ -63,12 +63,12 @@ const renderProvider = async () => {
     waitFor(() =>
         render(
             <FusionAuthProvider
-                baseURL="https://sandbox.fusionauth.io/oauth2"
-                clientID="85a03867-dccf-4882-adde-1a79aeec50df"
+                baseURL="https://woodridge-theme.fusionauth.io/oauth2"
+                clientID="17cafba1-c0c1-430a-bfe8-3ed438df9fc0"
                 scope="openid offline_access"
             >
                 <FusionAuthLoginButton
-                    redirectURI="https%3A%2F%2Ffusionauth.io"
+                    redirectURI="http://localhost"
                     state="state"
                 />
             </FusionAuthProvider>,
