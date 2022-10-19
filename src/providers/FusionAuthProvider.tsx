@@ -30,13 +30,19 @@ export const FusionAuthProvider: React.FC<Props> = ({
 }) => {
     const login = useCallback(
         async (state = '') => {
-            const fullUrl = await generateUrl(
+            const queryString = {
+                client_id: clientID,
+                scope: scope,
+                response_type: 'code',
+                redirect_uri: redirectUri,
+                code_challenge: await generatePKCE(),
+                code_challenge_method: 'S256',
+                state: `${generateRandomString()}:${state}`,
+            };
+            const fullUrl = generateUrl(
                 FunctionType.login,
                 baseUrl,
-                clientID,
-                redirectUri,
-                scope,
-                state,
+                queryString,
             );
             window.location.assign(fullUrl);
         },
@@ -44,15 +50,12 @@ export const FusionAuthProvider: React.FC<Props> = ({
     );
 
     const logout = useCallback(async () => {
-        const fullUrl = await generateUrl(
-            FunctionType.logout,
-            baseUrl,
-            clientID,
-            redirectUri,
-            '',
-            '',
-            idTokenHint,
-        );
+        const queryString = {
+            client_id: clientID,
+            post_logout_redirect_uri: redirectUri,
+            id_token_hint: idTokenHint || '',
+        };
+        const fullUrl = generateUrl(FunctionType.logout, baseUrl, queryString);
         window.location.assign(fullUrl);
     }, [baseUrl, clientID, redirectUri, idTokenHint]);
 
@@ -79,38 +82,14 @@ enum FunctionType {
     register = 'register',
 }
 
-async function generateUrl(
+function generateUrl(
     functionType: FunctionType,
     baseUrl: string,
-    clientID: string,
-    redirectUri: string,
-    scope: string,
-    state = '',
-    idTokenHint = '',
+    queryString: Record<string, string>,
 ) {
-    let queryString: URLSearchParams;
-    if (
-        functionType == FunctionType.login ||
-        functionType == FunctionType.register
-    ) {
-        queryString = new URLSearchParams({
-            client_id: clientID,
-            scope: scope,
-            response_type: 'code',
-            redirect_uri: redirectUri,
-            code_challenge: await generatePKCE(),
-            code_challenge_method: 'S256',
-            state: `${generateRandomString()}:${state}`,
-        });
-    } else {
-        queryString = new URLSearchParams({
-            client_id: clientID,
-            post_logout_redirect_uri: redirectUri,
-            id_token_hint: idTokenHint,
-        });
-    }
+    const query = new URLSearchParams(queryString);
 
-    return `${baseUrl}/${functionType}?${queryString}`;
+    return `${baseUrl}/${functionType}?${query}`;
 }
 
 function dec2hex(dec: number) {

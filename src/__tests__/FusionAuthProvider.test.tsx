@@ -42,8 +42,6 @@ describe('FusionAuthProvider', () => {
             wrapper,
         });
 
-        expect(typeof result.current.login).toBe('function');
-
         await result.current.login('state');
 
         const expectedUrl =
@@ -74,8 +72,6 @@ describe('FusionAuthProvider', () => {
         const { result } = renderHook(() => useFusionAuthContext(), {
             wrapper,
         });
-
-        expect(typeof result.current.logout).toBe('function');
 
         await result.current.logout();
 
