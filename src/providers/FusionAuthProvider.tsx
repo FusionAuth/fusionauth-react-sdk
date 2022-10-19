@@ -28,6 +28,15 @@ export const FusionAuthProvider: React.FC<Props> = ({
     idTokenHint,
     children,
 }) => {
+    const generateUrl = useCallback(
+        (functionType: FunctionType, queryParams: Record<string, string>) => {
+            const query = new URLSearchParams(queryParams);
+
+            return `${baseUrl}/${functionType}?${query}`;
+        },
+        [baseUrl],
+    );
+
     const login = useCallback(
         async (state = '') => {
             const queryParams = {
@@ -39,14 +48,10 @@ export const FusionAuthProvider: React.FC<Props> = ({
                 code_challenge_method: 'S256',
                 state: `${generateRandomString()}:${state}`,
             };
-            const fullUrl = generateUrl(
-                FunctionType.login,
-                baseUrl,
-                queryParams,
-            );
+            const fullUrl = generateUrl(FunctionType.login, queryParams);
             window.location.assign(fullUrl);
         },
-        [baseUrl, clientID, scope, redirectUri],
+        [clientID, scope, redirectUri, generateUrl],
     );
 
     const logout = useCallback(async () => {
@@ -55,9 +60,9 @@ export const FusionAuthProvider: React.FC<Props> = ({
             post_logout_redirect_uri: redirectUri,
             id_token_hint: idTokenHint || '',
         };
-        const fullUrl = generateUrl(FunctionType.logout, baseUrl, queryParams);
+        const fullUrl = generateUrl(FunctionType.logout, queryParams);
         window.location.assign(fullUrl);
-    }, [baseUrl, clientID, redirectUri, idTokenHint]);
+    }, [clientID, redirectUri, idTokenHint, generateUrl]);
 
     const providerValue = useMemo(
         () => ({
@@ -80,16 +85,6 @@ enum FunctionType {
     login = 'authorize',
     logout = 'logout',
     register = 'register',
-}
-
-function generateUrl(
-    functionType: FunctionType,
-    baseUrl: string,
-    queryParams: Record<string, string>,
-) {
-    const query = new URLSearchParams(queryParams);
-
-    return `${baseUrl}/${functionType}?${query}`;
 }
 
 function dec2hex(dec: number) {
