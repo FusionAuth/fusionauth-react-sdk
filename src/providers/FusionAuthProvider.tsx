@@ -58,7 +58,7 @@ export const FusionAuthProvider: React.FC<Props> = ({
         const queryParams = {
             client_id: clientID,
             post_logout_redirect_uri: redirectUri,
-            id_token_hint: idTokenHint || '',
+            id_token_hint: idTokenHint ?? '',
         };
         const fullUrl = generateUrl(FunctionType.logout, queryParams);
         window.location.assign(fullUrl);
