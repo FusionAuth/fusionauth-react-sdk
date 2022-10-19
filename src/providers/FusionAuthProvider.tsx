@@ -2,39 +2,42 @@ import React, { useCallback, useContext, useMemo } from 'react';
 import { TextEncoder } from 'util';
 
 export interface IFusionAuthContext {
-    login: (redirectURI: string, state: string) => void;
+    login: (state: string) => Promise<void>;
 }
 
 export const FusionAuthContext = React.createContext<IFusionAuthContext>({
-    login: () => {},
+    login: () => Promise.resolve(),
 });
 
 interface Props {
-    baseURL: string;
+    baseUrl: string;
     clientID: string;
     scope: string;
-    children: React.ReactNode;
+    redirectUri: string;
+    children?: React.ReactNode;
 }
 
 export const FusionAuthProvider: React.FC<Props> = ({
-    baseURL,
+    baseUrl,
     clientID,
     scope,
+    redirectUri,
     children,
 }) => {
     const login = useCallback(
-        async (redirectURI: string, state: string) => {
-            const fullURL = await generateURL(
+        async (state = '') => {
+            console.log('TEST 1');
+            const fullUrl = await generateUrl(
                 FunctionType.login,
-                baseURL,
+                baseUrl,
                 clientID,
                 scope,
-                redirectURI,
+                redirectUri,
                 state,
             );
-            window.location.assign(fullURL);
+            window.location.assign(fullUrl);
         },
-        [baseURL, clientID, scope],
+        [baseUrl, clientID, scope, redirectUri],
     );
 
     const providerValue = useMemo(
@@ -59,25 +62,25 @@ enum FunctionType {
     register = 'register',
 }
 
-async function generateURL(
+async function generateUrl(
     functionType: FunctionType,
-    baseURL: string,
+    baseUrl: string,
     clientID: string,
     scope: string,
-    redirectURI: string,
-    state: string,
+    redirectUri: string,
+    state = '',
 ) {
-    let fullURL = baseURL;
-    fullURL += `/${functionType}?`;
-    fullURL += `client_id=${clientID}&`;
-    fullURL += `scope=${scope}&`;
-    fullURL += `response_type=code&`;
-    fullURL += `redirect_uri=${redirectURI}&`;
-    fullURL += `code_challenge=${await generatePKCE()}&`;
-    fullURL += `code_challenge_method=S256&`;
-    fullURL += `state=${generateRandomString()}:${state}`;
+    const queryString = new URLSearchParams({
+        client_id: clientID,
+        scope: scope,
+        response_type: 'code',
+        redirect_uri: redirectUri,
+        code_challenge: await generatePKCE(),
+        code_challenge_method: 'S256',
+        state: `${generateRandomString()}:${state}`,
+    });
 
-    return fullURL;
+    return `${baseUrl}/${functionType}?${queryString}`;
 }
 
 function dec2hex(dec: number) {
