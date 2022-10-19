@@ -4,10 +4,10 @@ import { styles } from 'styles/button.module.scss';
 
 interface Props {
     state?: string;
-    buttonText?: string;
+    text?: string;
 }
 
-export const FusionAuthLoginButton: FC<Props> = ({ state, buttonText }) => {
+export const FusionAuthLoginButton: FC<Props> = ({ state, text }) => {
     const { login } = useFusionAuthContext();
 
     return (
@@ -16,7 +16,7 @@ export const FusionAuthLoginButton: FC<Props> = ({ state, buttonText }) => {
             type="button"
             onClick={() => login(state ?? '')}
         >
-            {buttonText ?? 'Login'}
+            {text ?? 'Login'}
         </button>
     );
 };

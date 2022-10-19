@@ -3,9 +3,9 @@ import { useFusionAuthContext } from '../providers/FusionAuthProvider';
 import { styles } from 'styles/button.module.scss';
 
 interface Props {
-    buttonText?: string;
+    text?: string;
 }
-export const FusionAuthLogoutButton: FC<Props> = ({ buttonText }) => {
+export const FusionAuthLogoutButton: FC<Props> = ({ text }) => {
     const { logout } = useFusionAuthContext();
 
     return (
@@ -14,7 +14,7 @@ export const FusionAuthLogoutButton: FC<Props> = ({ buttonText }) => {
             type="button"
             onClick={() => logout()}
         >
-            {buttonText ?? 'Logout'}
+            {text ?? 'Logout'}
         </button>
     );
 };
