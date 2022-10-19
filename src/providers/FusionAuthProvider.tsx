@@ -3,10 +3,12 @@ import { TextEncoder } from 'util';
 
 export interface IFusionAuthContext {
     login: (state: string) => Promise<void>;
+    logout: () => Promise<void>;
 }
 
 export const FusionAuthContext = React.createContext<IFusionAuthContext>({
     login: () => Promise.resolve(),
+    logout: () => Promise.resolve(),
 });
 
 interface Props {
@@ -14,6 +16,7 @@ interface Props {
     clientID: string;
     scope: string;
     redirectUri: string;
+    idTokenHint?: string;
     children?: React.ReactNode;
 }
 
@@ -22,29 +25,51 @@ export const FusionAuthProvider: React.FC<Props> = ({
     clientID,
     scope,
     redirectUri,
+    idTokenHint,
     children,
 }) => {
+    const generateUrl = useCallback(
+        (functionType: FunctionType, queryParams: Record<string, string>) => {
+            const query = new URLSearchParams(queryParams);
+
+            return `${baseUrl}/${functionType}?${query}`;
+        },
+        [baseUrl],
+    );
+
     const login = useCallback(
         async (state = '') => {
-            console.log('TEST 1');
-            const fullUrl = await generateUrl(
-                FunctionType.login,
-                baseUrl,
-                clientID,
-                scope,
-                redirectUri,
-                state,
-            );
+            const queryParams = {
+                client_id: clientID,
+                scope: scope,
+                response_type: 'code',
+                redirect_uri: redirectUri,
+                code_challenge: await generatePKCE(),
+                code_challenge_method: 'S256',
+                state: `${generateRandomString()}:${state}`,
+            };
+            const fullUrl = generateUrl(FunctionType.login, queryParams);
             window.location.assign(fullUrl);
         },
-        [baseUrl, clientID, scope, redirectUri],
+        [clientID, scope, redirectUri, generateUrl],
     );
+
+    const logout = useCallback(async () => {
+        const queryParams = {
+            client_id: clientID,
+            post_logout_redirect_uri: redirectUri,
+            id_token_hint: idTokenHint ?? '',
+        };
+        const fullUrl = generateUrl(FunctionType.logout, queryParams);
+        window.location.assign(fullUrl);
+    }, [clientID, redirectUri, idTokenHint, generateUrl]);
 
     const providerValue = useMemo(
         () => ({
             login,
+            logout,
         }),
-        [login],
+        [login, logout],
     );
 
     return (
@@ -60,27 +85,6 @@ enum FunctionType {
     login = 'authorize',
     logout = 'logout',
     register = 'register',
-}
-
-async function generateUrl(
-    functionType: FunctionType,
-    baseUrl: string,
-    clientID: string,
-    scope: string,
-    redirectUri: string,
-    state = '',
-) {
-    const queryString = new URLSearchParams({
-        client_id: clientID,
-        scope: scope,
-        response_type: 'code',
-        redirect_uri: redirectUri,
-        code_challenge: await generatePKCE(),
-        code_challenge_method: 'S256',
-        state: `${generateRandomString()}:${state}`,
-    });
-
-    return `${baseUrl}/${functionType}?${queryString}`;
 }
 
 function dec2hex(dec: number) {

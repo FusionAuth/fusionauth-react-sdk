@@ -8,5 +8,6 @@ export const mockUseFusionAuthContext = (
         .spyOn(FusionAuthProvider, 'useFusionAuthContext')
         .mockReturnValue({
             login: context.login ?? jest.fn(),
+            logout: context.logout ?? jest.fn(),
         });
 };
