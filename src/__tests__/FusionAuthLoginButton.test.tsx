@@ -30,8 +30,8 @@ const renderProvider = async () => {
     waitFor(() =>
         render(
             <FusionAuthProvider
-                baseUrl="https://woodridge-theme.fusionauth.io/oauth2"
-                clientID="17cafba1-c0c1-430a-bfe8-3ed438df9fc0"
+                baseUrl="https://sandbox.fusionauth.io/oauth2"
+                clientID="85a03867-dccf-4882-adde-1a79aeec50df"
                 scope="openid offline_access"
                 redirectUri="http://localhost"
             >
