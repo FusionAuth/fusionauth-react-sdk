@@ -9,5 +9,6 @@ export const mockUseFusionAuthContext = (
         .mockReturnValue({
             login: context.login ?? jest.fn(),
             logout: context.logout ?? jest.fn(),
+            register: context.register ?? jest.fn(),
         });
 };

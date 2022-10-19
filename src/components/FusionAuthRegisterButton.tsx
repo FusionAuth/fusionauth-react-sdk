@@ -3,18 +3,20 @@ import { useFusionAuthContext } from '../providers/FusionAuthProvider';
 import { styles } from 'styles/button.module.scss';
 
 interface Props {
+    state?: string;
     buttonText?: string;
 }
-export const FusionAuthLogoutButton: FC<Props> = ({ buttonText }) => {
-    const { logout } = useFusionAuthContext();
+
+export const FusionAuthRegisterButton: FC<Props> = ({ state, buttonText }) => {
+    const { register } = useFusionAuthContext();
 
     return (
         <button
             className={styles.fusionAuthButton}
             type="button"
-            onClick={() => logout()}
+            onClick={() => register(state ?? '')}
         >
-            {buttonText ?? 'Logout'}
+            {buttonText ?? 'Register Now'}
         </button>
     );
 };
