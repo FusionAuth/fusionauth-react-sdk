@@ -30,7 +30,7 @@ export const FusionAuthProvider: React.FC<Props> = ({
 }) => {
     const login = useCallback(
         async (state = '') => {
-            const queryString = {
+            const queryParams = {
                 client_id: clientID,
                 scope: scope,
                 response_type: 'code',
@@ -42,7 +42,7 @@ export const FusionAuthProvider: React.FC<Props> = ({
             const fullUrl = generateUrl(
                 FunctionType.login,
                 baseUrl,
-                queryString,
+                queryParams,
             );
             window.location.assign(fullUrl);
         },
@@ -50,12 +50,12 @@ export const FusionAuthProvider: React.FC<Props> = ({
     );
 
     const logout = useCallback(async () => {
-        const queryString = {
+        const queryParams = {
             client_id: clientID,
             post_logout_redirect_uri: redirectUri,
             id_token_hint: idTokenHint || '',
         };
-        const fullUrl = generateUrl(FunctionType.logout, baseUrl, queryString);
+        const fullUrl = generateUrl(FunctionType.logout, baseUrl, queryParams);
         window.location.assign(fullUrl);
     }, [baseUrl, clientID, redirectUri, idTokenHint]);
 
@@ -85,9 +85,9 @@ enum FunctionType {
 function generateUrl(
     functionType: FunctionType,
     baseUrl: string,
-    queryString: Record<string, string>,
+    queryParams: Record<string, string>,
 ) {
-    const query = new URLSearchParams(queryString);
+    const query = new URLSearchParams(queryParams);
 
     return `${baseUrl}/${functionType}?${query}`;
 }
