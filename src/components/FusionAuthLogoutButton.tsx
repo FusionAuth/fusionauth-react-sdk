@@ -1,18 +1,15 @@
 import React, { FC } from 'react';
 import { useFusionAuthContext } from '../providers/FusionAuthProvider';
+import { styles } from 'styles/button.module.scss';
 
-interface Props {
-    redirectURI: string;
-}
-
-export const FusionAuthLogoutButton: FC<Props> = ({ redirectURI }) => {
+export const FusionAuthLogoutButton: FC = () => {
     const { logout } = useFusionAuthContext();
 
     return (
         <button
-            className="fusionAuthButton"
+            className={styles.fusionAuthButton}
             type="button"
-            onClick={() => logout(redirectURI)}
+            onClick={() => logout()}
         >
             Logout
         </button>

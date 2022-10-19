@@ -2,56 +2,59 @@ import React, { useCallback, useContext, useMemo } from 'react';
 import { TextEncoder } from 'util';
 
 export interface IFusionAuthContext {
-    login: (redirectURI: string, state: string) => void;
-    logout: (redirectURI: string) => void;
+    login: (state: string) => Promise<void>;
+    logout: () => Promise<void>;
 }
 
 export const FusionAuthContext = React.createContext<IFusionAuthContext>({
-    login: () => {},
-    logout: () => {},
+    login: () => Promise.resolve(),
+    logout: () => Promise.resolve(),
 });
 
 interface Props {
-    baseURL: string;
+    baseUrl: string;
     clientID: string;
     scope: string;
-    idTokenHint: string;
-    children: React.ReactNode;
+    redirectUri: string;
+    idTokenHint?: string;
+    children?: React.ReactNode;
 }
 
 export const FusionAuthProvider: React.FC<Props> = ({
-    baseURL,
+    baseUrl,
     clientID,
     scope,
+    redirectUri,
     idTokenHint,
     children,
 }) => {
-    const login = useCallback(async (redirectURI: string, state: string) => {
-        const fullURL = await generateURL(
-            FunctionType.login,
-            baseURL,
-            clientID,
-            redirectURI,
-            scope,
-            state,
-        );
-        console.log(fullURL);
-        window.location.assign(fullURL);
-    }, []);
+    const login = useCallback(
+        async (state = '') => {
+            const fullUrl = await generateUrl(
+                FunctionType.login,
+                baseUrl,
+                clientID,
+                redirectUri,
+                scope,
+                state,
+            );
+            window.location.assign(fullUrl);
+        },
+        [baseUrl, clientID, scope, redirectUri],
+    );
 
-    const logout = useCallback(async (redirectURI: string) => {
-        const fullURL = await generateURL(
-            FunctionType.login,
-            baseURL,
+    const logout = useCallback(async () => {
+        const fullUrl = await generateUrl(
+            FunctionType.logout,
+            baseUrl,
             clientID,
-            redirectURI,
+            redirectUri,
             '',
             '',
             idTokenHint,
         );
-        console.log(fullURL);
-        window.location.assign(fullURL);
-    }, []);
+        window.location.assign(fullUrl);
+    }, [baseUrl, clientID, redirectUri, idTokenHint]);
 
     const providerValue = useMemo(
         () => ({
@@ -76,34 +79,38 @@ enum FunctionType {
     register = 'register',
 }
 
-async function generateURL(
+async function generateUrl(
     functionType: FunctionType,
-    baseURL: string,
+    baseUrl: string,
     clientID: string,
-    redirectURI: string,
-    scope?: string,
-    state?: string,
-    idTokenHint?: string,
+    redirectUri: string,
+    scope: string,
+    state = '',
+    idTokenHint = '',
 ) {
-    let fullURL = baseURL;
-    fullURL += `/${functionType}?`;
-    fullURL += `client_id=${clientID}&`;
+    let queryString: URLSearchParams;
     if (
         functionType == FunctionType.login ||
         functionType == FunctionType.register
     ) {
-        fullURL += `scope=${scope}&`;
-        fullURL += `response_type=code&`;
-        fullURL += `redirect_url=${redirectURI}&`;
-        fullURL += `code_challenge=${await generatePKCE()}&`;
-        fullURL += `code_challenge_method=S256&`;
-        fullURL += `state=${generateRandomString()}:${state}`;
-    } else if (functionType == FunctionType.logout) {
-        fullURL += `post_logout_redirect_uri=${redirectURI}&`;
-        fullURL += `Id_token_hint=${idTokenHint}`;
+        queryString = new URLSearchParams({
+            client_id: clientID,
+            scope: scope,
+            response_type: 'code',
+            redirect_uri: redirectUri,
+            code_challenge: await generatePKCE(),
+            code_challenge_method: 'S256',
+            state: `${generateRandomString()}:${state}`,
+        });
+    } else {
+        queryString = new URLSearchParams({
+            client_id: clientID,
+            post_logout_redirect_uri: redirectUri,
+            id_token_hint: idTokenHint,
+        });
     }
 
-    return fullURL;
+    return `${baseUrl}/${functionType}?${queryString}`;
 }
 
 function dec2hex(dec: number) {
