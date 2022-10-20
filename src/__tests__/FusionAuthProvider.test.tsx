@@ -29,7 +29,7 @@ describe('FusionAuthProvider', () => {
 
         const wrapper = ({ children }) => (
             <FusionAuthProvider
-                baseUrl="https://sandbox.fusionauth.io/oauth2"
+                baseUrl="https://sandbox.fusionauth.io"
                 clientID="85a03867-dccf-4882-adde-1a79aeec50df"
                 scope="openid offline_access"
                 redirectUri="http://localhost"
@@ -60,7 +60,7 @@ describe('FusionAuthProvider', () => {
 
         const wrapper = ({ children }) => (
             <FusionAuthProvider
-                baseUrl="https://sandbox.fusionauth.io/oauth2"
+                baseUrl="https://sandbox.fusionauth.io"
                 clientID="85a03867-dccf-4882-adde-1a79aeec50df"
                 scope=""
                 redirectUri="http://localhost"
@@ -91,7 +91,7 @@ describe('FusionAuthProvider', () => {
 
         const wrapper = ({ children }) => (
             <FusionAuthProvider
-                baseUrl="https://sandbox.fusionauth.io/oauth2"
+                baseUrl="https://sandbox.fusionauth.io"
                 clientID="85a03867-dccf-4882-adde-1a79aeec50df"
                 scope="openid offline_access"
                 redirectUri="http://localhost"

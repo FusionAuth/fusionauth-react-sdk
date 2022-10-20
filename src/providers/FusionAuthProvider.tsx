@@ -34,7 +34,7 @@ export const FusionAuthProvider: React.FC<Props> = ({
         (functionType: FunctionType, queryParams: Record<string, string>) => {
             const query = new URLSearchParams(queryParams);
 
-            return `${baseUrl}/${functionType}?${query}`;
+            return `${baseUrl}/oauth2/${functionType}?${query}`;
         },
         [baseUrl],
     );
