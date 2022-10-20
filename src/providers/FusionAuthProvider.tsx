@@ -4,11 +4,13 @@ import { TextEncoder } from 'util';
 export interface IFusionAuthContext {
     login: (state: string) => Promise<void>;
     logout: () => Promise<void>;
+    register: (state: string) => Promise<void>;
 }
 
 export const FusionAuthContext = React.createContext<IFusionAuthContext>({
     login: () => Promise.resolve(),
     logout: () => Promise.resolve(),
+    register: () => Promise.resolve(),
 });
 
 interface Props {
@@ -32,7 +34,7 @@ export const FusionAuthProvider: React.FC<Props> = ({
         (functionType: FunctionType, queryParams: Record<string, string>) => {
             const query = new URLSearchParams(queryParams);
 
-            return `${baseUrl}/${functionType}?${query}`;
+            return `${baseUrl}/oauth2/${functionType}?${query}`;
         },
         [baseUrl],
     );
@@ -64,12 +66,30 @@ export const FusionAuthProvider: React.FC<Props> = ({
         window.location.assign(fullUrl);
     }, [clientID, redirectUri, idTokenHint, generateUrl]);
 
+    const register = useCallback(
+        async (state = '') => {
+            const queryParams = {
+                client_id: clientID,
+                scope: scope,
+                response_type: 'code',
+                redirect_uri: redirectUri,
+                code_challenge: await generatePKCE(),
+                code_challenge_method: 'S256',
+                state: `${generateRandomString()}:${state}`,
+            };
+            const fullUrl = generateUrl(FunctionType.register, queryParams);
+            window.location.assign(fullUrl);
+        },
+        [clientID, scope, redirectUri, generateUrl],
+    );
+
     const providerValue = useMemo(
         () => ({
             login,
             logout,
+            register,
         }),
-        [login, logout],
+        [login, logout, register],
     );
 
     return (

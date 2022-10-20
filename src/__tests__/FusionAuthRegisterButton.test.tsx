@@ -1,28 +1,28 @@
 import React from 'react';
 import { screen, render, fireEvent, waitFor } from '@testing-library/react';
-import { FusionAuthLoginButton } from '../components/FusionAuthLoginButton';
+import { FusionAuthRegisterButton } from '../components/FusionAuthRegisterButton';
 import { FusionAuthProvider } from '../providers/FusionAuthProvider';
 import { mockUseFusionAuthContext } from './mocks/mockUseFusionAuthContext';
 
-describe('FusionAuthLoginButton', () => {
+describe('FusionAuthRegisterButton', () => {
     afterEach(() => {
         jest.clearAllMocks();
     });
 
-    test('Login buttons renders the correct text', async () => {
+    test('Register buttons renders the correct text', async () => {
         await renderProvider();
-        expect(await screen.findByText('Login')).toBeInTheDocument();
+        expect(await screen.findByText('Register Now')).toBeInTheDocument();
     });
 
-    test('Login button will call the useFusionAuthContext hook', async () => {
-        const login = jest.fn();
-        mockUseFusionAuthContext({ login });
+    test('Register button will call the useFusionAuthContext hook', async () => {
+        const register = jest.fn();
+        mockUseFusionAuthContext({ register });
 
         await renderProvider();
 
-        await fireEvent.click(screen.getByText('Login'));
+        await fireEvent.click(screen.getByText('Register Now'));
 
-        expect(login).toBeCalledWith('state');
+        expect(register).toBeCalledWith('state');
     });
 });
 
@@ -36,7 +36,7 @@ const renderProvider = async () => {
                 redirectUri="http://localhost"
                 idTokenHint=""
             >
-                <FusionAuthLoginButton state="state" />
+                <FusionAuthRegisterButton state="state" />
             </FusionAuthProvider>,
         ),
     );

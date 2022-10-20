@@ -7,16 +7,16 @@ interface Props {
     text?: string;
 }
 
-export const FusionAuthLoginButton: FC<Props> = ({ state, text }) => {
-    const { login } = useFusionAuthContext();
+export const FusionAuthRegisterButton: FC<Props> = ({ state, text }) => {
+    const { register } = useFusionAuthContext();
 
     return (
         <button
             className={styles.fusionAuthButton}
             type="button"
-            onClick={() => login(state ?? '')}
+            onClick={() => register(state ?? '')}
         >
-            {text ?? 'Login'}
+            {text ?? 'Register Now'}
         </button>
     );
 };
