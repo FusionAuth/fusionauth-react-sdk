@@ -2,7 +2,10 @@ import React, { FC } from 'react';
 import { useFusionAuthContext } from '../providers/FusionAuthProvider';
 import { styles } from 'styles/button.module.scss';
 
-export const FusionAuthLogoutButton: FC = () => {
+interface Props {
+    text?: string;
+}
+export const FusionAuthLogoutButton: FC<Props> = ({ text }) => {
     const { logout } = useFusionAuthContext();
 
     return (
@@ -11,7 +14,7 @@ export const FusionAuthLogoutButton: FC = () => {
             type="button"
             onClick={() => logout()}
         >
-            Logout
+            {text ?? 'Logout'}
         </button>
     );
 };
