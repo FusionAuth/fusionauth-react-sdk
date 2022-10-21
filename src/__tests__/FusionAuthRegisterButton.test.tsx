@@ -34,6 +34,7 @@ const renderProvider = async () => {
                 clientID="85a03867-dccf-4882-adde-1a79aeec50df"
                 scope="openid offline_access"
                 redirectUri="http://localhost"
+                user={{}}
                 idTokenHint=""
             >
                 <FusionAuthRegisterButton state="state" />

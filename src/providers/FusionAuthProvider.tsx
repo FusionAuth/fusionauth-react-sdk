@@ -5,12 +5,14 @@ export interface IFusionAuthContext {
     login: (state: string) => Promise<void>;
     logout: () => Promise<void>;
     register: (state: string) => Promise<void>;
+    user: Record<string, any>;
 }
 
 export const FusionAuthContext = React.createContext<IFusionAuthContext>({
     login: () => Promise.resolve(),
     logout: () => Promise.resolve(),
     register: () => Promise.resolve(),
+    user: {},
 });
 
 interface Props {
@@ -18,6 +20,7 @@ interface Props {
     clientID: string;
     scope: string;
     redirectUri: string;
+    user: Record<string, any>;
     idTokenHint?: string;
     children?: React.ReactNode;
 }
@@ -27,6 +30,7 @@ export const FusionAuthProvider: React.FC<Props> = ({
     clientID,
     scope,
     redirectUri,
+    user,
     idTokenHint,
     children,
 }) => {
@@ -88,8 +92,9 @@ export const FusionAuthProvider: React.FC<Props> = ({
             login,
             logout,
             register,
+            user,
         }),
-        [login, logout, register],
+        [login, logout, register, user],
     );
 
     return (
