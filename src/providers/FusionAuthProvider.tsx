@@ -116,7 +116,7 @@ export const FusionAuthProvider: React.FC<Props> = ({
         } catch (error) {
             console.log(error);
         }
-    }, [hasAuthParams]);
+    }, [serverUrl]);
 
     const providerValue = useMemo(
         () => ({
