@@ -1,5 +1,5 @@
 import React from 'react';
-import { waitFor, renderHook } from '@testing-library/react';
+import { waitFor, renderHook, act } from '@testing-library/react';
 import {
     FusionAuthProvider,
     useFusionAuthContext,
@@ -31,6 +31,7 @@ describe('FusionAuthProvider', () => {
             <FusionAuthProvider
                 baseUrl="https://sandbox.fusionauth.io"
                 clientID="85a03867-dccf-4882-adde-1a79aeec50df"
+                serverUrl=""
                 scope="openid offline_access"
                 redirectUri="http://localhost"
                 idTokenHint=""
@@ -42,7 +43,11 @@ describe('FusionAuthProvider', () => {
             wrapper,
         });
 
-        await result.current.login('state');
+        await waitFor(() =>
+            act(() => {
+                result.current.login('state');
+            }),
+        );
 
         const expectedUrl =
             'https://sandbox.fusionauth.io/oauth2/authorize?client_id=85a03867-dccf-4882-adde-1a79aeec50df&scope=openid+offline_access&response_type=code&redirect_uri=http%3A%2F%2Flocalhost&code_challenge=vQOsFCjw6ob0uDpzH_x5Z7uChm2FRTIviI0vboV__Bg&code_challenge_method=S256&state=00000000000000000000000000000000000000000000000000000000%3Astate';
@@ -62,6 +67,7 @@ describe('FusionAuthProvider', () => {
             <FusionAuthProvider
                 baseUrl="https://sandbox.fusionauth.io"
                 clientID="85a03867-dccf-4882-adde-1a79aeec50df"
+                serverUrl=""
                 scope=""
                 redirectUri="http://localhost"
                 idTokenHint="token_hint"
@@ -93,9 +99,9 @@ describe('FusionAuthProvider', () => {
             <FusionAuthProvider
                 baseUrl="https://sandbox.fusionauth.io"
                 clientID="85a03867-dccf-4882-adde-1a79aeec50df"
+                serverUrl=""
                 scope="openid offline_access"
                 redirectUri="http://localhost"
-                user={{}}
                 idTokenHint=""
             >
                 {children}
@@ -105,7 +111,11 @@ describe('FusionAuthProvider', () => {
             wrapper,
         });
 
-        await result.current.register('state');
+        await waitFor(() =>
+            act(() => {
+                result.current.register('state');
+            }),
+        );
 
         const expectedUrl =
             'https://sandbox.fusionauth.io/oauth2/register?client_id=85a03867-dccf-4882-adde-1a79aeec50df&scope=openid+offline_access&response_type=code&redirect_uri=http%3A%2F%2Flocalhost&code_challenge=vQOsFCjw6ob0uDpzH_x5Z7uChm2FRTIviI0vboV__Bg&code_challenge_method=S256&state=00000000000000000000000000000000000000000000000000000000%3Astate';

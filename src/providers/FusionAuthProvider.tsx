@@ -1,5 +1,12 @@
-import React, { useCallback, useContext, useMemo } from 'react';
+import React, {
+    useCallback,
+    useContext,
+    useEffect,
+    useMemo,
+    useState,
+} from 'react';
 import { TextEncoder } from 'util';
+import axios from 'axios';
 
 export interface IFusionAuthContext {
     login: (state: string) => Promise<void>;
@@ -18,9 +25,9 @@ export const FusionAuthContext = React.createContext<IFusionAuthContext>({
 interface Props {
     baseUrl: string;
     clientID: string;
+    serverUrl: string;
     scope: string;
     redirectUri: string;
-    user: Record<string, any>;
     idTokenHint?: string;
     children?: React.ReactNode;
 }
@@ -28,12 +35,14 @@ interface Props {
 export const FusionAuthProvider: React.FC<Props> = ({
     baseUrl,
     clientID,
+    serverUrl,
     scope,
     redirectUri,
-    user,
     idTokenHint,
     children,
 }) => {
+    const [user, setUser] = useState<Record<string, any>>({});
+
     const generateUrl = useCallback(
         (functionType: FunctionType, queryParams: Record<string, string>) => {
             const query = new URLSearchParams(queryParams);
@@ -87,6 +96,28 @@ export const FusionAuthProvider: React.FC<Props> = ({
         [clientID, scope, redirectUri, generateUrl],
     );
 
+    useEffect(() => {
+        try {
+            if (hasAuthParams()) {
+                const urlParams = window.location.search;
+                const queryParams = urlParams.split('&');
+                const parsedQuery: Record<string, any> = {};
+                queryParams.forEach(qp => {
+                    const [key, val] = qp.split('=');
+                    parsedQuery[key] = decodeURIComponent(val);
+                });
+
+                axios
+                    .post(serverUrl, { client_id: parsedQuery.client_id })
+                    .then(response => {
+                        setUser(response.data.user);
+                    });
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }, [hasAuthParams]);
+
     const providerValue = useMemo(
         () => ({
             login,
@@ -136,5 +167,14 @@ async function generatePKCE() {
 function generateRandomString() {
     const array = new Uint32Array(56 / 2);
     window.crypto.getRandomValues(array);
-    return Array.from(array, dec2hex).join('');
+    const string = Array.from(array, dec2hex).join('');
+    return string;
+}
+
+function hasAuthParams(): boolean {
+    return (
+        (/[?&]code=[^&]+/.test(window.location.search) ||
+            /[?&]state=[^&]+/.test(window.location.search)) &&
+        /[?&]error=[^&]+/.test(window.location.search)
+    );
 }
