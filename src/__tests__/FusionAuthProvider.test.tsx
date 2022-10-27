@@ -5,6 +5,13 @@ import {
     useFusionAuthContext,
 } from '../providers/FusionAuthProvider';
 import { mockCrypto } from './mocks/mockCrypto';
+import {
+    baseUrl,
+    clientID,
+    idTokenHint,
+    redirectUri,
+    scope,
+} from './mocks/testConfiguration';
 
 let location: Location;
 
@@ -29,11 +36,11 @@ describe('FusionAuthProvider', () => {
 
         const wrapper = ({ children }) => (
             <FusionAuthProvider
-                baseUrl="https://sandbox.fusionauth.io"
-                clientID="85a03867-dccf-4882-adde-1a79aeec50df"
+                baseUrl={baseUrl}
+                clientID={clientID}
                 serverUrl=""
-                scope="openid offline_access"
-                redirectUri="http://localhost"
+                scope={scope}
+                redirectUri={redirectUri}
                 idTokenHint=""
             >
                 {children}
@@ -65,12 +72,12 @@ describe('FusionAuthProvider', () => {
 
         const wrapper = ({ children }) => (
             <FusionAuthProvider
-                baseUrl="https://sandbox.fusionauth.io"
-                clientID="85a03867-dccf-4882-adde-1a79aeec50df"
+                baseUrl={baseUrl}
+                clientID={clientID}
                 serverUrl=""
                 scope=""
-                redirectUri="http://localhost"
-                idTokenHint="token_hint"
+                redirectUri={redirectUri}
+                idTokenHint={idTokenHint}
             >
                 {children}
             </FusionAuthProvider>
@@ -97,11 +104,11 @@ describe('FusionAuthProvider', () => {
 
         const wrapper = ({ children }) => (
             <FusionAuthProvider
-                baseUrl="https://sandbox.fusionauth.io"
-                clientID="85a03867-dccf-4882-adde-1a79aeec50df"
+                baseUrl={baseUrl}
+                clientID={clientID}
                 serverUrl=""
-                scope="openid offline_access"
-                redirectUri="http://localhost"
+                scope={scope}
+                redirectUri={redirectUri}
                 idTokenHint=""
             >
                 {children}

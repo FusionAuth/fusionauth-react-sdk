@@ -2,18 +2,16 @@ import React, { FC, ReactNode } from 'react';
 import { useFusionAuthContext } from '../providers/FusionAuthProvider';
 
 interface Props {
-    role?: string;
+    authorizedRole?: string;
     children?: ReactNode;
 }
 
-export const Authorization: FC<Props> = ({ role, children }) => {
+export const Authorization: FC<Props> = ({ authorizedRole, children }) => {
     const { user } = useFusionAuthContext();
 
-    return (
-        <>
-            {(role
-                ? Object.keys(user).length !== 0 && user.role === role
-                : Object.keys(user).length !== 0) && children}
-        </>
-    );
+    const isAuthorized = authorizedRole
+        ? Object.keys(user).length !== 0 && user.role === authorizedRole
+        : Object.keys(user).length !== 0;
+
+    return <>{isAuthorized && children}</>;
 };
