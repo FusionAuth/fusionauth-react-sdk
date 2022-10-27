@@ -5,12 +5,8 @@ import { FusionAuthProvider } from '../providers/FusionAuthProvider';
 import { FusionAuthLogoutButton } from '../components/FusionAuthLogoutButton';
 import axios from 'axios';
 import {
-    baseUrl,
-    redirectUri,
-    redirectUrl,
-    scope,
-    clientID,
-    serverUrl,
+    TEST_REDIRECT_URL,
+    TEST_CONFIGURATION,
 } from './mocks/testConfiguration';
 
 let location: Location;
@@ -39,7 +35,7 @@ describe('Authorization Component', () => {
     test('Authorization Component renders children when user is present with the correct role', async () => {
         const mockedLocation = {
             ...location,
-            search: redirectUrl,
+            search: TEST_REDIRECT_URL,
         };
         jest.spyOn(window, 'location', 'get').mockReturnValue(mockedLocation);
 
@@ -55,7 +51,7 @@ describe('Authorization Component', () => {
     test('Authorization Component does not render children when user is present with the incorrect role', async () => {
         const mockedLocation = {
             ...location,
-            search: redirectUrl,
+            search: TEST_REDIRECT_URL,
         };
         jest.spyOn(window, 'location', 'get').mockReturnValue(mockedLocation);
 
@@ -71,7 +67,7 @@ describe('Authorization Component', () => {
     test('Authorization Component renders children when user is present and no role is passed', async () => {
         const mockedLocation = {
             ...location,
-            search: redirectUrl,
+            search: TEST_REDIRECT_URL,
         };
         jest.spyOn(window, 'location', 'get').mockReturnValue(mockedLocation);
 
@@ -88,14 +84,7 @@ describe('Authorization Component', () => {
 const renderProvider = async (role?: string) => {
     waitFor(() =>
         render(
-            <FusionAuthProvider
-                baseUrl={baseUrl}
-                clientID={clientID}
-                serverUrl={serverUrl}
-                scope={scope}
-                redirectUri={redirectUri}
-                idTokenHint=""
-            >
+            <FusionAuthProvider configuration={TEST_CONFIGURATION}>
                 <Authorization authorizedRole={role}>
                     <FusionAuthLogoutButton />
                 </Authorization>

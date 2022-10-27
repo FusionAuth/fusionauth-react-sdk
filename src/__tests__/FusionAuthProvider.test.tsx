@@ -5,13 +5,7 @@ import {
     useFusionAuthContext,
 } from '../providers/FusionAuthProvider';
 import { mockCrypto } from './mocks/mockCrypto';
-import {
-    baseUrl,
-    clientID,
-    idTokenHint,
-    redirectUri,
-    scope,
-} from './mocks/testConfiguration';
+import { TEST_CONFIGURATION } from './mocks/testConfiguration';
 
 let location: Location;
 
@@ -35,14 +29,7 @@ describe('FusionAuthProvider', () => {
         jest.spyOn(window, 'location', 'get').mockReturnValue(mockedLocation);
 
         const wrapper = ({ children }) => (
-            <FusionAuthProvider
-                baseUrl={baseUrl}
-                clientID={clientID}
-                serverUrl=""
-                scope={scope}
-                redirectUri={redirectUri}
-                idTokenHint=""
-            >
+            <FusionAuthProvider configuration={TEST_CONFIGURATION}>
                 {children}
             </FusionAuthProvider>
         );
@@ -71,14 +58,7 @@ describe('FusionAuthProvider', () => {
         jest.spyOn(window, 'location', 'get').mockReturnValue(mockedLocation);
 
         const wrapper = ({ children }) => (
-            <FusionAuthProvider
-                baseUrl={baseUrl}
-                clientID={clientID}
-                serverUrl=""
-                scope=""
-                redirectUri={redirectUri}
-                idTokenHint={idTokenHint}
-            >
+            <FusionAuthProvider configuration={TEST_CONFIGURATION}>
                 {children}
             </FusionAuthProvider>
         );
@@ -103,14 +83,7 @@ describe('FusionAuthProvider', () => {
         jest.spyOn(window, 'location', 'get').mockReturnValue(mockedLocation);
 
         const wrapper = ({ children }) => (
-            <FusionAuthProvider
-                baseUrl={baseUrl}
-                clientID={clientID}
-                serverUrl=""
-                scope={scope}
-                redirectUri={redirectUri}
-                idTokenHint=""
-            >
+            <FusionAuthProvider configuration={TEST_CONFIGURATION}>
                 {children}
             </FusionAuthProvider>
         );

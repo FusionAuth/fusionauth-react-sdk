@@ -3,14 +3,7 @@ import { screen, render, fireEvent, waitFor } from '@testing-library/react';
 import { FusionAuthLogoutButton } from '../components/FusionAuthLogoutButton';
 import { FusionAuthProvider } from '../providers/FusionAuthProvider';
 import { mockUseFusionAuthContext } from './mocks/mockUseFusionAuthContext';
-import {
-    baseUrl,
-    redirectUri,
-    scope,
-    clientID,
-    serverUrl,
-    idTokenHint,
-} from './mocks/testConfiguration';
+import { TEST_CONFIGURATION } from './mocks/testConfiguration';
 
 describe('FusionAuthLogoutButton', () => {
     afterEach(() => {
@@ -37,14 +30,7 @@ describe('FusionAuthLogoutButton', () => {
 const renderProvider = async () => {
     waitFor(() =>
         render(
-            <FusionAuthProvider
-                baseUrl={baseUrl}
-                clientID={clientID}
-                serverUrl={serverUrl}
-                scope={scope}
-                redirectUri={redirectUri}
-                idTokenHint={idTokenHint}
-            >
+            <FusionAuthProvider configuration={TEST_CONFIGURATION}>
                 <FusionAuthLogoutButton />
             </FusionAuthProvider>,
         ),

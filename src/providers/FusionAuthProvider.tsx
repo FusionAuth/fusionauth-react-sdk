@@ -22,23 +22,22 @@ export const FusionAuthContext = React.createContext<IFusionAuthContext>({
     user: {},
 });
 
-interface Props {
+export interface IFusionAuthConfiguration {
     baseUrl: string;
     clientID: string;
     serverUrl: string;
     scope: string;
     redirectUri: string;
     idTokenHint?: string;
+}
+
+interface Props {
+    configuration: IFusionAuthConfiguration;
     children?: React.ReactNode;
 }
 
 export const FusionAuthProvider: React.FC<Props> = ({
-    baseUrl,
-    clientID,
-    serverUrl,
-    scope,
-    redirectUri,
-    idTokenHint,
+    configuration,
     children,
 }) => {
     const [user, setUser] = useState<Record<string, any>>({});
@@ -47,18 +46,18 @@ export const FusionAuthProvider: React.FC<Props> = ({
         (functionType: FunctionType, queryParams: Record<string, string>) => {
             const query = new URLSearchParams(queryParams);
 
-            return `${baseUrl}/oauth2/${functionType}?${query}`;
+            return `${configuration.baseUrl}/oauth2/${functionType}?${query}`;
         },
-        [baseUrl],
+        [configuration],
     );
 
     const login = useCallback(
         async (state = '') => {
             const queryParams = {
-                client_id: clientID,
-                scope: scope,
+                client_id: configuration.clientID,
+                scope: configuration.scope,
                 response_type: 'code',
-                redirect_uri: redirectUri,
+                redirect_uri: configuration.redirectUri,
                 code_challenge: await generatePKCE(),
                 code_challenge_method: 'S256',
                 state: `${generateRandomString()}:${state}`,
@@ -66,26 +65,26 @@ export const FusionAuthProvider: React.FC<Props> = ({
             const fullUrl = generateUrl(FunctionType.login, queryParams);
             window.location.assign(fullUrl);
         },
-        [clientID, scope, redirectUri, generateUrl],
+        [configuration, generateUrl],
     );
 
     const logout = useCallback(async () => {
         const queryParams = {
-            client_id: clientID,
-            post_logout_redirect_uri: redirectUri,
-            id_token_hint: idTokenHint ?? '',
+            client_id: configuration.clientID,
+            post_logout_redirect_uri: configuration.redirectUri,
+            id_token_hint: configuration.idTokenHint ?? '',
         };
         const fullUrl = generateUrl(FunctionType.logout, queryParams);
         window.location.assign(fullUrl);
-    }, [clientID, redirectUri, idTokenHint, generateUrl]);
+    }, [configuration, generateUrl]);
 
     const register = useCallback(
         async (state = '') => {
             const queryParams = {
-                client_id: clientID,
-                scope: scope,
+                client_id: configuration.clientID,
+                scope: configuration.scope,
                 response_type: 'code',
-                redirect_uri: redirectUri,
+                redirect_uri: configuration.redirectUri,
                 code_challenge: await generatePKCE(),
                 code_challenge_method: 'S256',
                 state: `${generateRandomString()}:${state}`,
@@ -93,7 +92,7 @@ export const FusionAuthProvider: React.FC<Props> = ({
             const fullUrl = generateUrl(FunctionType.register, queryParams);
             window.location.assign(fullUrl);
         },
-        [clientID, scope, redirectUri, generateUrl],
+        [configuration, generateUrl],
     );
 
     useEffect(() => {
@@ -108,7 +107,9 @@ export const FusionAuthProvider: React.FC<Props> = ({
                 });
 
                 axios
-                    .post(serverUrl, { client_id: parsedQuery.client_id })
+                    .post(configuration.serverUrl, {
+                        client_id: parsedQuery.client_id,
+                    })
                     .then(response => {
                         setUser(response.data.user);
                     });
@@ -116,7 +117,7 @@ export const FusionAuthProvider: React.FC<Props> = ({
         } catch (error) {
             console.log(error);
         }
-    }, [serverUrl]);
+    }, [configuration]);
 
     const providerValue = useMemo(
         () => ({
