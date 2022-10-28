@@ -14,7 +14,7 @@
   },
   "repository": "git+https://github.com/FusionAuth/fusionauth-react-sdk.git",
   "author": "Woodridge Software",
-  "license": "ISC",
+  "license": "Apache",
   "bugs": {
     "url": "https://github.com/FusionAuth/fusionauth-react-sdk/issues"
   },
