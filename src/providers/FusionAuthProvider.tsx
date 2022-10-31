@@ -51,8 +51,8 @@ export const FusionAuthProvider: React.FC<Props> = ({ config, children }) => {
 
     const login = useCallback(
         async (state = '') => {
-            const rand = generateRandomString();
-            Cookies.set('lastState', `${rand}:${state}`);
+            const stateParam = `${generateRandomString()}:${state}`;
+            Cookies.set('lastState', stateParam);
             const queryParams = {
                 client_id: config.clientID,
                 scope: config.scope,
@@ -60,7 +60,7 @@ export const FusionAuthProvider: React.FC<Props> = ({ config, children }) => {
                 redirect_uri: config.redirectUri,
                 code_challenge: await generatePKCE(),
                 code_challenge_method: 'S256',
-                state: `${rand}:${state}`,
+                state: stateParam,
             };
             const fullUrl = generateUrl(FunctionType.login, queryParams);
             window.location.assign(fullUrl);
@@ -80,8 +80,8 @@ export const FusionAuthProvider: React.FC<Props> = ({ config, children }) => {
 
     const register = useCallback(
         async (state = '') => {
-            const rand = generateRandomString();
-            Cookies.set('lastState', `${rand}:${state}`);
+            const stateParam = `${generateRandomString()}:${state}`;
+            Cookies.set('lastState', stateParam);
             const queryParams = {
                 client_id: config.clientID,
                 scope: config.scope,
@@ -89,7 +89,7 @@ export const FusionAuthProvider: React.FC<Props> = ({ config, children }) => {
                 redirect_uri: config.redirectUri,
                 code_challenge: await generatePKCE(),
                 code_challenge_method: 'S256',
-                state: `${rand}:${state}`,
+                state: stateParam,
             };
             const fullUrl = generateUrl(FunctionType.register, queryParams);
             window.location.assign(fullUrl);
