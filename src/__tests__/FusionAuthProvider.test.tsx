@@ -5,7 +5,7 @@ import {
     useFusionAuthContext,
 } from '../providers/FusionAuthProvider';
 import { mockCrypto } from './mocks/mockCrypto';
-import { TEST_CONFIGURATION } from './mocks/testConfiguration';
+import { TEST_CONFIG } from './mocks/testConfiguration';
 
 let location: Location;
 
@@ -29,7 +29,7 @@ describe('FusionAuthProvider', () => {
         jest.spyOn(window, 'location', 'get').mockReturnValue(mockedLocation);
 
         const wrapper = ({ children }) => (
-            <FusionAuthProvider configuration={TEST_CONFIGURATION}>
+            <FusionAuthProvider config={TEST_CONFIG}>
                 {children}
             </FusionAuthProvider>
         );
@@ -54,7 +54,7 @@ describe('FusionAuthProvider', () => {
         jest.spyOn(window, 'location', 'get').mockReturnValue(mockedLocation);
 
         const wrapper = ({ children }) => (
-            <FusionAuthProvider configuration={TEST_CONFIGURATION}>
+            <FusionAuthProvider config={TEST_CONFIG}>
                 {children}
             </FusionAuthProvider>
         );
@@ -79,7 +79,7 @@ describe('FusionAuthProvider', () => {
         jest.spyOn(window, 'location', 'get').mockReturnValue(mockedLocation);
 
         const wrapper = ({ children }) => (
-            <FusionAuthProvider configuration={TEST_CONFIGURATION}>
+            <FusionAuthProvider config={TEST_CONFIG}>
                 {children}
             </FusionAuthProvider>
         );

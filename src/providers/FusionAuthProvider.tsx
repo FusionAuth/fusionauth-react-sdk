@@ -7,6 +7,7 @@ import React, {
 } from 'react';
 import { TextEncoder } from 'util';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 
 export interface IFusionAuthContext {
     login: (state: string) => Promise<void>;
@@ -22,7 +23,7 @@ export const FusionAuthContext = React.createContext<IFusionAuthContext>({
     user: {},
 });
 
-export interface IFusionAuthConfiguration {
+export interface FusionAuthConfig {
     baseUrl: string;
     clientID: string;
     serverUrl: string;
@@ -32,34 +33,31 @@ export interface IFusionAuthConfiguration {
 }
 
 interface Props {
-    configuration: IFusionAuthConfiguration;
+    config: FusionAuthConfig;
     children?: React.ReactNode;
 }
 
-export const FusionAuthProvider: React.FC<Props> = ({
-    configuration,
-    children,
-}) => {
+export const FusionAuthProvider: React.FC<Props> = ({ config, children }) => {
     const [user, setUser] = useState<Record<string, any>>({});
 
     const generateUrl = useCallback(
         (functionType: FunctionType, queryParams: Record<string, string>) => {
             const query = new URLSearchParams(queryParams);
 
-            return `${configuration.baseUrl}/oauth2/${functionType}?${query}`;
+            return `${config.baseUrl}/oauth2/${functionType}?${query}`;
         },
-        [configuration],
+        [config],
     );
 
     const login = useCallback(
         async (state = '') => {
             const rand = generateRandomString();
-            document.cookie = `lastState=${rand}`;
+            Cookies.set('lastState', rand);
             const queryParams = {
-                client_id: configuration.clientID,
-                scope: configuration.scope,
+                client_id: config.clientID,
+                scope: config.scope,
                 response_type: 'code',
-                redirect_uri: configuration.redirectUri,
+                redirect_uri: config.redirectUri,
                 code_challenge: await generatePKCE(),
                 code_challenge_method: 'S256',
                 state: `${rand}:${state}`,
@@ -67,28 +65,28 @@ export const FusionAuthProvider: React.FC<Props> = ({
             const fullUrl = generateUrl(FunctionType.login, queryParams);
             window.location.assign(fullUrl);
         },
-        [configuration, generateUrl],
+        [config, generateUrl],
     );
 
     const logout = useCallback(async () => {
         const queryParams = {
-            client_id: configuration.clientID,
-            post_logout_redirect_uri: configuration.redirectUri,
-            id_token_hint: configuration.idTokenHint ?? '',
+            client_id: config.clientID,
+            post_logout_redirect_uri: config.redirectUri,
+            id_token_hint: config.idTokenHint ?? '',
         };
         const fullUrl = generateUrl(FunctionType.logout, queryParams);
         window.location.assign(fullUrl);
-    }, [configuration, generateUrl]);
+    }, [config, generateUrl]);
 
     const register = useCallback(
         async (state = '') => {
             const rand = generateRandomString();
-            document.cookie = `lastState=${rand}`;
+            Cookies.set('lastState', rand);
             const queryParams = {
-                client_id: configuration.clientID,
-                scope: configuration.scope,
+                client_id: config.clientID,
+                scope: config.scope,
                 response_type: 'code',
-                redirect_uri: configuration.redirectUri,
+                redirect_uri: config.redirectUri,
                 code_challenge: await generatePKCE(),
                 code_challenge_method: 'S256',
                 state: `${rand}:${state}`,
@@ -96,22 +94,19 @@ export const FusionAuthProvider: React.FC<Props> = ({
             const fullUrl = generateUrl(FunctionType.register, queryParams);
             window.location.assign(fullUrl);
         },
-        [configuration, generateUrl],
+        [config, generateUrl],
     );
 
     useEffect(() => {
         try {
-            const lastState = document.cookie
-                .split('; ')
-                .find(row => row.startsWith('lastState='))
-                ?.split('=')[1];
+            const lastState = Cookies.get('lastState');
 
             if (hasAuthParams() && lastState !== null) {
                 const urlParams = new URLSearchParams(window.location.search);
 
                 if (lastState === urlParams.get('state')) {
                     axios
-                        .post(`${configuration.serverUrl}/token-exchange`, {
+                        .post(`${config.serverUrl}/token-exchange`, {
                             client_id: urlParams.get('client_id'),
                             code: urlParams.get('code'),
                         })
@@ -123,7 +118,7 @@ export const FusionAuthProvider: React.FC<Props> = ({
         } catch (error) {
             console.error(error);
         }
-    }, [configuration]);
+    }, [config]);
 
     const providerValue = useMemo(
         () => ({

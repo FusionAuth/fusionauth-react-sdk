@@ -3,7 +3,7 @@ import { screen, render, fireEvent, waitFor } from '@testing-library/react';
 import { FusionAuthRegisterButton } from '../components/FusionAuthRegisterButton';
 import { FusionAuthProvider } from '../providers/FusionAuthProvider';
 import { mockUseFusionAuthContext } from './mocks/mockUseFusionAuthContext';
-import { TEST_CONFIGURATION } from './mocks/testConfiguration';
+import { TEST_CONFIG } from './mocks/testConfiguration';
 
 describe('FusionAuthRegisterButton', () => {
     afterEach(() => {
@@ -30,7 +30,7 @@ describe('FusionAuthRegisterButton', () => {
 const renderProvider = async () => {
     waitFor(() =>
         render(
-            <FusionAuthProvider configuration={TEST_CONFIGURATION}>
+            <FusionAuthProvider config={TEST_CONFIG}>
                 <FusionAuthRegisterButton state="state" />
             </FusionAuthProvider>,
         ),

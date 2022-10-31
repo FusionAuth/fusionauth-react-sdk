@@ -4,10 +4,7 @@ import { RequireAuth } from '../components/RequireAuth';
 import { FusionAuthProvider } from '../providers/FusionAuthProvider';
 import { FusionAuthLogoutButton } from '../components/FusionAuthLogoutButton';
 import axios from 'axios';
-import {
-    TEST_REDIRECT_URL,
-    TEST_CONFIGURATION,
-} from './mocks/testConfiguration';
+import { TEST_REDIRECT_URL, TEST_CONFIG } from './mocks/testConfiguration';
 import { mockCrypto } from './mocks/mockCrypto';
 
 let location: Location;
@@ -127,7 +124,7 @@ describe('RequireAuth Component', () => {
 const renderProvider = async (role?: string) => {
     waitFor(() =>
         render(
-            <FusionAuthProvider configuration={TEST_CONFIGURATION}>
+            <FusionAuthProvider config={TEST_CONFIG}>
                 <RequireAuth withRole={role}>
                     <FusionAuthLogoutButton />
                 </RequireAuth>
