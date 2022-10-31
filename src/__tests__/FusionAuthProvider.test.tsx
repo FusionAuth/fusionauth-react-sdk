@@ -5,7 +5,7 @@ import {
     useFusionAuthContext,
 } from '../providers/FusionAuthProvider';
 import { mockCrypto } from './mocks/mockCrypto';
-import { TEST_CONFIG } from './mocks/testConfiguration';
+import { TEST_CONFIG } from './mocks/testConfig';
 
 let location: Location;
 

@@ -3,7 +3,7 @@ import { screen, render, fireEvent, waitFor } from '@testing-library/react';
 import { FusionAuthLogoutButton } from '../components/FusionAuthLogoutButton';
 import { FusionAuthProvider } from '../providers/FusionAuthProvider';
 import { mockUseFusionAuthContext } from './mocks/mockUseFusionAuthContext';
-import { TEST_CONFIG } from './mocks/testConfiguration';
+import { TEST_CONFIG } from './mocks/testConfig';
 
 describe('FusionAuthLogoutButton', () => {
     afterEach(() => {

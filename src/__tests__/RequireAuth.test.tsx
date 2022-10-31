@@ -4,7 +4,7 @@ import { RequireAuth } from '../components/RequireAuth';
 import { FusionAuthProvider } from '../providers/FusionAuthProvider';
 import { FusionAuthLogoutButton } from '../components/FusionAuthLogoutButton';
 import axios from 'axios';
-import { TEST_REDIRECT_URL, TEST_CONFIG } from './mocks/testConfiguration';
+import { TEST_REDIRECT_URL, TEST_CONFIG } from './mocks/testConfig';
 import { mockCrypto } from './mocks/mockCrypto';
 
 let location: Location;
