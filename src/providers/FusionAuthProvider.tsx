@@ -53,6 +53,8 @@ export const FusionAuthProvider: React.FC<Props> = ({
 
     const login = useCallback(
         async (state = '') => {
+            const rand = generateRandomString();
+            document.cookie = `lastState=${rand}`;
             const queryParams = {
                 client_id: configuration.clientID,
                 scope: configuration.scope,
@@ -60,7 +62,7 @@ export const FusionAuthProvider: React.FC<Props> = ({
                 redirect_uri: configuration.redirectUri,
                 code_challenge: await generatePKCE(),
                 code_challenge_method: 'S256',
-                state: `${generateRandomString()}:${state}`,
+                state: `${rand}:${state}`,
             };
             const fullUrl = generateUrl(FunctionType.login, queryParams);
             window.location.assign(fullUrl);
@@ -80,6 +82,8 @@ export const FusionAuthProvider: React.FC<Props> = ({
 
     const register = useCallback(
         async (state = '') => {
+            const rand = generateRandomString();
+            document.cookie = `lastState=${rand}`;
             const queryParams = {
                 client_id: configuration.clientID,
                 scope: configuration.scope,
@@ -87,7 +91,7 @@ export const FusionAuthProvider: React.FC<Props> = ({
                 redirect_uri: configuration.redirectUri,
                 code_challenge: await generatePKCE(),
                 code_challenge_method: 'S256',
-                state: `${generateRandomString()}:${state}`,
+                state: `${rand}:${state}`,
             };
             const fullUrl = generateUrl(FunctionType.register, queryParams);
             window.location.assign(fullUrl);
@@ -97,25 +101,27 @@ export const FusionAuthProvider: React.FC<Props> = ({
 
     useEffect(() => {
         try {
-            if (hasAuthParams()) {
-                const urlParams = window.location.search;
-                const queryParams = urlParams.split('&');
-                const parsedQuery: Record<string, any> = {};
-                queryParams.forEach(qp => {
-                    const [key, val] = qp.split('=');
-                    parsedQuery[key] = decodeURIComponent(val);
-                });
+            const lastState = document.cookie
+                .split('; ')
+                .find(row => row.startsWith('lastState='))
+                ?.split('=')[1];
 
-                axios
-                    .post(configuration.serverUrl, {
-                        client_id: parsedQuery.client_id,
-                    })
-                    .then(response => {
-                        setUser(response.data.user);
-                    });
+            if (hasAuthParams() && lastState !== null) {
+                const urlParams = new URLSearchParams(window.location.search);
+
+                if (lastState === urlParams.get('state')) {
+                    axios
+                        .post(`${configuration.serverUrl}/token-exchange`, {
+                            client_id: urlParams.get('client_id'),
+                            code: urlParams.get('code'),
+                        })
+                        .then(response => {
+                            setUser(response.data.user);
+                        });
+                }
             }
         } catch (error) {
-            console.log(error);
+            console.error(error);
         }
     }, [configuration]);
 
@@ -173,9 +179,9 @@ function generateRandomString() {
 }
 
 function hasAuthParams(): boolean {
-    return (
-        (/[?&]code=[^&]+/.test(window.location.search) ||
-            /[?&]state=[^&]+/.test(window.location.search)) &&
-        /[?&]error=[^&]+/.test(window.location.search)
-    );
+    const searchParams = new URLSearchParams(window.location.search);
+    const code = searchParams.get('code');
+    const state = searchParams.get('state');
+    const error = searchParams.get('error');
+    return code !== null || state !== null || error !== null;
 }
