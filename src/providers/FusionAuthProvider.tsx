@@ -52,7 +52,7 @@ export const FusionAuthProvider: React.FC<Props> = ({ config, children }) => {
     const login = useCallback(
         async (state = '') => {
             const rand = generateRandomString();
-            Cookies.set('lastState', rand);
+            Cookies.set('lastState', `${rand}:${state}`);
             const queryParams = {
                 client_id: config.clientID,
                 scope: config.scope,
@@ -81,7 +81,7 @@ export const FusionAuthProvider: React.FC<Props> = ({ config, children }) => {
     const register = useCallback(
         async (state = '') => {
             const rand = generateRandomString();
-            Cookies.set('lastState', rand);
+            Cookies.set('lastState', `${rand}:${state}`);
             const queryParams = {
                 client_id: config.clientID,
                 scope: config.scope,
