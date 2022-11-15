@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { useFusionAuthContext } from '../providers/FusionAuthProvider';
-import { styles } from 'styles/button.module.scss';
+import styles from '../styles/button.module.scss';
 
 interface Props {
     state?: string;

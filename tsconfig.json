@@ -10,12 +10,18 @@
     "jsx": "react",
     "module": "ESNext",
     "declaration": true,
-    "declarationDir": "types",
+    "declarationDir": "dist",
     "sourceMap": true,
     "outDir": "dist",
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
-    "emitDeclarationOnly": true
+    "emitDeclarationOnly": false,
+    "noEmit": false,
+    "allowJs": true,
+    "checkJs": false,
   },
+  "include": [
+    "./src"
+  ],
   "exclude": ["./src/__tests__", "types"]
 }
