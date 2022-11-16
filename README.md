@@ -9,7 +9,7 @@ From yarn:
 
 # Using the Provider
 This SDK includes a Provider that you can add to your application using:
-```
+```TSX
 import {FusionAuthProvider} from 'fusionauth-react-sdk'
 
 ...
@@ -22,7 +22,7 @@ import {FusionAuthProvider} from 'fusionauth-react-sdk'
 ```
 
 This config prop is set up as follows:
-```
+```TSX
 baseUrl: string;      // The base URL of your FusionAuth instance
 clientID: string;     // Your client id (found in FusionAuth)
 serverUrl: string;    // The base URL of your server
@@ -40,4 +40,32 @@ It also has an exported `user` variable that is returned by your FusionAuth inst
 
 # Using the Components
 There are 3 buttons that are configured to call their corresponding function: `FusionAuthLoginButton`, `FusionAuthLogoutButton`, and `FusionAuthRegisterButton`.
+
+```TSX
+import {FusionAuthLoginButton, FusionAuthLogoutButton, FusionAuthRegisterButton} from 'fusionauth-react-sdk';
+
+<FusionAuthLoginButton />
+<FusionAuthRegisterButton />
+<FusionAuthLogoutButton />
+```
+
+
 There is a `RequireAuth` component that can be used to hide information from unauthorized users. This takes an optional prop `authorizedRole` that will hide information from users without that role.
+
+```TSX
+import {RequireAuth, useFusionAuthContext} from 'fusionauth-react-sdk';
+
+const { user } = useFusionAuthContext();
+
+...
+
+// This will only show if there's an authenticated user
+<RequireAuth>
+    <p>User: {user.name}</p>
+</RequireAuth>
+
+// This will only show if there's an authenticated user with the admin role
+<RequireAuth withRole="admin" >
+    <p>User: {user.name}</p>
+</RequireAuth>
+```
