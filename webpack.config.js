@@ -9,6 +9,9 @@ module.exports = {
         fallback: {
             util: false,
         },
+        alias: {
+            react: path.resolve('./node_modules/react'),
+        },
     },
     externals: [nodeExternals()],
     output: {

@@ -1,5 +1,5 @@
 .fusionAuthButton {
-  padding: 16px 174px 13px 175px;
+  padding: 16px 0px 13px 0px;
   border-radius: 8px;
   background-color: #083b94;
   font-family: SFPro;
@@ -7,4 +7,19 @@
   font-weight: 600;
   text-align: center;
   color: #fff;
+  margin: 0 64px;
+  width: 400px;
+}
+
+.fusionAuthLogoutButton {
+  width: 68px;
+  height: 29px;
+  border-radius: 3px;
+  margin: 0px auto 40px;
+  display: block;
+  border: solid 1px #083b94;
+  font-family: SFPro;
+  font-size: 12px;
+  text-align: center;
+  color: #083b94;
 }
