@@ -12,7 +12,12 @@
     "project": ["./tsconfig.json", "./tsconfig.eslint.json"]
   },
   "plugins": ["react", "@typescript-eslint"],
-  "ignorePatterns": ["build/**", "node_modules/**", ".eslintrc.json"],
+  "ignorePatterns": [
+    "build/**",
+    "node_modules/**",
+    ".eslintrc.json",
+    "dist/**"
+  ],
   "rules": {
     "react/prop-types": "off",
     "@typescript-eslint/ban-ts-comment": "off",
