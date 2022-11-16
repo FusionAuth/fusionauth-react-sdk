@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { useFusionAuthContext } from '../providers/FusionAuthProvider';
 import styles from '../styles/button.module.scss';
-import classnames from 'classnames';
+import classNames from 'classnames';
 
 interface Props {
     text?: string;
@@ -12,7 +12,7 @@ export const FusionAuthLogoutButton: FC<Props> = ({ text, className }) => {
 
     return (
         <button
-            className={classnames(styles.fusionAuthButton, className)}
+            className={classNames(styles.fusionAuthButton, className)}
             type="button"
             onClick={() => logout()}
         >
