@@ -1,6 +1,6 @@
 {
   "name": "fusionauth-react-sdk",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "description": "FusionAuth solves the problem of building essential security without adding risk or distracting from your primary application",
   "scripts": {
     "webpack": "webpack --mode production",
@@ -29,6 +29,7 @@
     "@types/jest": "^29.1.1",
     "@types/js-cookie": "^3.0.2",
     "@types/react": "^18.0.21",
+    "@types/text-encoding": "^0.0.36",
     "@typescript-eslint/eslint-plugin": "^5.39.0",
     "@typescript-eslint/parser": "^5.39.0",
     "babel-jest": "^29.1.2",
@@ -54,6 +55,7 @@
     "sass": "^1.56.1",
     "sass-loader": "^13.2.0",
     "style-loader": "^3.3.1",
+    "text-encoding": "^0.7.0",
     "ts-loader": "^9.4.1",
     "tslib": "^2.4.0",
     "typescript": "^4.8.4",
