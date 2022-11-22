@@ -5,7 +5,6 @@ import React, {
     useMemo,
     useState,
 } from 'react';
-import { TextEncoder } from 'util';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
@@ -105,6 +104,8 @@ export const FusionAuthProvider: React.FC<Props> = ({ config, children }) => {
                 const urlParams = new URLSearchParams(window.location.search);
 
                 if (lastState === urlParams.get('state')) {
+                    console.log(typeof axios);
+                    console.log(typeof axios.post);
                     axios
                         .post(`${config.serverUrl}/token-exchange`, {
                             client_id: urlParams.get('client_id'),

@@ -12,7 +12,7 @@ export const FusionAuthLogoutButton: FC<Props> = ({ text, className }) => {
 
     return (
         <button
-            className={classNames(styles.fusionAuthButton, className)}
+            className={classNames(styles.fusionAuthLogoutButton, className)}
             type="button"
             onClick={() => logout()}
         >
