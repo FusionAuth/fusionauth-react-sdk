@@ -1,9 +1,8 @@
 import React from 'react';
-import { screen, render, waitFor } from '@testing-library/react';
+import { screen, render, waitFor, act } from '@testing-library/react';
 import { RequireAuth } from '../components/RequireAuth';
 import { FusionAuthProvider } from '../providers/FusionAuthProvider';
 import { FusionAuthLogoutButton } from '../components/FusionAuthLogoutButton';
-import axios from 'axios';
 import {
     TEST_REDIRECT_URL,
     TEST_CONFIG,
@@ -25,15 +24,15 @@ describe('RequireAuth Component', () => {
     });
 
     test('RequireAuth Component does not render children when no user is present and no role is passed', async () => {
-        await renderProvider();
+        await act(async () => renderProvider());
 
-        expect(screen.queryByText('Logout')).toBeNull();
+        expect(await screen.queryByText('Logout')).toBeNull();
     });
 
     test('RequireAuth Component does not render children when user is not present', async () => {
-        await renderProvider('admin');
+        await act(async () => renderProvider('admin'));
 
-        expect(screen.queryByText('Logout')).toBeNull();
+        expect(await screen.queryByText('Logout')).toBeNull();
     });
 
     test('RequireAuth Component renders children when user is present with the correct role', async () => {
@@ -44,8 +43,10 @@ describe('RequireAuth Component', () => {
         };
         jest.spyOn(window, 'location', 'get').mockReturnValue(mockedLocation);
 
-        jest.spyOn(axios, 'post').mockResolvedValue({
-            data: { user: { role: 'admin' } },
+        jest.spyOn(global, 'fetch').mockResolvedValue({
+            json: () => {
+                return { user: { roles: ['admin'] } };
+            },
         });
 
         Object.defineProperty(document, 'cookie', {
@@ -53,7 +54,7 @@ describe('RequireAuth Component', () => {
             value: TEST_COOKIE,
         });
 
-        await renderProvider('admin');
+        await act(async () => renderProvider('admin'));
 
         expect(await screen.findByText('Logout')).toBeInTheDocument();
     });
@@ -66,8 +67,10 @@ describe('RequireAuth Component', () => {
         };
         jest.spyOn(window, 'location', 'get').mockReturnValue(mockedLocation);
 
-        jest.spyOn(axios, 'post').mockResolvedValue({
-            data: { user: { role: 'user' } },
+        jest.spyOn(global, 'fetch').mockResolvedValue({
+            json: () => {
+                return { user: { roles: ['user'] } };
+            },
         });
 
         Object.defineProperty(document, 'cookie', {
@@ -75,9 +78,9 @@ describe('RequireAuth Component', () => {
             value: TEST_COOKIE,
         });
 
-        await renderProvider('admin');
+        await act(async () => renderProvider('admin'));
 
-        expect(screen.queryByText('Logout')).toBeNull();
+        expect(await screen.queryByText('Logout')).toBeNull();
     });
 
     test('RequireAuth Component renders children when user is present and no role is passed', async () => {
@@ -88,8 +91,10 @@ describe('RequireAuth Component', () => {
         };
         jest.spyOn(window, 'location', 'get').mockReturnValue(mockedLocation);
 
-        jest.spyOn(axios, 'post').mockResolvedValue({
-            data: { user: { role: 'admin' } },
+        jest.spyOn(global, 'fetch').mockResolvedValue({
+            json: () => {
+                return { user: { roles: ['admin'] } };
+            },
         });
 
         Object.defineProperty(document, 'cookie', {
@@ -97,7 +102,7 @@ describe('RequireAuth Component', () => {
             value: TEST_COOKIE,
         });
 
-        await renderProvider();
+        await act(async () => renderProvider());
 
         expect(await screen.findByText('Logout')).toBeInTheDocument();
     });
@@ -110,8 +115,10 @@ describe('RequireAuth Component', () => {
         };
         jest.spyOn(window, 'location', 'get').mockReturnValue(mockedLocation);
 
-        jest.spyOn(axios, 'post').mockResolvedValue({
-            data: { user: { role: 'admin' } },
+        jest.spyOn(global, 'fetch').mockResolvedValue({
+            json: () => {
+                return { user: { roles: ['admin'] } };
+            },
         });
 
         Object.defineProperty(document, 'cookie', {
@@ -119,9 +126,9 @@ describe('RequireAuth Component', () => {
             value: 'lastState=1111; ',
         });
 
-        await renderProvider();
+        await act(async () => renderProvider());
 
-        expect(screen.queryByText('Logout')).toBeNull();
+        expect(await screen.queryByText('Logout')).toBeNull();
     });
 });
 

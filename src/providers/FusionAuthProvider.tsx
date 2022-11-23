@@ -5,7 +5,6 @@ import React, {
     useMemo,
     useState,
 } from 'react';
-import axios from 'axios';
 import Cookies from 'js-cookie';
 
 export interface IFusionAuthContext {
@@ -52,12 +51,14 @@ export const FusionAuthProvider: React.FC<Props> = ({ config, children }) => {
         async (state = '') => {
             const stateParam = `${generateRandomString()}:${state}`;
             Cookies.set('lastState', stateParam);
+            const code = await generatePKCE();
+            Cookies.set('codeVerifier', code.code_verifier);
             const queryParams = {
                 client_id: config.clientID,
                 scope: config.scope,
                 response_type: 'code',
                 redirect_uri: config.redirectUri,
-                code_challenge: await generatePKCE(),
+                code_challenge: code.code_challenge,
                 code_challenge_method: 'S256',
                 state: stateParam,
             };
@@ -81,12 +82,14 @@ export const FusionAuthProvider: React.FC<Props> = ({ config, children }) => {
         async (state = '') => {
             const stateParam = `${generateRandomString()}:${state}`;
             Cookies.set('lastState', stateParam);
+            const code = await generatePKCE();
+            Cookies.set('codeVerifier', code.code_verifier);
             const queryParams = {
                 client_id: config.clientID,
                 scope: config.scope,
                 response_type: 'code',
                 redirect_uri: config.redirectUri,
-                code_challenge: await generatePKCE(),
+                code_challenge: code.code_challenge,
                 code_challenge_method: 'S256',
                 state: stateParam,
             };
@@ -99,20 +102,25 @@ export const FusionAuthProvider: React.FC<Props> = ({ config, children }) => {
     useEffect(() => {
         try {
             const lastState = Cookies.get('lastState');
+            const codeVerifier = Cookies.get('codeVerifier');
 
             if (hasAuthParams() && lastState !== null) {
                 const urlParams = new URLSearchParams(window.location.search);
 
                 if (lastState === urlParams.get('state')) {
-                    console.log(typeof axios);
-                    console.log(typeof axios.post);
-                    axios
-                        .post(`${config.serverUrl}/token-exchange`, {
-                            client_id: urlParams.get('client_id'),
+                    fetch(`${config.serverUrl}/token-exchange`, {
+                        method: 'POST',
+                        body: JSON.stringify({
                             code: urlParams.get('code'),
-                        })
-                        .then(response => {
-                            setUser(response.data.user);
+                            code_verifier: codeVerifier,
+                        }),
+                        headers: {
+                            'content-type': 'application/json',
+                        },
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            setUser(data.user);
                         });
                 }
             }
@@ -164,7 +172,12 @@ async function generatePKCE() {
         str += String.fromCharCode(bytes[i]);
     }
 
-    return btoa(str).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    const code_challenge = btoa(str)
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_')
+        .replace(/=+$/, '');
+
+    return { code_verifier, code_challenge };
 }
 
 function generateRandomString() {
