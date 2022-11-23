@@ -1,6 +1,6 @@
 {
   "name": "fusionauth-react-sdk",
-  "version": "0.13.0",
+  "version": "0.14.0",
   "description": "FusionAuth solves the problem of building essential security without adding risk or distracting from your primary application",
   "scripts": {
     "webpack": "webpack --mode production",
