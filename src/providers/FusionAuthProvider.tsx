@@ -12,6 +12,7 @@ export interface IFusionAuthContext {
     logout: () => Promise<void>;
     register: (state: string) => Promise<void>;
     user: Record<string, any>;
+    refreshToken: () => Promise<void>;
 }
 
 export const FusionAuthContext = React.createContext<IFusionAuthContext>({
@@ -19,6 +20,7 @@ export const FusionAuthContext = React.createContext<IFusionAuthContext>({
     logout: () => Promise.resolve(),
     register: () => Promise.resolve(),
     user: {},
+    refreshToken: () => Promise.resolve(),
 });
 
 export interface FusionAuthConfig {
@@ -110,6 +112,16 @@ export const FusionAuthProvider: React.FC<Props> = ({ config, children }) => {
         }
     }, [setUser]);
 
+    const refreshToken = useCallback(async () => {
+        fetch(`${config.serverUrl}/jwt-refresh`, {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json',
+            },
+            credentials: 'include',
+        });
+    }, []);
+
     useEffect(() => {
         try {
             const lastState = Cookies.get('lastState');
@@ -128,6 +140,7 @@ export const FusionAuthProvider: React.FC<Props> = ({ config, children }) => {
                         headers: {
                             'content-type': 'application/json',
                         },
+                        credentials: 'include',
                     })
                         .then(response => response.json())
                         .then(data => {
@@ -147,8 +160,9 @@ export const FusionAuthProvider: React.FC<Props> = ({ config, children }) => {
             logout,
             register,
             user,
+            refreshToken,
         }),
-        [login, logout, register, user],
+        [login, logout, register, user, refreshToken],
     );
 
     return (
