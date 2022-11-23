@@ -100,6 +100,13 @@ export const FusionAuthProvider: React.FC<Props> = ({ config, children }) => {
     );
 
     useEffect(() => {
+        const userCookie = Cookies.get('user');
+        if (userCookie) {
+            setUser(JSON.parse(userCookie));
+        }
+    }, [setUser]);
+
+    useEffect(() => {
         try {
             const lastState = Cookies.get('lastState');
             const codeVerifier = Cookies.get('codeVerifier');
@@ -120,6 +127,7 @@ export const FusionAuthProvider: React.FC<Props> = ({ config, children }) => {
                     })
                         .then(response => response.json())
                         .then(data => {
+                            Cookies.set('user', data.user);
                             setUser(data.user);
                         });
                 }
