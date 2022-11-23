@@ -69,6 +69,10 @@ export const FusionAuthProvider: React.FC<Props> = ({ config, children }) => {
     );
 
     const logout = useCallback(async () => {
+        // Clear cookies
+        Cookies.remove('user');
+        Cookies.remove('lastState');
+        Cookies.remove('codeVerifier');
         const queryParams = {
             client_id: config.clientID,
             post_logout_redirect_uri: config.redirectUri,
@@ -127,7 +131,7 @@ export const FusionAuthProvider: React.FC<Props> = ({ config, children }) => {
                     })
                         .then(response => response.json())
                         .then(data => {
-                            Cookies.set('user', data.user);
+                            Cookies.set('user', JSON.stringify(data.user));
                             setUser(data.user);
                         });
                 }
