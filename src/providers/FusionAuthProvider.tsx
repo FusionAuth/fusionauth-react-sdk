@@ -75,6 +75,8 @@ export const FusionAuthProvider: React.FC<Props> = ({ config, children }) => {
         Cookies.remove('user');
         Cookies.remove('lastState');
         Cookies.remove('codeVerifier');
+        Cookies.remove('refresh_token');
+        Cookies.remove('access_token');
         const queryParams = {
             client_id: config.clientID,
             post_logout_redirect_uri: config.redirectUri,
@@ -120,7 +122,7 @@ export const FusionAuthProvider: React.FC<Props> = ({ config, children }) => {
             },
             credentials: 'include',
         });
-    }, []);
+    }, [config]);
 
     useEffect(() => {
         try {
