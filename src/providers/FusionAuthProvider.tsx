@@ -5,8 +5,6 @@ import React, {
     useMemo,
     useState,
 } from 'react';
-import { TextEncoder } from 'util';
-import axios from 'axios';
 import Cookies from 'js-cookie';
 
 export interface IFusionAuthContext {
@@ -14,6 +12,7 @@ export interface IFusionAuthContext {
     logout: () => Promise<void>;
     register: (state: string) => Promise<void>;
     user: Record<string, any>;
+    refreshToken: () => Promise<void>;
 }
 
 export const FusionAuthContext = React.createContext<IFusionAuthContext>({
@@ -21,6 +20,7 @@ export const FusionAuthContext = React.createContext<IFusionAuthContext>({
     logout: () => Promise.resolve(),
     register: () => Promise.resolve(),
     user: {},
+    refreshToken: () => Promise.resolve(),
 });
 
 export interface FusionAuthConfig {
@@ -53,12 +53,14 @@ export const FusionAuthProvider: React.FC<Props> = ({ config, children }) => {
         async (state = '') => {
             const stateParam = `${generateRandomString()}:${state}`;
             Cookies.set('lastState', stateParam);
+            const code = await generatePKCE();
+            Cookies.set('codeVerifier', code.code_verifier);
             const queryParams = {
                 client_id: config.clientID,
                 scope: config.scope,
                 response_type: 'code',
                 redirect_uri: config.redirectUri,
-                code_challenge: await generatePKCE(),
+                code_challenge: code.code_challenge,
                 code_challenge_method: 'S256',
                 state: stateParam,
             };
@@ -69,6 +71,12 @@ export const FusionAuthProvider: React.FC<Props> = ({ config, children }) => {
     );
 
     const logout = useCallback(async () => {
+        // Clear cookies
+        Cookies.remove('user');
+        Cookies.remove('lastState');
+        Cookies.remove('codeVerifier');
+        Cookies.remove('refresh_token');
+        Cookies.remove('access_token');
         const queryParams = {
             client_id: config.clientID,
             post_logout_redirect_uri: config.redirectUri,
@@ -82,12 +90,14 @@ export const FusionAuthProvider: React.FC<Props> = ({ config, children }) => {
         async (state = '') => {
             const stateParam = `${generateRandomString()}:${state}`;
             Cookies.set('lastState', stateParam);
+            const code = await generatePKCE();
+            Cookies.set('codeVerifier', code.code_verifier);
             const queryParams = {
                 client_id: config.clientID,
                 scope: config.scope,
                 response_type: 'code',
                 redirect_uri: config.redirectUri,
-                code_challenge: await generatePKCE(),
+                code_challenge: code.code_challenge,
                 code_challenge_method: 'S256',
                 state: stateParam,
             };
@@ -98,20 +108,46 @@ export const FusionAuthProvider: React.FC<Props> = ({ config, children }) => {
     );
 
     useEffect(() => {
+        const userCookie = Cookies.get('user');
+        if (userCookie) {
+            setUser(JSON.parse(userCookie));
+        }
+    }, [setUser]);
+
+    const refreshToken = useCallback(async () => {
+        fetch(`${config.serverUrl}/jwt-refresh`, {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json',
+            },
+            credentials: 'include',
+        });
+    }, [config]);
+
+    useEffect(() => {
         try {
             const lastState = Cookies.get('lastState');
+            const codeVerifier = Cookies.get('codeVerifier');
 
             if (hasAuthParams() && lastState !== null) {
                 const urlParams = new URLSearchParams(window.location.search);
 
                 if (lastState === urlParams.get('state')) {
-                    axios
-                        .post(`${config.serverUrl}/token-exchange`, {
-                            client_id: urlParams.get('client_id'),
+                    fetch(`${config.serverUrl}/token-exchange`, {
+                        method: 'POST',
+                        body: JSON.stringify({
                             code: urlParams.get('code'),
-                        })
-                        .then(response => {
-                            setUser(response.data.user);
+                            code_verifier: codeVerifier,
+                        }),
+                        headers: {
+                            'content-type': 'application/json',
+                        },
+                        credentials: 'include',
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            Cookies.set('user', JSON.stringify(data.user));
+                            setUser(data.user);
                         });
                 }
             }
@@ -126,8 +162,9 @@ export const FusionAuthProvider: React.FC<Props> = ({ config, children }) => {
             logout,
             register,
             user,
+            refreshToken,
         }),
-        [login, logout, register, user],
+        [login, logout, register, user, refreshToken],
     );
 
     return (
@@ -163,7 +200,12 @@ async function generatePKCE() {
         str += String.fromCharCode(bytes[i]);
     }
 
-    return btoa(str).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    const code_challenge = btoa(str)
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_')
+        .replace(/=+$/, '');
+
+    return { code_verifier, code_challenge };
 }
 
 function generateRandomString() {
