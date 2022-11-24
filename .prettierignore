@@ -1,0 +1,6 @@
+dist
+config
+coverage
+node_modules
+README.md
+src/**/*.min.css
