@@ -51,6 +51,43 @@ root.render(
 );
 ```
 
+### withFusionAuth
+
+The `withFusionAuth` higher-order component can be used to wrap your components and give them access to a `fusionAuth` 
+prop which contains all the properties exposed by the `FusionAuthContext`. This works with both functional and class
+components:
+
+#### Functional Component
+
+```TSX
+import React from 'react';
+import { withFusionAuth, WithFusionAuthProps } from 'fusionauth-react-sdk';
+
+const LogoutButton: React.FC<WithFusionAuthProps> = props => {
+    const { logout } = props.fusionAuth;
+
+    return <button onClick={() => logout()}>Logout</button>;
+}
+
+export default withFusionAuth(LogoutButton);
+```
+
+#### Class Component
+
+```TSX
+import React, { Component } from 'react';
+import { withFusionAuth, WithFusionAuthProps } from 'fusionauth-react-sdk';
+
+class LogoutButton extends Component<WithFusionAuthProps> {
+    render() {
+        const { logout } = this.props.fusionAuth;
+        return <button onClick={() => logout()}>Logout</button>;
+    }
+}
+
+export default withFusionAuth(LogoutButton);
+```
+
 
 ### Old Readme below
 
