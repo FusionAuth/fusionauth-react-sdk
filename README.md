@@ -10,7 +10,7 @@ An SDK for using FusionAuth in React applications.
 
 ## Overview
 
-This SDK supports authentication via the Authorization Code
+This SDK supports authentication via the Authorization Code Grant
 
 ## Getting Started
 

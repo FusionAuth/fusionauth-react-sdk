@@ -7,11 +7,14 @@ import React, {
 } from 'react';
 import Cookies from 'js-cookie';
 
+const DEFAULT_SCOPE = 'openid offline_access';
+
 export interface IFusionAuthContext {
     login: (state: string) => Promise<void>;
     logout: () => Promise<void>;
     register: (state: string) => Promise<void>;
     user: Record<string, any>;
+    isAuthenticated: boolean;
     refreshToken: () => Promise<void>;
 }
 
@@ -20,6 +23,7 @@ export const FusionAuthContext = React.createContext<IFusionAuthContext>({
     logout: () => Promise.resolve(),
     register: () => Promise.resolve(),
     user: {},
+    isAuthenticated: false,
     refreshToken: () => Promise.resolve(),
 });
 
@@ -27,7 +31,7 @@ export interface FusionAuthConfig {
     baseUrl: string;
     clientID: string;
     serverUrl: string;
-    scope: string;
+    scope?: string;
     redirectUri: string;
     idTokenHint?: string;
 }
@@ -38,6 +42,7 @@ interface Props {
 }
 
 export const FusionAuthProvider: React.FC<Props> = ({ config, children }) => {
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [user, setUser] = useState<Record<string, any>>({});
 
     const generateUrl = useCallback(
@@ -57,7 +62,7 @@ export const FusionAuthProvider: React.FC<Props> = ({ config, children }) => {
             Cookies.set('codeVerifier', code.code_verifier);
             const queryParams = {
                 client_id: config.clientID,
-                scope: config.scope,
+                scope: config.scope ?? DEFAULT_SCOPE,
                 response_type: 'code',
                 redirect_uri: config.redirectUri,
                 code_challenge: code.code_challenge,
@@ -94,7 +99,7 @@ export const FusionAuthProvider: React.FC<Props> = ({ config, children }) => {
             Cookies.set('codeVerifier', code.code_verifier);
             const queryParams = {
                 client_id: config.clientID,
-                scope: config.scope,
+                scope: config.scope ?? DEFAULT_SCOPE,
                 response_type: 'code',
                 redirect_uri: config.redirectUri,
                 code_challenge: code.code_challenge,
@@ -115,7 +120,7 @@ export const FusionAuthProvider: React.FC<Props> = ({ config, children }) => {
     }, [setUser]);
 
     const refreshToken = useCallback(async () => {
-        fetch(`${config.serverUrl}/jwt-refresh`, {
+        await fetch(`${config.serverUrl}/jwt-refresh`, {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',
@@ -148,6 +153,7 @@ export const FusionAuthProvider: React.FC<Props> = ({ config, children }) => {
                         .then(data => {
                             Cookies.set('user', JSON.stringify(data.user));
                             setUser(data.user);
+                            setIsAuthenticated(true);
                         });
                 }
             }
@@ -161,10 +167,11 @@ export const FusionAuthProvider: React.FC<Props> = ({ config, children }) => {
             login,
             logout,
             register,
+            isAuthenticated,
             user,
             refreshToken,
         }),
-        [login, logout, register, user, refreshToken],
+        [login, logout, register, isAuthenticated, user, refreshToken],
     );
 
     return (
@@ -211,8 +218,7 @@ async function generatePKCE() {
 function generateRandomString() {
     const array = new Uint32Array(56 / 2);
     window.crypto.getRandomValues(array);
-    const string = Array.from(array, dec2hex).join('');
-    return string;
+    return Array.from(array, dec2hex).join('');
 }
 
 function hasAuthParams(): boolean {
