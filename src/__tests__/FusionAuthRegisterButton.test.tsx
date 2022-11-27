@@ -2,7 +2,7 @@ import React from 'react';
 import { screen, render, fireEvent, waitFor } from '@testing-library/react';
 import { FusionAuthRegisterButton } from '../components/FusionAuthRegisterButton';
 import { FusionAuthProvider } from '../providers/FusionAuthProvider';
-import { mockUseFusionAuthContext } from './mocks/mockUseFusionAuthContext';
+import { mockUseFusionAuth } from './mocks/mockUseFusionAuth';
 import { TEST_CONFIG } from './mocks/testConfig';
 
 describe('FusionAuthRegisterButton', () => {
@@ -15,9 +15,9 @@ describe('FusionAuthRegisterButton', () => {
         expect(await screen.findByText('Register Now')).toBeInTheDocument();
     });
 
-    test('Register button will call the useFusionAuthContext hook', async () => {
+    test('Register button will call the useFusionAuth hook', async () => {
         const register = jest.fn();
-        mockUseFusionAuthContext({ register });
+        mockUseFusionAuth({ register });
 
         await renderProvider();
 

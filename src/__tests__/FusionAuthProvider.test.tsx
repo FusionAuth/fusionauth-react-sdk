@@ -2,7 +2,7 @@ import React from 'react';
 import { waitFor, renderHook } from '@testing-library/react';
 import {
     FusionAuthProvider,
-    useFusionAuthContext,
+    useFusionAuth,
 } from '../providers/FusionAuthProvider';
 import { mockCrypto } from './mocks/mockCrypto';
 import { TEST_CONFIG } from './mocks/testConfig';
@@ -31,7 +31,7 @@ describe('FusionAuthProvider', () => {
         const wrapper = ({ children }) => (
             <FusionAuthProvider {...TEST_CONFIG}>{children}</FusionAuthProvider>
         );
-        const { result } = renderHook(() => useFusionAuthContext(), {
+        const { result } = renderHook(() => useFusionAuth(), {
             wrapper,
         });
 
@@ -54,7 +54,7 @@ describe('FusionAuthProvider', () => {
         const wrapper = ({ children }) => (
             <FusionAuthProvider {...TEST_CONFIG}>{children}</FusionAuthProvider>
         );
-        const { result } = renderHook(() => useFusionAuthContext(), {
+        const { result } = renderHook(() => useFusionAuth(), {
             wrapper,
         });
 
@@ -77,7 +77,7 @@ describe('FusionAuthProvider', () => {
         const wrapper = ({ children }) => (
             <FusionAuthProvider {...TEST_CONFIG}>{children}</FusionAuthProvider>
         );
-        const { result } = renderHook(() => useFusionAuthContext(), {
+        const { result } = renderHook(() => useFusionAuth(), {
             wrapper,
         });
 

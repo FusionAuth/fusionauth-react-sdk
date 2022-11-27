@@ -2,7 +2,7 @@ import React from 'react';
 import { screen, render, fireEvent, waitFor } from '@testing-library/react';
 import { FusionAuthLogoutButton } from '../components/FusionAuthLogoutButton';
 import { FusionAuthProvider } from '../providers/FusionAuthProvider';
-import { mockUseFusionAuthContext } from './mocks/mockUseFusionAuthContext';
+import { mockUseFusionAuth } from './mocks/mockUseFusionAuth';
 import { TEST_CONFIG } from './mocks/testConfig';
 
 describe('FusionAuthLogoutButton', () => {
@@ -15,9 +15,9 @@ describe('FusionAuthLogoutButton', () => {
         expect(await screen.findByText('Logout')).toBeInTheDocument();
     });
 
-    test('Logout button will call the useFusionAuthContext hook', async () => {
+    test('Logout button will call the useFusionAuth hook', async () => {
         const logout = jest.fn();
-        mockUseFusionAuthContext({ logout });
+        mockUseFusionAuth({ logout });
 
         await renderProvider();
 

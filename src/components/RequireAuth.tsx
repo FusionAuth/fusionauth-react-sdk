@@ -1,13 +1,12 @@
-import React, { FC, ReactNode } from 'react';
-import { useFusionAuthContext } from '../providers/FusionAuthProvider';
+import React, { FC, PropsWithChildren } from 'react';
+import { useFusionAuth } from '../providers/FusionAuthProvider';
 
-interface Props {
+interface Props extends PropsWithChildren {
     withRole?: string;
-    children?: ReactNode;
 }
 
 export const RequireAuth: FC<Props> = ({ withRole, children }) => {
-    const { user, isAuthenticated } = useFusionAuthContext();
+    const { user, isAuthenticated } = useFusionAuth();
 
     const isAuthorized = withRole
         ? isAuthenticated && user.roles.includes(withRole)
