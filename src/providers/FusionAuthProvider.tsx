@@ -91,8 +91,6 @@ export const FusionAuthProvider: React.FC<FusionAuthConfig> = props => {
         Cookies.remove('lastState');
         Cookies.remove('codeVerifier');
 
-        setIsAuthenticated(false);
-
         const queryParams = {
             client_id: props.clientID,
             post_logout_redirect_uri: props.redirectUri,
@@ -206,7 +204,7 @@ export const FusionAuthProvider: React.FC<FusionAuthConfig> = props => {
     );
 };
 
-export const useFusionAuthContext = () => useContext(FusionAuthContext);
+export const useFusionAuth = () => useContext(FusionAuthContext);
 
 enum FunctionType {
     login = 'authorize',

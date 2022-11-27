@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { useFusionAuthContext } from '../providers/FusionAuthProvider';
+import { useFusionAuth } from '../providers/FusionAuthProvider';
 import styles from '../styles/button.module.scss';
 import classNames from 'classnames';
 
@@ -14,7 +14,7 @@ export const FusionAuthRegisterButton: FC<Props> = ({
     text,
     className,
 }) => {
-    const { register } = useFusionAuthContext();
+    const { register } = useFusionAuth();
 
     return (
         <button
