@@ -11,7 +11,7 @@ import Cookies from 'js-cookie';
 const DEFAULT_SCOPE = 'openid offline_access';
 
 export interface IFusionAuthContext {
-    login: (state: string) => Promise<void>;
+    login: (state?: string) => Promise<void>;
     logout: () => Promise<void>;
     register: (state: string) => Promise<void>;
     user: Record<string, any>;
@@ -34,7 +34,8 @@ export interface FusionAuthConfig extends PropsWithChildren {
     serverUrl: string;
     redirectUri: string;
     idTokenHint?: string;
-    onRedirect?: (state: string) => void;
+    onRedirectSuccess?: (state: string) => void;
+    onRedirectFail?: (error: any) => void;
     scope?: string;
 }
 
@@ -75,16 +76,20 @@ export const FusionAuthProvider: React.FC<FusionAuthConfig> = props => {
     );
 
     const logout = useCallback(async () => {
+        const accessToken = Cookies.get('access_token');
         // Clear cookies
         Cookies.remove('user');
         Cookies.remove('lastState');
         Cookies.remove('codeVerifier');
         Cookies.remove('refresh_token');
         Cookies.remove('access_token');
+
+        setIsAuthenticated(false);
+
         const queryParams = {
             client_id: props.clientID,
             post_logout_redirect_uri: props.redirectUri,
-            id_token_hint: props.idTokenHint ?? '',
+            id_token_hint: props.idTokenHint ?? accessToken ?? '',
         };
         const fullUrl = generateUrl(FunctionType.logout, queryParams);
         window.location.assign(fullUrl);
@@ -152,12 +157,17 @@ export const FusionAuthProvider: React.FC<FusionAuthConfig> = props => {
                         Cookies.set('user', JSON.stringify(data.user));
                         setUser(data.user);
                         setIsAuthenticated(true);
-                        // console.log(data);
+
+                        const [, ...stateParam] = lastState.split(':');
+                        const state = stateParam.join(':');
+                        props.onRedirectSuccess?.(state);
                     })
-                    .catch(error => {});
+                    .catch(error => {
+                        props.onRedirectFail?.(error);
+                    });
             }
         }
-    }, [props.serverUrl]);
+    }, [props, props.serverUrl]);
 
     const providerValue = useMemo(
         () => ({

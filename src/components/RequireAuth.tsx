@@ -7,11 +7,11 @@ interface Props {
 }
 
 export const RequireAuth: FC<Props> = ({ withRole, children }) => {
-    const { user } = useFusionAuthContext();
+    const { user, isAuthenticated } = useFusionAuthContext();
 
     const isAuthorized = withRole
-        ? Object.keys(user).length !== 0 && user.roles.includes(withRole)
-        : Object.keys(user).length !== 0;
+        ? isAuthenticated && user.roles.includes(withRole)
+        : isAuthenticated;
 
     return <>{isAuthorized && children}</>;
 };
