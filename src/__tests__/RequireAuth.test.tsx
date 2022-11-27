@@ -9,6 +9,7 @@ import {
     TEST_COOKIE,
 } from './mocks/testConfig';
 import { mockCrypto } from './mocks/mockCrypto';
+import { mockFetchJson } from './mocks/mockFetchJson';
 
 let location: Location;
 describe('RequireAuth Component', () => {
@@ -17,6 +18,7 @@ describe('RequireAuth Component', () => {
         jest.spyOn(window, 'location', 'get').mockRestore();
 
         mockCrypto();
+        mockFetchJson({});
     });
 
     afterEach(() => {
@@ -24,13 +26,13 @@ describe('RequireAuth Component', () => {
     });
 
     test('RequireAuth Component does not render children when no user is present and no role is passed', async () => {
-        await act(async () => renderProvider());
+        await renderProvider();
 
         expect(await screen.queryByText('Logout')).toBeNull();
     });
 
     test('RequireAuth Component does not render children when user is not present', async () => {
-        await act(async () => renderProvider('admin'));
+        await renderProvider('admin');
 
         expect(await screen.queryByText('Logout')).toBeNull();
     });
@@ -42,19 +44,14 @@ describe('RequireAuth Component', () => {
             search: TEST_REDIRECT_URL,
         };
         jest.spyOn(window, 'location', 'get').mockReturnValue(mockedLocation);
-
-        jest.spyOn(global, 'fetch').mockResolvedValue({
-            json: () => {
-                return { user: { roles: ['admin'] } };
-            },
-        });
+        mockFetchJson({ user: { roles: ['admin'] } });
 
         Object.defineProperty(document, 'cookie', {
             writable: true,
             value: TEST_COOKIE,
         });
 
-        await act(async () => renderProvider('admin'));
+        await renderProvider('admin');
 
         expect(await screen.findByText('Logout')).toBeInTheDocument();
     });
@@ -66,19 +63,16 @@ describe('RequireAuth Component', () => {
             search: TEST_REDIRECT_URL,
         };
         jest.spyOn(window, 'location', 'get').mockReturnValue(mockedLocation);
-
-        jest.spyOn(global, 'fetch').mockResolvedValue({
-            json: () => {
-                return { user: { roles: ['user'] } };
-            },
-        });
+        mockFetchJson({ user: { roles: ['user'] } });
 
         Object.defineProperty(document, 'cookie', {
             writable: true,
             value: TEST_COOKIE,
         });
 
-        await act(async () => renderProvider('admin'));
+        await act(() => {
+            renderProvider('admin');
+        });
 
         expect(await screen.queryByText('Logout')).toBeNull();
     });
@@ -90,19 +84,14 @@ describe('RequireAuth Component', () => {
             search: TEST_REDIRECT_URL,
         };
         jest.spyOn(window, 'location', 'get').mockReturnValue(mockedLocation);
-
-        jest.spyOn(global, 'fetch').mockResolvedValue({
-            json: () => {
-                return { user: { roles: ['admin'] } };
-            },
-        });
+        mockFetchJson({ user: { roles: ['admin'] } });
 
         Object.defineProperty(document, 'cookie', {
             writable: true,
             value: TEST_COOKIE,
         });
 
-        await act(async () => renderProvider());
+        await renderProvider();
 
         expect(await screen.findByText('Logout')).toBeInTheDocument();
     });
@@ -114,28 +103,23 @@ describe('RequireAuth Component', () => {
             search: TEST_REDIRECT_URL,
         };
         jest.spyOn(window, 'location', 'get').mockReturnValue(mockedLocation);
-
-        jest.spyOn(global, 'fetch').mockResolvedValue({
-            json: () => {
-                return { user: { roles: ['admin'] } };
-            },
-        });
+        mockFetchJson({ user: { roles: ['admin'] } });
 
         Object.defineProperty(document, 'cookie', {
             writable: true,
             value: 'lastState=1111; ',
         });
 
-        await act(async () => renderProvider());
+        await renderProvider();
 
         expect(await screen.queryByText('Logout')).toBeNull();
     });
 });
 
-const renderProvider = async (role?: string) => {
-    waitFor(() =>
+const renderProvider = (role?: string) => {
+    return waitFor(() =>
         render(
-            <FusionAuthProvider config={TEST_CONFIG}>
+            <FusionAuthProvider {...TEST_CONFIG}>
                 <RequireAuth withRole={role}>
                     <FusionAuthLogoutButton />
                 </RequireAuth>

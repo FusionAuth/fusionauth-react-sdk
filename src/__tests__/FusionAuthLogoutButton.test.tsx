@@ -21,16 +21,16 @@ describe('FusionAuthLogoutButton', () => {
 
         await renderProvider();
 
-        await fireEvent.click(screen.getByText('Logout'));
+        fireEvent.click(screen.getByText('Logout'));
 
         expect(logout).toBeCalledWith();
     });
 });
 
-const renderProvider = async () => {
-    waitFor(() =>
+const renderProvider = () => {
+    return waitFor(() =>
         render(
-            <FusionAuthProvider config={TEST_CONFIG}>
+            <FusionAuthProvider {...TEST_CONFIG}>
                 <FusionAuthLogoutButton />
             </FusionAuthProvider>,
         ),

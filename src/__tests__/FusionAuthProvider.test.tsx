@@ -29,9 +29,7 @@ describe('FusionAuthProvider', () => {
         jest.spyOn(window, 'location', 'get').mockReturnValue(mockedLocation);
 
         const wrapper = ({ children }) => (
-            <FusionAuthProvider config={TEST_CONFIG}>
-                {children}
-            </FusionAuthProvider>
+            <FusionAuthProvider {...TEST_CONFIG}>{children}</FusionAuthProvider>
         );
         const { result } = renderHook(() => useFusionAuthContext(), {
             wrapper,
@@ -54,9 +52,7 @@ describe('FusionAuthProvider', () => {
         jest.spyOn(window, 'location', 'get').mockReturnValue(mockedLocation);
 
         const wrapper = ({ children }) => (
-            <FusionAuthProvider config={TEST_CONFIG}>
-                {children}
-            </FusionAuthProvider>
+            <FusionAuthProvider {...TEST_CONFIG}>{children}</FusionAuthProvider>
         );
         const { result } = renderHook(() => useFusionAuthContext(), {
             wrapper,
@@ -79,9 +75,7 @@ describe('FusionAuthProvider', () => {
         jest.spyOn(window, 'location', 'get').mockReturnValue(mockedLocation);
 
         const wrapper = ({ children }) => (
-            <FusionAuthProvider config={TEST_CONFIG}>
-                {children}
-            </FusionAuthProvider>
+            <FusionAuthProvider {...TEST_CONFIG}>{children}</FusionAuthProvider>
         );
         const { result } = renderHook(() => useFusionAuthContext(), {
             wrapper,

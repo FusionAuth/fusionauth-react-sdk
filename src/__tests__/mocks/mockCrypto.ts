@@ -14,10 +14,8 @@ export const mockCrypto = () => {
                     );
                 },
             },
-            getRandomValues: array => {
-                for (const num of array) {
-                    return Math.random() * num;
-                }
+            getRandomValues: (array: number[]): Uint32Array => {
+                return new Uint32Array(array.length);
             },
         },
     });

@@ -1,17 +1,23 @@
 import React, {
+    PropsWithChildren,
     useCallback,
     useContext,
     useEffect,
+    useLayoutEffect,
     useMemo,
     useState,
 } from 'react';
 import Cookies from 'js-cookie';
 
+const DEFAULT_SCOPE = 'openid offline_access';
+
 export interface IFusionAuthContext {
-    login: (state: string) => Promise<void>;
+    login: (state?: string) => Promise<void>;
     logout: () => Promise<void>;
     register: (state: string) => Promise<void>;
     user: Record<string, any>;
+    isLoading: boolean;
+    isAuthenticated: boolean;
     refreshToken: () => Promise<void>;
 }
 
@@ -20,33 +26,42 @@ export const FusionAuthContext = React.createContext<IFusionAuthContext>({
     logout: () => Promise.resolve(),
     register: () => Promise.resolve(),
     user: {},
+    isLoading: false,
+    isAuthenticated: false,
     refreshToken: () => Promise.resolve(),
 });
 
-export interface FusionAuthConfig {
+export type RedirectSuccess = (state: string) => void;
+export type RedirectFail = (error: any) => void;
+
+export interface FusionAuthConfig extends PropsWithChildren {
     baseUrl: string;
     clientID: string;
     serverUrl: string;
-    scope: string;
     redirectUri: string;
     idTokenHint?: string;
+    onRedirectSuccess?: RedirectSuccess;
+    onRedirectFail?: RedirectFail;
+    scope?: string;
 }
 
-interface Props {
-    config: FusionAuthConfig;
-    children?: React.ReactNode;
-}
+export const FusionAuthProvider: React.FC<FusionAuthConfig> = props => {
+    const { children } = props;
 
-export const FusionAuthProvider: React.FC<Props> = ({ config, children }) => {
+    const [isAuthenticated, setIsAuthenticated] = useState(
+        () => !!Cookies.get('user'),
+    );
+    const [isLoading, setIsLoading] = useState(false);
+
     const [user, setUser] = useState<Record<string, any>>({});
 
     const generateUrl = useCallback(
         (functionType: FunctionType, queryParams: Record<string, string>) => {
             const query = new URLSearchParams(queryParams);
 
-            return `${config.baseUrl}/oauth2/${functionType}?${query}`;
+            return `${props.baseUrl}/oauth2/${functionType}?${query}`;
         },
-        [config],
+        [props.baseUrl],
     );
 
     const login = useCallback(
@@ -56,10 +71,10 @@ export const FusionAuthProvider: React.FC<Props> = ({ config, children }) => {
             const code = await generatePKCE();
             Cookies.set('codeVerifier', code.code_verifier);
             const queryParams = {
-                client_id: config.clientID,
-                scope: config.scope,
+                client_id: props.clientID,
+                scope: props?.scope ?? DEFAULT_SCOPE,
                 response_type: 'code',
-                redirect_uri: config.redirectUri,
+                redirect_uri: props.redirectUri,
                 code_challenge: code.code_challenge,
                 code_challenge_method: 'S256',
                 state: stateParam,
@@ -67,7 +82,7 @@ export const FusionAuthProvider: React.FC<Props> = ({ config, children }) => {
             const fullUrl = generateUrl(FunctionType.login, queryParams);
             window.location.assign(fullUrl);
         },
-        [config, generateUrl],
+        [generateUrl, props.clientID, props.redirectUri, props?.scope],
     );
 
     const logout = useCallback(async () => {
@@ -75,16 +90,17 @@ export const FusionAuthProvider: React.FC<Props> = ({ config, children }) => {
         Cookies.remove('user');
         Cookies.remove('lastState');
         Cookies.remove('codeVerifier');
-        Cookies.remove('refresh_token');
-        Cookies.remove('access_token');
+
+        setIsAuthenticated(false);
+
         const queryParams = {
-            client_id: config.clientID,
-            post_logout_redirect_uri: config.redirectUri,
-            id_token_hint: config.idTokenHint ?? '',
+            client_id: props.clientID,
+            post_logout_redirect_uri: props.redirectUri,
+            id_token_hint: props.idTokenHint ?? '',
         };
         const fullUrl = generateUrl(FunctionType.logout, queryParams);
         window.location.assign(fullUrl);
-    }, [config, generateUrl]);
+    }, [generateUrl, props.clientID, props.idTokenHint, props.redirectUri]);
 
     const register = useCallback(
         async (state = '') => {
@@ -93,10 +109,10 @@ export const FusionAuthProvider: React.FC<Props> = ({ config, children }) => {
             const code = await generatePKCE();
             Cookies.set('codeVerifier', code.code_verifier);
             const queryParams = {
-                client_id: config.clientID,
-                scope: config.scope,
+                client_id: props.clientID,
+                scope: props.scope ?? DEFAULT_SCOPE,
                 response_type: 'code',
-                redirect_uri: config.redirectUri,
+                redirect_uri: props.redirectUri,
                 code_challenge: code.code_challenge,
                 code_challenge_method: 'S256',
                 state: stateParam,
@@ -104,7 +120,7 @@ export const FusionAuthProvider: React.FC<Props> = ({ config, children }) => {
             const fullUrl = generateUrl(FunctionType.register, queryParams);
             window.location.assign(fullUrl);
         },
-        [config, generateUrl],
+        [generateUrl, props.clientID, props.redirectUri, props.scope],
     );
 
     useEffect(() => {
@@ -115,56 +131,72 @@ export const FusionAuthProvider: React.FC<Props> = ({ config, children }) => {
     }, [setUser]);
 
     const refreshToken = useCallback(async () => {
-        fetch(`${config.serverUrl}/jwt-refresh`, {
+        await fetch(`${props.serverUrl}/jwt-refresh`, {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',
             },
             credentials: 'include',
         });
-    }, [config]);
+    }, [props.serverUrl]);
 
-    useEffect(() => {
-        try {
-            const lastState = Cookies.get('lastState');
-            const codeVerifier = Cookies.get('codeVerifier');
+    useLayoutEffect(() => {
+        const lastState = Cookies.get('lastState');
+        const codeVerifier = Cookies.get('codeVerifier');
 
-            if (hasAuthParams() && lastState !== null) {
-                const urlParams = new URLSearchParams(window.location.search);
+        if (hasAuthParams() && lastState !== null) {
+            const urlParams = new URLSearchParams(window.location.search);
 
-                if (lastState === urlParams.get('state')) {
-                    fetch(`${config.serverUrl}/token-exchange`, {
-                        method: 'POST',
-                        body: JSON.stringify({
-                            code: urlParams.get('code'),
-                            code_verifier: codeVerifier,
-                        }),
-                        headers: {
-                            'content-type': 'application/json',
-                        },
-                        credentials: 'include',
+            if (lastState === urlParams.get('state')) {
+                setIsLoading(true);
+                fetch(`${props.serverUrl}/token-exchange`, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        code: urlParams.get('code'),
+                        code_verifier: codeVerifier,
+                    }),
+                    headers: {
+                        'content-type': 'application/json',
+                    },
+                    credentials: 'include',
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        Cookies.set('user', JSON.stringify(data.user));
+                        setUser(data.user);
+                        setIsAuthenticated(true);
+
+                        const [, ...stateParam] = lastState.split(':');
+                        const state = stateParam.join(':');
+                        props.onRedirectSuccess?.(state);
                     })
-                        .then(response => response.json())
-                        .then(data => {
-                            Cookies.set('user', JSON.stringify(data.user));
-                            setUser(data.user);
-                        });
-                }
+                    .catch(error => {
+                        props.onRedirectFail?.(error);
+                    })
+                    .finally(() => setIsLoading(false));
             }
-        } catch (error) {
-            console.error(error);
         }
-    }, [config]);
+    }, [props, props.serverUrl]);
 
     const providerValue = useMemo(
         () => ({
             login,
             logout,
             register,
+            isAuthenticated,
+            isLoading,
             user,
             refreshToken,
         }),
-        [login, logout, register, user, refreshToken],
+        [
+            login,
+            logout,
+            register,
+            isAuthenticated,
+            isLoading,
+            user,
+            refreshToken,
+        ],
     );
 
     return (
@@ -211,8 +243,7 @@ async function generatePKCE() {
 function generateRandomString() {
     const array = new Uint32Array(56 / 2);
     window.crypto.getRandomValues(array);
-    const string = Array.from(array, dec2hex).join('');
-    return string;
+    return Array.from(array, dec2hex).join('');
 }
 
 function hasAuthParams(): boolean {

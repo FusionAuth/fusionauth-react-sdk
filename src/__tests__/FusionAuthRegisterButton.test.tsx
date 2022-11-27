@@ -21,16 +21,16 @@ describe('FusionAuthRegisterButton', () => {
 
         await renderProvider();
 
-        await fireEvent.click(screen.getByText('Register Now'));
+        fireEvent.click(screen.getByText('Register Now'));
 
         expect(register).toBeCalledWith('state');
     });
 });
 
-const renderProvider = async () => {
-    waitFor(() =>
+const renderProvider = () => {
+    return waitFor(() =>
         render(
-            <FusionAuthProvider config={TEST_CONFIG}>
+            <FusionAuthProvider {...TEST_CONFIG}>
                 <FusionAuthRegisterButton state="state" />
             </FusionAuthProvider>,
         ),
