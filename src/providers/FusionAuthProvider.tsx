@@ -3,6 +3,7 @@ import React, {
     useCallback,
     useContext,
     useEffect,
+    useLayoutEffect,
     useMemo,
     useState,
 } from 'react';
@@ -15,6 +16,7 @@ export interface IFusionAuthContext {
     logout: () => Promise<void>;
     register: (state: string) => Promise<void>;
     user: Record<string, any>;
+    isLoading: boolean;
     isAuthenticated: boolean;
     refreshToken: () => Promise<void>;
 }
@@ -24,9 +26,13 @@ export const FusionAuthContext = React.createContext<IFusionAuthContext>({
     logout: () => Promise.resolve(),
     register: () => Promise.resolve(),
     user: {},
+    isLoading: false,
     isAuthenticated: false,
     refreshToken: () => Promise.resolve(),
 });
+
+export type RedirectSuccess = (state: string) => void;
+export type RedirectFail = (error: any) => void;
 
 export interface FusionAuthConfig extends PropsWithChildren {
     baseUrl: string;
@@ -34,15 +40,19 @@ export interface FusionAuthConfig extends PropsWithChildren {
     serverUrl: string;
     redirectUri: string;
     idTokenHint?: string;
-    onRedirectSuccess?: (state: string) => void;
-    onRedirectFail?: (error: any) => void;
+    onRedirectSuccess?: RedirectSuccess;
+    onRedirectFail?: RedirectFail;
     scope?: string;
 }
 
 export const FusionAuthProvider: React.FC<FusionAuthConfig> = props => {
     const { children } = props;
 
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [isAuthenticated, setIsAuthenticated] = useState(
+        () => !!Cookies.get('user'),
+    );
+    const [isLoading, setIsLoading] = useState(false);
+
     const [user, setUser] = useState<Record<string, any>>({});
 
     const generateUrl = useCallback(
@@ -81,8 +91,8 @@ export const FusionAuthProvider: React.FC<FusionAuthConfig> = props => {
         Cookies.remove('user');
         Cookies.remove('lastState');
         Cookies.remove('codeVerifier');
-        Cookies.remove('refresh_token');
-        Cookies.remove('access_token');
+        // Cookies.remove('refresh_token');
+        // Cookies.remove('access_token');
 
         setIsAuthenticated(false);
 
@@ -133,7 +143,7 @@ export const FusionAuthProvider: React.FC<FusionAuthConfig> = props => {
         });
     }, [props.serverUrl]);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         const lastState = Cookies.get('lastState');
         const codeVerifier = Cookies.get('codeVerifier');
 
@@ -141,6 +151,7 @@ export const FusionAuthProvider: React.FC<FusionAuthConfig> = props => {
             const urlParams = new URLSearchParams(window.location.search);
 
             if (lastState === urlParams.get('state')) {
+                setIsLoading(true);
                 fetch(`${props.serverUrl}/token-exchange`, {
                     method: 'POST',
                     body: JSON.stringify({
@@ -164,7 +175,8 @@ export const FusionAuthProvider: React.FC<FusionAuthConfig> = props => {
                     })
                     .catch(error => {
                         props.onRedirectFail?.(error);
-                    });
+                    })
+                    .finally(() => setIsLoading(false));
             }
         }
     }, [props, props.serverUrl]);
@@ -175,10 +187,19 @@ export const FusionAuthProvider: React.FC<FusionAuthConfig> = props => {
             logout,
             register,
             isAuthenticated,
+            isLoading,
             user,
             refreshToken,
         }),
-        [login, logout, register, isAuthenticated, user, refreshToken],
+        [
+            login,
+            logout,
+            register,
+            isAuthenticated,
+            isLoading,
+            user,
+            refreshToken,
+        ],
     );
 
     return (
