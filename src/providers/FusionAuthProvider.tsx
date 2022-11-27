@@ -86,20 +86,17 @@ export const FusionAuthProvider: React.FC<FusionAuthConfig> = props => {
     );
 
     const logout = useCallback(async () => {
-        const accessToken = Cookies.get('access_token');
         // Clear cookies
         Cookies.remove('user');
         Cookies.remove('lastState');
         Cookies.remove('codeVerifier');
-        // Cookies.remove('refresh_token');
-        // Cookies.remove('access_token');
 
         setIsAuthenticated(false);
 
         const queryParams = {
             client_id: props.clientID,
             post_logout_redirect_uri: props.redirectUri,
-            id_token_hint: props.idTokenHint ?? accessToken ?? '',
+            id_token_hint: props.idTokenHint ?? '',
         };
         const fullUrl = generateUrl(FunctionType.logout, queryParams);
         window.location.assign(fullUrl);

@@ -39,15 +39,14 @@ const container = document.getElementById('root');
 const root = createRoot(container!);
 
 root.render(
-  <FusionAuthProvider config={{
-    baseUrl: ''       // The base URL of your FusionAuth instance
-    clientID: '',     // Your FusionAuth client ID
-    serverUrl: '',    // The base URL of your server for the token exchange
-    scope: '',        // openid offline_access
-    redirectUri: '',  // The URI that the user is directed to after the login/register/logout action
-  }}>
-    <App />
-  </FusionAuthProvider>
+    <FusionAuthProvider
+        baseUrl=""      // The base URL of your FusionAuth instance
+        clientID=""     // Your FusionAuth client ID
+        serverUrl=""    // The base URL of your server for the token exchange
+        redirectUri=""  // The URI that the user is directed to after the login/register/logout action
+    >
+        <App />
+    </FusionAuthProvider>
 );
 ```
 
