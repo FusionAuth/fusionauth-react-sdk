@@ -88,17 +88,14 @@ class LogoutButton extends Component<WithFusionAuthProps> {
 export default withFusionAuth(LogoutButton);
 ```
 
-
-### Old Readme below
-
-# Using the Hook
+### Using the Hook
 The `useFusionAuthContext` hook exports 3 functions, `login`, `logout`, and `register`.
 
 `login` and `register` both accept a `state` variable. This is a dehydratedstate JSON object which can be used for passing arbitrary values to the react app after returning from a successful login/register.
 
 It also has an exported `user` variable that is returned by your FusionAuth instance.
 
-# Using the Components
+### Using the Components
 There are 3 buttons that are configured to call their corresponding function: `FusionAuthLoginButton`, `FusionAuthLogoutButton`, and `FusionAuthRegisterButton`.
 
 ```TSX
