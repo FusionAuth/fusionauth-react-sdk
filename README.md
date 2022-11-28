@@ -15,7 +15,8 @@ An SDK for using FusionAuth in React applications.
 
 ## Overview
 
-This SDK supports authentication via the Authorization Code Grant
+This SDK supports authentication via the Authorization Code Grant. Note that this setup requires you to have a server
+that performs the OAuth token exchange. See the [Example App](#example-app) as a reference for how to do this.
 
 ## Getting Started
 
@@ -142,6 +143,11 @@ const AdminPanel = () => (
     </RequireAuth>
 );
 ```
+
+## Example App
+
+See the [FusionAuth React SDK Example]() for functional example of a React client that utilizes the SDK
+as well as an Express server that performs the token exchange.
 
 ## Documentation
 
