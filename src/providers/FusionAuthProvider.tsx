@@ -14,7 +14,7 @@ const DEFAULT_SCOPE = 'openid offline_access';
 export interface IFusionAuthContext {
     login: (state?: string) => Promise<void>;
     logout: () => Promise<void>;
-    register: (state: string) => Promise<void>;
+    register: (state?: string) => Promise<void>;
     user: Record<string, any>;
     isLoading: boolean;
     isAuthenticated: boolean;
