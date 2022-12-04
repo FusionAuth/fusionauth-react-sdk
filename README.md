@@ -168,8 +168,7 @@ const AdminPanel = () => (
 
 ## Example App
 
-See the [FusionAuth React SDK Example](https://github.com/FusionAuth/fusionauth-react-sdk-example) for functional example of a React client that utilizes the SDK
-as well as an Express server that performs the token exchange.
+See the [FusionAuth React SDK Example](https://github.com/FusionAuth/fusionauth-example-react-sdk) for functional example of a React client that utilizes the SDK as well as an Express server that performs the token exchange.
 
 ## Documentation
 
