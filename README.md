@@ -56,18 +56,40 @@ root.render(
 );
 ```
 
+### Server Code Requirements
+
+Authenticating with FusionAuth requires you to set up a server that will be used to perform
+the OAuth token exchange. See the [server requirements]()
+
 ## Usage
 
 ### Pre-built buttons
-There are three buttons that are configured to perform login/logout/registration: `FusionAuthLoginButton`, `FusionAuthLogoutButton`, and `FusionAuthRegisterButton`.
-These can be placed anywhere in your app as-is.
+There are three pre-styled buttons that are configured to perform login/logout/registration. They can be placed anywhere in your app as is.
 
 ```TSX
-import {FusionAuthLoginButton, FusionAuthLogoutButton, FusionAuthRegisterButton} from 'fusionauth-react-sdk';
+import {
+    FusionAuthLoginButton,
+    FusionAuthLogoutButton,
+    FusionAuthRegisterButton
+} from 'fusionauth-react-sdk';
 
-<FusionAuthLoginButton />
-<FusionAuthRegisterButton />
-<FusionAuthLogoutButton />
+export const LoginPage = () => (
+    <>
+        <h1>Welcome, please log in or register</h1>
+
+        <FusionAuthLoginButton />
+
+        <FusionAuthRegisterButton />
+    </>
+);
+
+export const AccountPage = () => (
+    <>
+        <h1>Hello, user!</h1>
+
+        <FusionAuthLogoutButton />
+    </>
+);
 ```
 
 ### Programmatic usage
@@ -146,7 +168,7 @@ const AdminPanel = () => (
 
 ## Example App
 
-See the [FusionAuth React SDK Example]() for functional example of a React client that utilizes the SDK
+See the [FusionAuth React SDK Example](https://github.com/FusionAuth/fusionauth-react-sdk-example) for functional example of a React client that utilizes the SDK
 as well as an Express server that performs the token exchange.
 
 ## Documentation
