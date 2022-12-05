@@ -2,7 +2,7 @@
 
 ## useFusionAuth
 
-A hook that returns an object containing the [FusionAuthContext](FusionAuthProvider.md#fusionauthcontext)
+A hook that returns an object containing the [FusionAuthContext](context.md#fusionauthcontext)
 
 #### Properties
 
@@ -18,7 +18,7 @@ A hook that returns an object containing the [FusionAuthContext](FusionAuthProvi
 
 ## withFusionAuth
 
-A higher-order component used to give components access to the [FusionAuthContext](#fusionauthcontext).
+A higher-order component used to give components access to the [FusionAuthContext](context.md#fusionauthcontext).
 
 #### Arguments
 

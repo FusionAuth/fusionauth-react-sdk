@@ -24,9 +24,9 @@ A function that will redirect to FusionAuth's login experience and then back to 
 
 #### Arguments
 
-| Name  | Type                | Description                                                                                                   |
-| ----- | ------------------- | ------------------------------------------------------------------------------------------------------------- |
-| state | `string` (optional) | An optional state parameter that will be passed back in the `FusionAuthProvider`'s `onRedirectSuccess` method |
+| Name  | Type                | Description                                                                                                                              |
+| ----- | ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| state | `string` (optional) | An optional state parameter that will be passed back in the `FusionAuthProvider`'s `onRedirectSuccess` method. Defaults to empty string. |
 
 ### register (`function`)
 
@@ -34,9 +34,9 @@ A function that will redirect to FusionAuth's register experience and then back 
 
 #### Arguments
 
-| Name  | Type                | Description                                                                                                   |
-| ----- | ------------------- | ------------------------------------------------------------------------------------------------------------- |
-| state | `string` (optional) | An optional state parameter that will be passed back in the `FusionAuthProvider`'s `onRedirectSuccess` method |
+| Name  | Type                | Description                                                                                                                              |
+| ----- | ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| state | `string` (optional) | An optional state parameter that will be passed back in the `FusionAuthProvider`'s `onRedirectSuccess` method. Defaults to empty string. |
 
 ### logout (`function`)
 
