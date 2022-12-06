@@ -129,14 +129,22 @@ export const FusionAuthProvider: React.FC<FusionAuthConfig> = props => {
     }, [setUser]);
 
     const refreshToken = useCallback(async () => {
-        await fetch(`${props.serverUrl}/jwt-refresh`, {
-            method: 'POST',
+        return fetch(`${props.baseUrl}/api/jwt/validate`, {
+            method: 'GET',
             headers: {
                 'content-type': 'application/json',
             },
             credentials: 'include',
-        });
-    }, [props.serverUrl]);
+        })
+            .then(response => {
+                console.log('success');
+                console.log(response.json());
+            })
+            .catch(response => {
+                console.log('error');
+                console.log(response.json());
+            });
+    }, [props.baseUrl]);
 
     useLayoutEffect(() => {
         const lastState = Cookies.get('lastState');
