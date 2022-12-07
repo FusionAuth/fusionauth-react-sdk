@@ -8,6 +8,12 @@ import React, {
     useState,
 } from 'react';
 import Cookies from 'js-cookie';
+import {
+    InvalidRefreshTokenError,
+    NotFoundError,
+    ServerError,
+    UnknownError,
+} from '../types/Errors';
 
 const DEFAULT_SCOPE = 'openid offline_access';
 
@@ -18,7 +24,7 @@ export interface IFusionAuthContext {
     user: Record<string, any>;
     isLoading: boolean;
     isAuthenticated: boolean;
-    refreshToken: () => Promise<void>;
+    refreshToken: () => Promise<boolean>;
 }
 
 export const FusionAuthContext = React.createContext<IFusionAuthContext>({
@@ -28,7 +34,7 @@ export const FusionAuthContext = React.createContext<IFusionAuthContext>({
     user: {},
     isLoading: false,
     isAuthenticated: false,
-    refreshToken: () => Promise.resolve(),
+    refreshToken: () => Promise.resolve(false),
 });
 
 export type RedirectSuccess = (state: string) => void;
@@ -128,23 +134,75 @@ export const FusionAuthProvider: React.FC<FusionAuthConfig> = props => {
         }
     }, [setUser]);
 
-    const refreshToken = useCallback(async () => {
-        return fetch(`${props.baseUrl}/api/jwt/validate`, {
+    const validateJwt = useCallback(async () => {
+        return await fetch(`${props.baseUrl}/api/jwt/validate`, {
             method: 'GET',
             headers: {
                 'content-type': 'application/json',
             },
             credentials: 'include',
-        })
-            .then(response => {
-                console.log('success');
-                console.log(response.json());
-            })
-            .catch(response => {
-                console.log('error');
-                console.log(response.json());
-            });
+        });
     }, [props.baseUrl]);
+
+    const refreshJwt = useCallback(async () => {
+        return await fetch(`${props.baseUrl}/api/jwt/refresh`, {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json',
+            },
+            credentials: 'include',
+        });
+    }, [props.baseUrl]);
+
+    const handleRefreshJwtResponse = useCallback((response: Response) => {
+        switch (response.status) {
+            case 200:
+                return true;
+            case 400:
+                throw new InvalidRefreshTokenError(
+                    'The provided Refresh Token is either expired, was not found, or has been revoked.',
+                );
+            case 404:
+                throw new NotFoundError(
+                    "The object you requested doesn't exist.",
+                );
+            case 500:
+                throw new ServerError(
+                    'An internal error occurred while refreshing JWT.',
+                );
+            default:
+                throw new UnknownError();
+        }
+    }, []);
+
+    const handleValidateJwtResponse = useCallback(
+        async (response: Response) => {
+            switch (response.status) {
+                case 200:
+                    // Token is valid, resolve to false
+                    return false;
+                case 401: {
+                    // Token can be refreshed
+                    const refreshResponse = await refreshJwt();
+                    return handleRefreshJwtResponse(refreshResponse);
+                }
+                case 500:
+                    throw new ServerError(
+                        'An internal server error occurred while validating JWT.',
+                    );
+                default:
+                    throw new UnknownError();
+            }
+        },
+        [handleRefreshJwtResponse, refreshJwt],
+    );
+
+    // Resolves to true if token was refreshed (token was invalid/expired),
+    // false if token was not refreshed (token is still valid)
+    const refreshToken = useCallback(async (): Promise<boolean> => {
+        const response = await validateJwt();
+        return await handleValidateJwtResponse(response);
+    }, [handleValidateJwtResponse, validateJwt]);
 
     useLayoutEffect(() => {
         const lastState = Cookies.get('lastState');

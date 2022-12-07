@@ -8,6 +8,4 @@ yarn-error.log
 .idea/shelf/*
 .idea/**/*.iml
 
-types
-
 .eslintcache
