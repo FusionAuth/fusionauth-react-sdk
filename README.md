@@ -20,7 +20,7 @@ An SDK for using FusionAuth in React applications.
 This SDK supports authentication via the Authorization Code Grant. Once authentication succeeds, the following secure, 
 HTTP-only cookies will be set:
 
-- `access_token` - an OpenID [Id Token](https://fusionauth.io/docs/v1/tech/oauth/tokens#id-token)
+- `access_token` - an OAuth [Access Token](https://fusionauth.io/docs/v1/tech/oauth/tokens#access-token)
 - `refresh_token` - a [Refresh Token](https://fusionauth.io/docs/v1/tech/oauth/tokens#refresh-token) used to obtain a new `access_token`. This cookie will only be set if refresh tokens are enabled on your FusionAuth instance.
 
 Note that this setup requires you to have a server
