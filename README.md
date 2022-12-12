@@ -14,8 +14,7 @@ An SDK for using FusionAuth in React applications.
   - [Protecting content](#protecting-content)
 - [Documentation](#documentation)
 
-[//]: # (Test Comment.)
-
+[//]: # (tag::forClientLibraryPage[])
 ## Overview
 
 This SDK supports authentication via the Authorization Code Grant. Once authentication succeeds, the following secure, 
@@ -229,6 +228,8 @@ const AdminPanel = () => (
 ## Example App
 
 See the [FusionAuth React SDK Example](https://github.com/FusionAuth/fusionauth-example-react-sdk) for functional example of a React client that utilizes the SDK as well as an Express server that performs the token exchange.
+
+[//]: # (end::forClientLibraryPage[])
 
 ## Documentation
 
