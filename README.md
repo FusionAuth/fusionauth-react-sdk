@@ -34,12 +34,12 @@ that performs the OAuth token exchange. See [Server Code Requirements](#server-c
 NPM:
 ```bash
 npm install fusionauth-react-sdk
-````
+```
 
 Yarn:
 ```bash
 yarn add fusionauth-react-sdk
-````
+```
 
 ### Configuring Provider
 To configure the SDK, wrap your app with `FusionAuthProvider`:
