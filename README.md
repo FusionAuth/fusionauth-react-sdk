@@ -14,6 +14,8 @@ An SDK for using FusionAuth in React applications.
   - [Protecting content](#protecting-content)
 - [Documentation](#documentation)
 
+[//]: # ( CAPTURESTART )
+
 ## Overview
 
 This SDK supports authentication via the Authorization Code Grant. Once authentication succeeds, the following secure, 
@@ -231,3 +233,5 @@ See the [FusionAuth React SDK Example](https://github.com/FusionAuth/fusionauth-
 ## Documentation
 
 [Full library documentation](https://github.com/FusionAuth/fusionauth-react-sdk/docs/documentation.md)
+
+[//]: # ( CAPTUREEND )
