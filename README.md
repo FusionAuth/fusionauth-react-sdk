@@ -14,7 +14,6 @@ An SDK for using FusionAuth in React applications.
   - [Protecting content](#protecting-content)
 - [Documentation](#documentation)
 
-[//]: # ( tag::forClientLibraryPage[] )
 ## Overview
 
 This SDK supports authentication via the Authorization Code Grant. Once authentication succeeds, the following secure, 
@@ -129,7 +128,7 @@ Alternatively, you may interact with the SDK programmatically using the `useFusi
 
 #### useFusionAuth
 
-Use the `useFusionAuth` hook with your functional components to get access to the properties exposed by [FusionAuthContext](docs/context.md#fusionauthcontext):
+Use the `useFusionAuth` hook with your functional components to get access to the properties exposed by [FusionAuthContext](https://github.com/FusionAuth/fusionauth-react-sdk/docs/context.md#fusionauthcontext):
 
 ```tsx
 import React from 'react';
@@ -152,7 +151,7 @@ const App = () => {
 };
 ```
 
-See [useFusionAuth](docs/functions.md#usefusionauth) for more details.
+See [useFusionAuth](https://github.com/FusionAuth/fusionauth-react-sdk/docs/functions.md#usefusionauth) for more details.
 
 #### withFusionAuth
 
@@ -191,7 +190,7 @@ class LogoutButton extends Component<WithFusionAuthProps> {
 export default withFusionAuth(LogoutButton);
 ```
 
-See [withFusionAuth](docs/functions.md#withfusionauth) for more details.
+See [withFusionAuth](https://github.com/FusionAuth/fusionauth-react-sdk/docs/functions.md#withfusionauth) for more details.
 
 #### State parameter
 
@@ -229,8 +228,6 @@ const AdminPanel = () => (
 
 See the [FusionAuth React SDK Example](https://github.com/FusionAuth/fusionauth-example-react-sdk) for functional example of a React client that utilizes the SDK as well as an Express server that performs the token exchange.
 
-[//]: # ( end::forClientLibraryPage[] )
-
 ## Documentation
 
-[Full library documentation](docs/documentation.md)
+[Full library documentation](https://github.com/FusionAuth/fusionauth-react-sdk/docs/documentation.md)
