@@ -130,7 +130,7 @@ Alternatively, you may interact with the SDK programmatically using the `useFusi
 
 #### useFusionAuth
 
-Use the `useFusionAuth` hook with your functional components to get access to the properties exposed by [FusionAuthContext](https://github.com/FusionAuth/fusionauth-react-sdk/docs/context.md#fusionauthcontext):
+Use the `useFusionAuth` hook with your functional components to get access to the properties exposed by [FusionAuthContext](https://github.com/FusionAuth/fusionauth-react-sdk/blob/main/docs/context.md#fusionauthcontext):
 
 ```tsx
 import React from 'react';
@@ -153,7 +153,7 @@ const App = () => {
 };
 ```
 
-See [useFusionAuth](https://github.com/FusionAuth/fusionauth-react-sdk/docs/functions.md#usefusionauth) for more details.
+See [useFusionAuth](https://github.com/FusionAuth/fusionauth-react-sdk/blob/main/docs/functions.md#usefusionauth) for more details.
 
 #### withFusionAuth
 
@@ -192,7 +192,7 @@ class LogoutButton extends Component<WithFusionAuthProps> {
 export default withFusionAuth(LogoutButton);
 ```
 
-See [withFusionAuth](https://github.com/FusionAuth/fusionauth-react-sdk/docs/functions.md#withfusionauth) for more details.
+See [withFusionAuth](https://github.com/FusionAuth/fusionauth-react-sdk/blob/main/docs/functions.md#withfusionauth) for more details.
 
 #### State parameter
 
@@ -232,6 +232,6 @@ See the [FusionAuth React SDK Example](https://github.com/FusionAuth/fusionauth-
 
 ## Documentation
 
-[Full library documentation](https://github.com/FusionAuth/fusionauth-react-sdk/docs/documentation.md)
+[Full library documentation](https://github.com/FusionAuth/fusionauth-react-sdk/blob/main/docs/documentation.md)
 
 [//]: # ( CAPTUREEND )
