@@ -15,6 +15,7 @@ An SDK for using FusionAuth in React applications.
   - [Known issues](#known-issues)
 - [Example App](#example-app)
 - [Documentation](#documentation)
+- [Releases](#releases)
 
 [//]: # ( CAPTURESTART )
 
@@ -28,6 +29,8 @@ HTTP-only cookies will be set:
 
 Note that this setup requires you to have a server
 that performs the OAuth token exchange. See [Server Code Requirements](#server-code-requirements) for more details.
+
+You should be able to use this library against any version of FusionAuth or any OIDC compliant identity server.
 
 ## Getting Started
 
@@ -246,4 +249,16 @@ See the [FusionAuth React SDK Example](https://github.com/FusionAuth/fusionauth-
 
 [Full library documentation](https://github.com/FusionAuth/fusionauth-react-sdk/blob/main/docs/documentation.md)
 
-[//]: # ( CAPTUREEND )
+## Releases
+
+To perform a release:
+
+* Pull the code to your local machine
+* Bump the version in `package.json`
+* Run `npm webpack`
+* Run `npm publish`
+
+You may have to set up your machine to be able to publish, which will involve updating your .npmrc file.
+
+There's information [here that you can use](https://dev.to/alexeagleson/how-to-create-and-publish-a-react-component-library-2oe) to do that (look for the `.npmrc` section).
+
