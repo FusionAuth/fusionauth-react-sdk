@@ -12,6 +12,8 @@ An SDK for using FusionAuth in React applications.
   - [Pre-built buttons](#pre-built-buttons)
   - [Programmatic usage](#programmatic-usage)
   - [Protecting content](#protecting-content)
+  - [Known issues](#known-issues)
+- [Example App](#example-app)
 - [Documentation](#documentation)
 
 [//]: # ( CAPTURESTART )
@@ -225,6 +227,16 @@ const AdminPanel = () => (
     </RequireAuth>
 );
 ```
+
+### Known Issues
+
+#### Token exchange endpoint being called repeatedly
+
+If you see the token exchange endpoint being called multiple times, this is due to a dev time setting in React 18. When running using `StrictMode` in development mode, React 18 will mount, unmount, and remount all components in this mode, which results in the network call running twice. 
+
+This will not happen in a production build or if `StrictMode` is disabled.
+
+If you remove the `React.StrictMode` tags in `index.tsx` of the example app, the call is only made once.
 
 ## Example App
 
