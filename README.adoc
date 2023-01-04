@@ -18,6 +18,8 @@ An SDK for using FusionAuth in React applications.
 * link:#documentation[Documentation]
 * link:#releases[Releases]
 
+// this tag, and the corresponding end tag, are used to delineate what is pulled into the FusionAuth docs site (the client libraries pages). Don't remove unless you also change the docs site.
+
 //tag::forDocSite[]
 == Overview
 
