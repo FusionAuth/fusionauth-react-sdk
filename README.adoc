@@ -1,8 +1,8 @@
-== FusionAuth React SDK
+= FusionAuth React SDK
 
 An SDK for using FusionAuth in React applications.
 
-=== Table of Contents
+== Table of Contents
 
 * link:#overview[Overview]
 * link:#getting-started[Getting Started]
@@ -19,7 +19,7 @@ An SDK for using FusionAuth in React applications.
 * link:#releases[Releases]
 
 //tag::forDocSite[]
-=== Overview
+== Overview
 
 This SDK supports authentication via the Authorization Code Grant. Once
 authentication succeeds, the following secure, HTTP-only cookies will be
@@ -40,9 +40,9 @@ Requirements] for more details.
 You should be able to use this library against any version of FusionAuth
 or any OIDC compliant identity server.
 
-=== Getting Started
+== Getting Started
 
-==== Installation
+=== Installation
 
 NPM:
 
@@ -58,7 +58,7 @@ Yarn:
 yarn add fusionauth-react-sdk
 ----
 
-==== Configuring Provider
+=== Configuring Provider
 
 To configure the SDK, wrap your app with `FusionAuthProvider`:
 
@@ -84,13 +84,13 @@ root.render(
 );
 ----
 
-==== Server Code Requirements
+=== Server Code Requirements
 
 Authenticating with FusionAuth requires you to set up a server that will
 be used to perform the OAuth token exchange. This server must have the
 following endpoints:
 
-===== `POST /token-exchange`
+==== `POST /token-exchange`
 
 This endpoint must:
 
@@ -112,7 +112,7 @@ this object.
 https://github.com/FusionAuth/fusionauth-example-react-sdk/blob/main/server/routes/token-exchange.js[Example
 implementation]
 
-===== `POST /jwt-refresh` (optional)
+==== `POST /jwt-refresh` (optional)
 
 This endpoint is necessary if you wish to use refresh tokens. This
 endpoint must:
@@ -126,9 +126,9 @@ response.
 https://github.com/FusionAuth/fusionauth-example-react-sdk/blob/main/server/routes/jwt-refresh.js[Example
 implementation]
 
-=== Usage
+== Usage
 
-==== Pre-built buttons
+=== Pre-built buttons
 
 There are three pre-styled buttons that are configured to perform
 login/logout/registration. They can be placed anywhere in your app as
@@ -161,12 +161,12 @@ export const AccountPage = () => (
 );
 ----
 
-==== Programmatic usage
+=== Programmatic usage
 
 Alternatively, you may interact with the SDK programmatically using the
 `useFusionAuth` hook or `withFusionAuth` HOC.
 
-===== useFusionAuth
+==== useFusionAuth
 
 Use the `useFusionAuth` hook with your functional components to get
 access to the properties exposed by
@@ -198,14 +198,14 @@ See
 https://github.com/FusionAuth/fusionauth-react-sdk/blob/main/docs/functions.md#usefusionauth[useFusionAuth]
 for more details.
 
-===== withFusionAuth
+==== withFusionAuth
 
 The `withFusionAuth` higher-order component can be used to wrap your
 components and give them access to a `fusionAuth` prop which contains
 all the properties exposed by the `FusionAuthContext`. This works with
 both functional and class components:
 
-====== Functional Component
+===== Functional Component
 
 [source,tsx]
 ----
@@ -221,7 +221,7 @@ const LogoutButton: React.FC<WithFusionAuthProps> = props => {
 export default withFusionAuth(LogoutButton);
 ----
 
-====== Class Component
+===== Class Component
 
 [source,tsx]
 ----
@@ -242,7 +242,7 @@ See
 https://github.com/FusionAuth/fusionauth-react-sdk/blob/main/docs/functions.md#withfusionauth[withFusionAuth]
 for more details.
 
-===== State parameter
+==== State parameter
 
 The `login` and `register` functions both accept an optional string
 parameter called `state`. The state that is passed in to the function
@@ -252,7 +252,7 @@ the state parameter, it is often used to indicate which page the user
 was on before redirecting to login or registration, so that the user can
 be returned to that location after a successful authentication.
 
-==== Protecting Content
+=== Protecting Content
 
 The `RequireAuth` component can be used to protect information from
 unauthorized users. It takes an optional prop `withRole` that can be
@@ -279,9 +279,9 @@ const AdminPanel = () => (
 );
 ----
 
-==== Known Issues
+=== Known Issues
 
-===== Token exchange endpoint being called repeatedly
+==== Token exchange endpoint being called repeatedly
 
 If you see the token exchange endpoint being called multiple times, this
 is due to a dev time setting in React 18. When running using
@@ -295,7 +295,7 @@ disabled.
 If you remove the `React.StrictMode` tags in `index.tsx` of the example
 app, the call is only made once.
 
-=== Example App
+== Example App
 
 See the
 https://github.com/FusionAuth/fusionauth-example-react-sdk[FusionAuth
@@ -303,14 +303,14 @@ React SDK Example] for functional example of a React client that
 utilizes the SDK as well as an Express server that performs the token
 exchange.
 
-=== Documentation
+== Documentation
 
 https://github.com/FusionAuth/fusionauth-react-sdk/blob/main/docs/documentation.md[Full
 library documentation]
 
 //end::forDocSite[]
 
-=== Releases
+== Releases
 
 To perform a release:
 
