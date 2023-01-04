@@ -18,6 +18,7 @@ An SDK for using FusionAuth in React applications.
 * link:#documentation[Documentation]
 * link:#releases[Releases]
 
+//tag::forDocSite[]
 === Overview
 
 This SDK supports authentication via the Authorization Code Grant. Once
@@ -306,6 +307,8 @@ exchange.
 
 https://github.com/FusionAuth/fusionauth-react-sdk/blob/main/docs/documentation.md[Full
 library documentation]
+
+//end::forDocSite[]
 
 === Releases
 
