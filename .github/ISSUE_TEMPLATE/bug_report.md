@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Create a bug report to help us improve FusionAuth
+about: Create a bug report to help us improve this SDK
 
 ---
 

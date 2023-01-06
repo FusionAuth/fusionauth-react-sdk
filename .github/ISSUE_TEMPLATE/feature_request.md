@@ -1,6 +1,6 @@
 ---
 name: Feature request
-about: Suggest a new feature for FusionAuth
+about: Suggest a new feature for this SDK
 
 ---
 
