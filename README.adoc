@@ -323,7 +323,7 @@ To perform a release:
 
 * Pull the code to your local machine
 * Bump the version in `package.json`
-* Run `npm webpack`
+* Run `npm run webpack`
 * Run `npm publish`
 
 You may have to set up your machine to be able to publish, which will
