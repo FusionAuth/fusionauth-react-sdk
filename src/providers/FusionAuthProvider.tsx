@@ -102,7 +102,13 @@ export const FusionAuthProvider: React.FC<FusionAuthConfig> = props => {
                 window.location.assign(fullUrl);
             },
         );
-    }, [generateUrl, props.clientID, props.idTokenHint, props.redirectUri]);
+    }, [
+        generateUrl,
+        props.clientID,
+        props.idTokenHint,
+        props.redirectUri,
+        props.serverUrl,
+    ]);
 
     const register = useCallback(
         async (state = '') => {
