@@ -2,7 +2,7 @@
 
 An SDK for using FusionAuth in React applications.
 
-*This is currently in beta testing. We're working towards a 1.0 release.* 
+*This is currently in beta testing. We're working towards a 1.0 release. You can https://github.com/FusionAuth/fusionauth-issues/issues/2049[track that progress here].*
 
 == Table of Contents
 
