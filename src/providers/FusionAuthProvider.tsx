@@ -91,14 +91,24 @@ export const FusionAuthProvider: React.FC<FusionAuthConfig> = props => {
         Cookies.remove('lastState');
         Cookies.remove('codeVerifier');
 
-        const queryParams = {
-            client_id: props.clientID,
-            post_logout_redirect_uri: props.redirectUri,
-            id_token_hint: props.idTokenHint ?? '',
-        };
-        const fullUrl = generateUrl(FunctionType.logout, queryParams);
-        window.location.assign(fullUrl);
-    }, [generateUrl, props.clientID, props.idTokenHint, props.redirectUri]);
+        fetch(`${props.serverUrl}/logout`, { credentials: 'include' }).then(
+            () => {
+                const queryParams = {
+                    client_id: props.clientID,
+                    post_logout_redirect_uri: props.redirectUri,
+                    id_token_hint: props.idTokenHint ?? '',
+                };
+                const fullUrl = generateUrl(FunctionType.logout, queryParams);
+                window.location.assign(fullUrl);
+            },
+        );
+    }, [
+        generateUrl,
+        props.clientID,
+        props.idTokenHint,
+        props.redirectUri,
+        props.serverUrl,
+    ]);
 
     const register = useCallback(
         async (state = '') => {

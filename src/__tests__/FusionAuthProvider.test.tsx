@@ -5,6 +5,7 @@ import {
     useFusionAuth,
 } from '../providers/FusionAuthProvider';
 import { mockCrypto } from './mocks/mockCrypto';
+import { mockFetchJson } from './mocks/mockFetchJson';
 import { TEST_CONFIG } from './mocks/testConfig';
 
 let location: Location;
@@ -45,6 +46,7 @@ describe('FusionAuthProvider', () => {
     });
 
     test('Logout function will navigate to the correct url', async () => {
+        mockFetchJson({});
         const mockedLocation = {
             ...location,
             assign: jest.fn(),
