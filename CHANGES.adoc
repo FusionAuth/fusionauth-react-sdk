@@ -1,8 +1,8 @@
 fusionauth-react-sdk Changes
 
-Changes in 0.22.2
+Changes in 0.23.0
 
- * *Breaking change* Module is now scoped under `@fusionauth`.  Users will need to update `package.json` and imports.
+ * *Breaking change* Module is now scoped and renamed to `@fusionauth/react-sdk`.  Users will need to update `package.json` and imports.
 
 Changes in 0.22.1
 
