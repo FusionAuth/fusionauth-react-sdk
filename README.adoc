@@ -55,14 +55,14 @@ NPM:
 
 [source,bash]
 ----
-npm install fusionauth-react-sdk
+npm install @fusionauth/fusionauth-react-sdk
 ----
 
 Yarn:
 
 [source,bash]
 ----
-yarn add fusionauth-react-sdk
+yarn add @fusionauth/fusionauth-react-sdk
 ----
 
 === Configuring Provider
@@ -73,7 +73,7 @@ To configure the SDK, wrap your app with `FusionAuthProvider`:
 ----
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { FusionAuthProvider } from 'fusionauth-react-sdk';
+import { FusionAuthProvider } from '@fusionauth/fusionauth-react-sdk';
 import App from './App';
 
 const container = document.getElementById('root');
@@ -119,6 +119,15 @@ this object.
 https://github.com/FusionAuth/fusionauth-example-react-sdk/blob/main/server/routes/token-exchange.js[Example
 implementation]
 
+==== `GET /logout`
+
+This endpoint must:
+
+. Clear the `access_token` and `refresh_token` secure, HTTP-only cookies.
+
+https://github.com/FusionAuth/fusionauth-example-react-sdk/blob/main/server/routes/logout.js[Example
+implementation]
+
 ==== `POST /jwt-refresh` (optional)
 
 This endpoint is necessary if you wish to use refresh tokens. This
@@ -147,7 +156,7 @@ import {
     FusionAuthLoginButton,
     FusionAuthLogoutButton,
     FusionAuthRegisterButton
-} from 'fusionauth-react-sdk';
+} from '@fusionauth/fusionauth-react-sdk';
 
 export const LoginPage = () => (
     <>
@@ -182,7 +191,7 @@ https://github.com/FusionAuth/fusionauth-react-sdk/blob/main/docs/context.md#fus
 [source,tsx]
 ----
 import React from 'react';
-import { useFusionAuth } from 'fusionauth-react-sdk';
+import { useFusionAuth } from '@fusionauth/fusionauth-react-sdk';
 
 const App = () => {
     const { login, logout, register, isAuthenticated } = useFusionAuth();
@@ -217,7 +226,7 @@ both functional and class components:
 [source,tsx]
 ----
 import React from 'react';
-import { withFusionAuth, WithFusionAuthProps } from 'fusionauth-react-sdk';
+import { withFusionAuth, WithFusionAuthProps } from '@fusionauth/fusionauth-react-sdk';
 
 const LogoutButton: React.FC<WithFusionAuthProps> = props => {
     const { logout } = props.fusionAuth;
@@ -233,7 +242,7 @@ export default withFusionAuth(LogoutButton);
 [source,tsx]
 ----
 import React, { Component } from 'react';
-import { withFusionAuth, WithFusionAuthProps } from 'fusionauth-react-sdk';
+import { withFusionAuth, WithFusionAuthProps } from '@fusionauth/fusionauth-react-sdk';
 
 class LogoutButton extends Component<WithFusionAuthProps> {
     render() {
@@ -267,7 +276,7 @@ used to ensure the user has a specific role.
 
 [source,tsx]
 ----
-import { RequireAuth, useFusionAuth } from 'fusionauth-react-sdk';
+import { RequireAuth, useFusionAuth } from '@fusionauth/fusionauth-react-sdk';
 
 const UserNameDisplay = () => {
     const { user } = useFusionAuth();
