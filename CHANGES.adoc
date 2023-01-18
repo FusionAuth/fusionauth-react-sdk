@@ -1,0 +1,9 @@
+fusionauth-react-sdk Changes
+
+Changes in 0.23.0
+
+ * *Breaking change* Module is now scoped and renamed to `@fusionauth/react-sdk`.  Users will need to update `package.json` and imports.
+
+Changes in 0.22.1
+
+ * *Breaking change* Logout calls new server `/logout` endpoint before redirecting to `/oauth2/logout`
