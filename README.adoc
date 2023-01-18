@@ -186,7 +186,7 @@ Alternatively, you may interact with the SDK programmatically using the
 
 Use the `useFusionAuth` hook with your functional components to get
 access to the properties exposed by
-https://github.com/FusionAuth/react-sdk/blob/main/docs/context.md#fusionauthcontext[FusionAuthContext]:
+https://github.com/FusionAuth/fusionauth-react-sdk/blob/main/docs/context.md#fusionauthcontext[FusionAuthContext]:
 
 [source,tsx]
 ----
@@ -211,7 +211,7 @@ const App = () => {
 ----
 
 See
-https://github.com/FusionAuth/react-sdk/blob/main/docs/functions.md#usefusionauth[useFusionAuth]
+https://github.com/FusionAuth/fusionauth-react-sdk/blob/main/docs/functions.md#usefusionauth[useFusionAuth]
 for more details.
 
 ==== withFusionAuth
@@ -255,7 +255,7 @@ export default withFusionAuth(LogoutButton);
 ----
 
 See
-https://github.com/FusionAuth/react-sdk/blob/main/docs/functions.md#withfusionauth[withFusionAuth]
+https://github.com/FusionAuth/fusionauth-react-sdk/blob/main/docs/functions.md#withfusionauth[withFusionAuth]
 for more details.
 
 ==== State parameter
@@ -321,7 +321,7 @@ exchange.
 
 == Documentation
 
-https://github.com/FusionAuth/react-sdk/blob/main/docs/documentation.md[Full
+https://github.com/FusionAuth/fusionauth-react-sdk/blob/main/docs/documentation.md[Full
 library documentation]
 
 //end::forDocSite[]
