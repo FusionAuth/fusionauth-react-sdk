@@ -1,8 +1,9 @@
-= FusionAuth React SDK
-
 An SDK for using FusionAuth in React applications.
 
-*This is currently in beta testing. We're working towards a 1.0 release. You can https://github.com/FusionAuth/fusionauth-issues/issues/2049[track that progress here].*
+*This is currently in beta testing. We’re working towards a 1.0 release.
+You can
+https://github.com/FusionAuth/fusionauth-issues/issues/2049[track that
+progress here].*
 
 == Table of Contents
 
@@ -20,16 +21,18 @@ An SDK for using FusionAuth in React applications.
 * link:#documentation[Documentation]
 * link:#releases[Releases]
 
-// this tag, and the corresponding end tag, are used to delineate what is pulled into the FusionAuth docs site (the client libraries pages). Don't remove unless you also change the docs site.
-
 //tag::forDocSite[]
 == Overview
 
-This SDK allows you to add login, logout, and registration buttons to your React application. You can do this via pre-built buttons, hooks, or higher-order components.
+This SDK allows you to add login, logout, and registration buttons to
+your React application. You can do this via pre-built buttons, hooks, or
+higher-order components.
 
-Your users will be sent to FusionAuth's themeable hosted login pages and login. After that, they are sent back to your React application.
+Your users will be sent to FusionAuth’s themeable hosted login pages and
+login. After that, they are sent back to your React application.
 
-Once authentication succeeds, the following secure, HTTP-only cookies will be set:
+Once authentication succeeds, the following secure, HTTP-only cookies
+will be set:
 
 * `access_token` - an OAuth
 https://fusionauth.io/docs/v1/tech/oauth/tokens#access-token[Access
@@ -39,13 +42,15 @@ https://fusionauth.io/docs/v1/tech/oauth/tokens#refresh-token[Refresh
 Token] used to obtain a new `access_token`. This cookie will only be set
 if refresh tokens are enabled on your FusionAuth instance.
 
-The access token can be presented to APIs and the refresh token can be used to get a new access token.
+The access token can be presented to APIs and the refresh token can be
+used to get a new access token.
 
-Note that this SDK requires you to have a server that performs the
-OAuth token exchange. See link:#server-code-requirements[Server Code
+Note that this SDK requires you to have a server that performs the OAuth
+token exchange. See link:#server-code-requirements[Server Code
 Requirements] for more details.
 
-You can use this library against any version of FusionAuth or any OIDC compliant identity server.
+You can use this library against any version of FusionAuth or any OIDC
+compliant identity server.
 
 == Getting Started
 
@@ -53,24 +58,21 @@ You can use this library against any version of FusionAuth or any OIDC compliant
 
 NPM:
 
-[source,bash]
-----
+....
 npm install @fusionauth/react-sdk
-----
+....
 
 Yarn:
 
-[source,bash]
-----
+....
 yarn add @fusionauth/react-sdk
-----
+....
 
 === Configuring Provider
 
 To configure the SDK, wrap your app with `FusionAuthProvider`:
 
-[source,tsx]
-----
+....
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { FusionAuthProvider } from '@fusionauth/react-sdk';
@@ -89,7 +91,7 @@ root.render(
         <App />
     </FusionAuthProvider>
 );
-----
+....
 
 === Server Code Requirements
 
@@ -101,6 +103,7 @@ following endpoints:
 
 This endpoint must:
 
+[arabic]
 . Call
 https://fusionauth.io/docs/v1/tech/oauth/endpoints#complete-the-authorization-code-grant-request[/oauth2/token]
 to complete the Authorization Code Grant request. The `code` and
@@ -123,7 +126,9 @@ implementation]
 
 This endpoint must:
 
-. Clear the `access_token` and `refresh_token` secure, HTTP-only cookies.
+[arabic]
+. Clear the `access_token` and `refresh_token` secure, HTTP-only
+cookies.
 
 https://github.com/FusionAuth/fusionauth-example-react-sdk/blob/main/server/routes/logout.js[Example
 implementation]
@@ -133,6 +138,7 @@ implementation]
 This endpoint is necessary if you wish to use refresh tokens. This
 endpoint must:
 
+[arabic]
 . Call
 https://fusionauth.io/docs/v1/tech/apis/jwt#refresh-a-jwt[/api/jwt/refresh]
 to get a new `access_token` and `refresh_token`.
@@ -150,8 +156,7 @@ There are three pre-styled buttons that are configured to perform
 login/logout/registration. They can be placed anywhere in your app as
 is.
 
-[source,tsx]
-----
+....
 import {
     FusionAuthLoginButton,
     FusionAuthLogoutButton,
@@ -175,7 +180,7 @@ export const AccountPage = () => (
         <FusionAuthLogoutButton />
     </>
 );
-----
+....
 
 === Programmatic usage
 
@@ -188,8 +193,7 @@ Use the `useFusionAuth` hook with your functional components to get
 access to the properties exposed by
 https://github.com/FusionAuth/fusionauth-react-sdk/blob/main/docs/context.md#fusionauthcontext[FusionAuthContext]:
 
-[source,tsx]
-----
+....
 import React from 'react';
 import { useFusionAuth } from '@fusionauth/react-sdk';
 
@@ -208,7 +212,7 @@ const App = () => {
         </div>
     );
 };
-----
+....
 
 See
 https://github.com/FusionAuth/fusionauth-react-sdk/blob/main/docs/functions.md#usefusionauth[useFusionAuth]
@@ -223,8 +227,7 @@ both functional and class components:
 
 ===== Functional Component
 
-[source,tsx]
-----
+....
 import React from 'react';
 import { withFusionAuth, WithFusionAuthProps } from '@fusionauth/react-sdk';
 
@@ -235,12 +238,11 @@ const LogoutButton: React.FC<WithFusionAuthProps> = props => {
 }
 
 export default withFusionAuth(LogoutButton);
-----
+....
 
 ===== Class Component
 
-[source,tsx]
-----
+....
 import React, { Component } from 'react';
 import { withFusionAuth, WithFusionAuthProps } from '@fusionauth/react-sdk';
 
@@ -252,7 +254,7 @@ class LogoutButton extends Component<WithFusionAuthProps> {
 }
 
 export default withFusionAuth(LogoutButton);
-----
+....
 
 See
 https://github.com/FusionAuth/fusionauth-react-sdk/blob/main/docs/functions.md#withfusionauth[withFusionAuth]
@@ -274,8 +276,7 @@ The `RequireAuth` component can be used to protect information from
 unauthorized users. It takes an optional prop `withRole` that can be
 used to ensure the user has a specific role.
 
-[source,tsx]
-----
+....
 import { RequireAuth, useFusionAuth } from '@fusionauth/react-sdk';
 
 const UserNameDisplay = () => {
@@ -293,7 +294,7 @@ const AdminPanel = () => (
         <button>Delete User</button> // Only displays if user is authenticated and has 'admin' role
     </RequireAuth>
 );
-----
+....
 
 === Known Issues
 
@@ -338,6 +339,6 @@ To perform a release:
 You may have to set up your machine to be able to publish, which will
 involve updating your .npmrc file.
 
-There's information
+There’s information
 https://dev.to/alexeagleson/how-to-create-and-publish-a-react-component-library-2oe[here
 that you can use] to do that (look for the `.npmrc` section).
