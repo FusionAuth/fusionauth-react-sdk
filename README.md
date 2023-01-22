@@ -92,7 +92,7 @@ yarn add @fusionauth/react-sdk
 
 To configure the SDK, wrap your app with `FusionAuthProvider`:
 
-```javascript
+```react
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { FusionAuthProvider } from '@fusionauth/react-sdk';
@@ -102,14 +102,14 @@ const container = document.getElementById('root');
 const root = createRoot(container!);
 
 root.render(
-        <FusionAuthProvider
-            baseUrl=""      // The base URL of your FusionAuth instance
-            clientID=""     // Your FusionAuth client ID
-            serverUrl=""    // The base URL of your server for the token exchange
-            redirectUri=""  // The URI that the user is directed to after the login/register/logout action
-        >
-            <App />
-        </FusionAuthProvider>
+  <FusionAuthProvider
+    baseUrl=""      // The base URL of your FusionAuth instance
+    clientID=""     // Your FusionAuth client ID
+    serverUrl=""    // The base URL of your server for the token exchange
+    redirectUri=""  // The URI that the user is directed to after the login/register/logout action
+  >
+    <App />
+  </FusionAuthProvider>
 );
 ```
 
@@ -178,29 +178,26 @@ There are three pre-styled buttons that are configured to perform
 login/logout/registration. They can be placed anywhere in your app as
 is.
 
-```javascript
+```react
 import {
-        FusionAuthLoginButton,
-        FusionAuthLogoutButton,
-        FusionAuthRegisterButton
+  FusionAuthLoginButton,
+  FusionAuthLogoutButton,
+  FusionAuthRegisterButton
 } from '@fusionauth/react-sdk';
 
 export const LoginPage = () => (
-        <>
-            <h1>Welcome, please log in or register</h1>
-
-            <FusionAuthLoginButton />
-
-            <FusionAuthRegisterButton />
-        </>
+  <>
+    <h1>Welcome, please log in or register</h1>
+    <FusionAuthLoginButton />
+    <FusionAuthRegisterButton />
+  </>
 );
 
 export const AccountPage = () => (
-        <>
-            <h1>Hello, user!</h1>
-
-            <FusionAuthLogoutButton />
-        </>
+  <>
+    <h1>Hello, user!</h1>
+    <FusionAuthLogoutButton />
+  </>
 );
 ```
 
@@ -215,24 +212,24 @@ Use the `useFusionAuth` hook with your functional components to get
 access to the properties exposed by
 [FusionAuthContext](https://github.com/FusionAuth/fusionauth-react-sdk/blob/main/docs/context.md#fusionauthcontext):
 
-```javascript
+```react
 import React from 'react';
 import { useFusionAuth } from '@fusionauth/react-sdk';
 
 const App = () => {
-        const { login, logout, register, isAuthenticated } = useFusionAuth();
+  const { login, logout, register, isAuthenticated } = useFusionAuth();
 
-        return isAuthenticated ? (
-            <div>
-              <span>Hello, user!</span>
-              <button onClick={() => logout()}>Logout</button>
-            </div>
-        ) : (
-            <div>
-              <button onClick={() => login()}>Log in</button>
-              <button onClick={() => register()}>Register</button>
-            </div>
-        );
+  return isAuthenticated ? (
+    <div>
+      <span>Hello, user!</span>
+      <button onClick={() => logout()}>Logout</button>
+    </div>
+  ) : (
+    <div>
+      <button onClick={() => login()}>Log in</button>
+      <button onClick={() => register()}>Register</button>
+    </div>
+  );
 };
 ```
 
@@ -249,14 +246,14 @@ both functional and class components:
 
 #### Functional Component
 
-```javascript
+```react
 import React from 'react';
 import { withFusionAuth, WithFusionAuthProps } from '@fusionauth/react-sdk';
 
 const LogoutButton: React.FC<WithFusionAuthProps> = props => {
-        const { logout } = props.fusionAuth;
+  const { logout } = props.fusionAuth;
 
-        return <button onClick={() => logout()}>Logout</button>;
+  return <button onClick={() => logout()}>Logout</button>;
 }
 
 export default withFusionAuth(LogoutButton);
@@ -264,15 +261,15 @@ export default withFusionAuth(LogoutButton);
 
 #### Class Component
 
-```javascript
+```react
 import React, { Component } from 'react';
 import { withFusionAuth, WithFusionAuthProps } from '@fusionauth/react-sdk';
 
 class LogoutButton extends Component<WithFusionAuthProps> {
-        render() {
-            const { logout } = this.props.fusionAuth;
-            return <button onClick={() => logout()}>Logout</button>;
-        }
+  render() {
+    const { logout } = this.props.fusionAuth;
+    return <button onClick={() => logout()}>Logout</button>;
+  }
 }
 
 export default withFusionAuth(LogoutButton);
@@ -298,23 +295,23 @@ The `RequireAuth` component can be used to protect information from
 unauthorized users. It takes an optional prop `withRole` that can be
 used to ensure the user has a specific role.
 
-```javascript
+```react
 import { RequireAuth, useFusionAuth } from '@fusionauth/react-sdk';
 
 const UserNameDisplay = () => {
-        const { user } = useFusionAuth();
+  const { user } = useFusionAuth();
 
-        return (
-            <RequireAuth>
-                <p>User: {user.name}</p> // Only displays if user is authenticated
-            </RequireAuth>
-        );
+  return (
+    <RequireAuth>
+      <p>User: {user.name}</p> // Only displays if user is authenticated
+    </RequireAuth>
+  );
 };
 
 const AdminPanel = () => (
-        <RequireAuth withRole="admin">
-            <button>Delete User</button> // Only displays if user is authenticated and has 'admin' role
-        </RequireAuth>
+  <RequireAuth withRole="admin">
+    <button>Delete User</button> // Only displays if user is authenticated and has 'admin' role
+  </RequireAuth>
 );
 ```
 
