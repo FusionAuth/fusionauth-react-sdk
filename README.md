@@ -32,6 +32,14 @@ here](https://github.com/FusionAuth/fusionauth-issues/issues/2049).**
 
 -   [Releases](#releases)
 
+<!--
+this tag, and the corresponding end tag, are used to delineate what is pulled into the FusionAuth docs site (the client libraries pages). Don't remove unless you also change the docs site.
+-->
+
+<!--
+tag::forDocSite[]
+-->
+
 # Overview
 
 This SDK allows you to add login, logout, and registration buttons to
@@ -319,6 +327,10 @@ Express server that performs the token exchange.
 
 [Full library
 documentation](https://github.com/FusionAuth/fusionauth-react-sdk/blob/main/docs/documentation.md)
+
+<!--
+end::forDocSite[]
+-->
 
 # Releases
 
