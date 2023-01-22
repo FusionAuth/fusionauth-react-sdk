@@ -5,4 +5,4 @@
 # To install (if you have ruby installed)
 # gem install kramdown-asciidoc
 
-kramdoc ../README.md -o README.adoc
+kramdoc ../README.md --heading-offset=1 -o README.adoc
