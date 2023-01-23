@@ -35,7 +35,7 @@ here](https://github.com/FusionAuth/fusionauth-issues/issues/2049).**
 <!--
 this tag, and the corresponding end tag, are used to delineate what is pulled into the FusionAuth docs site (the client libraries pages). Don't remove unless you also change the docs site.
 
-Please also use ``` instead of indenting for code blocks. The backticks are translated correctly.
+Please also use ``` instead of indenting for code blocks. The backticks are translated correctly to adoc format.
 -->
 
 <!--
