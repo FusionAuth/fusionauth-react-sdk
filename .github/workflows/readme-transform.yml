@@ -3,9 +3,7 @@ name: Readme Transform
 # this transforms the readme.md to generated/readme.adoc, which is later included in the FusionAuth website
 
 on:
-  push:
-    branches:    
-      - main
+  pull-request:
     paths:
       - 'README.md'
 
