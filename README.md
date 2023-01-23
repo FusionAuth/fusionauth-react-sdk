@@ -349,6 +349,15 @@ end::forDocSite[]
 
 Use backticks for code in this readme. This readme gets turned into asciidoc and included on the fusionauth website, and backticks show the code in the best light there.
 
+# Formatting
+
+There are several linting packages run when you push to a branch. One is `prettier`. If this fails, you can fix the files from the command line:
+
+* npm run install
+* npm run prettier -- -w /path/to/file
+
+Doing this will overwrite your file, but fix prettier's objections.
+
 # Releases
 
 To perform a release:
