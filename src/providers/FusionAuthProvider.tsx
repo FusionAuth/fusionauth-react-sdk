@@ -134,7 +134,11 @@ export const FusionAuthProvider: React.FC<FusionAuthConfig> = props => {
     useEffect(() => {
         const userCookie = Cookies.get('user');
         if (userCookie) {
-            setUser(JSON.parse(userCookie));
+            try {
+                setUser(JSON.parse(userCookie));
+            } catch {
+                /* if JSON parse fails doesn't crash the app */
+            }
         }
     }, [setUser]);
 
@@ -170,7 +174,13 @@ export const FusionAuthProvider: React.FC<FusionAuthConfig> = props => {
                 })
                     .then(response => response.json())
                     .then(data => {
-                        Cookies.set('user', JSON.stringify(data.user));
+                        // If for some reason they don't send back a user then don't set the cookie and
+                        // clear out any old cookie
+                        if (data.user) {
+                            Cookies.set('user', JSON.stringify(data.user));
+                        } else {
+                            Cookies.remove('user');
+                        }
                         setUser(data.user);
                         setIsAuthenticated(true);
 
