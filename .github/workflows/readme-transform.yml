@@ -1,0 +1,25 @@
+name: Readme Transform
+
+# this transforms the readme.md to generated/readme.adoc, which is later included in the FusionAuth website
+
+on:
+  push:
+    branches:    
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2.0'
+      - name: Install kramdown
+        run: |
+          gem install kramdown-asciidoc
+        shell: bash
+      - Generate readme.adoc
+        run: |
+          cd generated && ./generate.sh
+          ls
