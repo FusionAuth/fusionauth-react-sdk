@@ -1,15 +1,14 @@
 # this transforms the readme.md to generated/readme.adoc, which is later included in the FusionAuth website
 name: Readme Transform
 on:
-  pull_request:
+  push:
     paths:
       - 'README.md'
-    types:
-      - closed
+    branches-ignore:
+      - main
 
 jobs:
   transform:
-    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
