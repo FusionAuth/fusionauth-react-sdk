@@ -4,9 +4,12 @@ on:
   pull_request:
     paths:
       - 'README.md'
+    types:
+      - closed
 
 jobs:
   transform:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
