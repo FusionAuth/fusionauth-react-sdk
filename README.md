@@ -62,8 +62,8 @@ will be set:
     used to obtain a new `access_token`. This cookie will only be set if
     refresh tokens are enabled on your FusionAuth instance.
 
-The access token can be presented to APIs and the refresh token can be
-used to get a new access token.
+The access token can be presented to APIs to authorize the request and
+the refresh token can be used to get a new access token.
 
 Note that this SDK requires you to have a server that performs the OAuth
 token exchange. See [Server Code
@@ -348,6 +348,15 @@ end::forDocSite[]
 -->
 
 Use backticks for code in this readme. This readme gets turned into asciidoc and included on the fusionauth website, and backticks show the code in the best light there.
+
+# Formatting
+
+There are several linting packages run when you push to a branch. One is `prettier`. If this fails, you can fix the files from the command line:
+
+* npm run install
+* npm run prettier -- -w /path/to/file
+
+Doing this will overwrite your file, but fix prettier's objections.
 
 # Releases
 
