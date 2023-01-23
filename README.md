@@ -62,8 +62,8 @@ will be set:
     used to obtain a new `access_token`. This cookie will only be set if
     refresh tokens are enabled on your FusionAuth instance.
 
-The access token can be presented to APIs and the refresh token can be
-used to get a new access token.
+The access token can be presented to APIs to authorize the request and
+the refresh token can be used to get a new access token.
 
 Note that this SDK requires you to have a server that performs the OAuth
 token exchange. See [Server Code
