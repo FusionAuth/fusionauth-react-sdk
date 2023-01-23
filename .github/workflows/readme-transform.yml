@@ -19,7 +19,7 @@ jobs:
         run: |
           gem install kramdown-asciidoc
         shell: bash
-      - Generate readme.adoc
+      - name: Generate readme.adoc
         run: |
           cd generated && ./generate.sh
           ls
