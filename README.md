@@ -49,7 +49,7 @@ your React application. You can do this via pre-built buttons, hooks, or
 higher-order components.
 
 Your users will be sent to FusionAuth’s themeable hosted login pages and
-login. After that, they are sent back to your React application.
+then log in. After that, they are sent back to your React application.
 
 Once authentication succeeds, the following secure, HTTP-only cookies
 will be set:
