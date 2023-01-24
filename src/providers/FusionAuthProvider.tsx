@@ -145,9 +145,6 @@ export const FusionAuthProvider: React.FC<FusionAuthConfig> = props => {
     const refreshToken = useCallback(async () => {
         await fetch(`${props.serverUrl}/jwt-refresh`, {
             method: 'POST',
-            headers: {
-                'content-type': 'application/json',
-            },
             credentials: 'include',
         });
     }, [props.serverUrl]);
