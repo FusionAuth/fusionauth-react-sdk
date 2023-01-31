@@ -44,15 +44,18 @@ describe('RequireAuth Component', () => {
             search: TEST_REDIRECT_URL,
         };
         jest.spyOn(window, 'location', 'get').mockReturnValue(mockedLocation);
-        mockFetchJson({ user: { roles: ['admin'] } });
+        mockFetchJson({ roles: ['admin'] });
 
         Object.defineProperty(document, 'cookie', {
             writable: true,
             value: TEST_COOKIE,
         });
 
-        await renderProvider('admin');
+        await act(() => {
+            renderProvider('admin');
+        });
 
+        // expect(await screen.queryByText('Logout')).toBeNull();
         expect(await screen.findByText('Logout')).toBeInTheDocument();
     });
 
@@ -63,7 +66,7 @@ describe('RequireAuth Component', () => {
             search: TEST_REDIRECT_URL,
         };
         jest.spyOn(window, 'location', 'get').mockReturnValue(mockedLocation);
-        mockFetchJson({ user: { roles: ['user'] } });
+        mockFetchJson({ roles: ['user'] });
 
         Object.defineProperty(document, 'cookie', {
             writable: true,
@@ -84,7 +87,7 @@ describe('RequireAuth Component', () => {
             search: TEST_REDIRECT_URL,
         };
         jest.spyOn(window, 'location', 'get').mockReturnValue(mockedLocation);
-        mockFetchJson({ user: { roles: ['admin'] } });
+        mockFetchJson({ roles: ['admin'] });
 
         Object.defineProperty(document, 'cookie', {
             writable: true,
@@ -103,7 +106,7 @@ describe('RequireAuth Component', () => {
             search: TEST_REDIRECT_URL,
         };
         jest.spyOn(window, 'location', 'get').mockReturnValue(mockedLocation);
-        mockFetchJson({ user: { roles: ['admin'] } });
+        mockFetchJson({ roles: ['admin'] });
 
         Object.defineProperty(document, 'cookie', {
             writable: true,
