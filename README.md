@@ -88,7 +88,6 @@ To configure the SDK, wrap your app with `FusionAuthProvider`:
 
     root.render(
         <FusionAuthProvider
-            baseUrl=""      // The base URL of your FusionAuth instance
             clientID=""     // Your FusionAuth client ID
             serverUrl=""    // The base URL of your server for the token exchange
             redirectUri=""  // The URI that the user is directed to after the login/register/logout action
@@ -103,14 +102,27 @@ Authenticating with FusionAuth requires you to set up a server that will
 be used to perform the OAuth token exchange. This server must have the
 following endpoints:
 
-### `POST /token-exchange`
+### `GET /app/login`
+
+This endpoint must:
+
+1.  Generate PKCE code.
+    a. The codeVerifier should be saved in a secure HTTP-only cookie.
+    b. The code challenge is passed along
+2.  Encode and save `redirect_url` from react app to `state`.
+3.  Redirect browser to `/oauth2/authorize` with a `redirect_uri` to `/app/token-exchange`
+
+[Example
+implementation](https://github.com/FusionAuth/fusionauth-example-react-sdk/blob/main/server/routes/login.js)
+
+### `GET /app/token-exchange`
 
 This endpoint must:
 
 1.  Call
     [/oauth2/token](https://fusionauth.io/docs/v1/tech/oauth/endpoints#complete-the-authorization-code-grant-request)
-    to complete the Authorization Code Grant request. The `code` and
-    `code_verifier` parameters should come from the request body, while
+    to complete the Authorization Code Grant request. The `code` comes from the request query param and
+    `code_verifier` should be available in the secure HTTP-only cookie, while
     the rest of the parameters should be set/configured on the server
     side.
 
@@ -121,6 +133,10 @@ This endpoint must:
 3.  If you wish to support refresh tokens, repeat step 2 for the
     `refresh_token` cookie.
 
+4.  Save the expiration time in a readable `access_token_expires` cookie.  And save the `id_token` in a readable cookie.
+
+5.  Redirect browser back to encoded url saved in `state`.
+
 4.  Call
     [/oauth2/userinfo](https://fusionauth.io/docs/v1/tech/oauth/endpoints#userinfo)
     to retrieve the user info object and respond back to the client with
@@ -129,30 +145,55 @@ This endpoint must:
 [Example
 implementation](https://github.com/FusionAuth/fusionauth-example-react-sdk/blob/main/server/routes/token-exchange.js)
 
-### `GET /logout`
+### `GET /app/register`
+
+This endpoint is similar to `/login`.  It must:
+
+1.  Generate PKCE code.
+    a. The codeVerifier should be saved in a secure HTTP-only cookie.
+    b. The code challenge is passed along
+2.  Encode and save `redirect_url` from react app to `state`.
+3.  Redirect browser to `/oauth2/register` with a `redirect_uri` to `/app/token-exchange`
+
+[Example
+implementation](https://github.com/FusionAuth/fusionauth-example-react-sdk/blob/main/server/routes/register.js)
+
+### `GET /app/me`
+
+This endpoint must:
+
+1.  Use `access_token` from cookie and use as the Bearer token to call `/oauth2/userinfo`
+2.  Return json data
+
+[Example
+implementation](https://github.com/FusionAuth/fusionauth-example-react-sdk/blob/main/server/routes/me.js)
+
+### `GET /app/logout`
 
 This endpoint must:
 
 1.  Clear the `access_token` and `refresh_token` secure, HTTP-only
     cookies.
+2.  Clear the `access_token_expires` and `id_token` secure cookies.
+3.  Redirect to `/oauth2/logout`
 
 [Example
 implementation](https://github.com/FusionAuth/fusionauth-example-react-sdk/blob/main/server/routes/logout.js)
 
-### `POST /jwt-refresh` (optional)
+### `POST /app/token-refresh` (optional)
 
 This endpoint is necessary if you wish to use refresh tokens. This
 endpoint must:
 
 1.  Call
-    [/api/jwt/refresh](https://fusionauth.io/docs/v1/tech/apis/jwt#refresh-a-jwt)
+    [/oauth2/token](https://fusionauth.io/docs/v1/tech/oauth/endpoints#refresh-token-grant-request)
     to get a new `access_token` and `refresh_token`.
 
-2.  Update the `access_token` and `refresh_token` cookies from the
+2.  Update the `access_token`, `access_token_expires`, `id_token`, and `refresh_token` cookies from the
     response.
 
 [Example
-implementation](https://github.com/FusionAuth/fusionauth-example-react-sdk/blob/main/server/routes/jwt-refresh.js)
+implementation](https://github.com/FusionAuth/fusionauth-example-react-sdk/blob/main/server/routes/token-refresh.js)
 
 # Usage
 
