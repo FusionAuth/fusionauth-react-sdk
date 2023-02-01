@@ -152,7 +152,7 @@ export const FusionAuthProvider: React.FC<FusionAuthConfig> = props => {
             try {
                 setUser(JSON.parse(userCookie));
             } catch {
-                // ignore errors
+                /* if JSON parse fails doesn't crash the app */
             }
         }
     }, [setUser]);

@@ -45,6 +45,52 @@ describe('FusionAuthProvider', () => {
         );
     });
 
+    test('User set to the value stored in the cookie', async () => {
+        const mockedLocation = {
+            ...location,
+            assign: jest.fn(),
+        };
+        jest.spyOn(window, 'location', 'get').mockReturnValue(mockedLocation);
+
+        Object.defineProperty(document, 'cookie', {
+            writable: true,
+            value: `user=${JSON.stringify({ name: 'trent anderson' })}`,
+        });
+
+        const wrapper = ({ children }) => (
+            <FusionAuthProvider {...TEST_CONFIG}>{children}</FusionAuthProvider>
+        );
+        const { result } = renderHook(() => useFusionAuth(), {
+            wrapper,
+        });
+
+        await waitFor(() =>
+            expect(result.current.user).toEqual({ name: 'trent anderson' }),
+        );
+    });
+
+    test('User to empty when user cookie is not json parsable', async () => {
+        const mockedLocation = {
+            ...location,
+            assign: jest.fn(),
+        };
+        jest.spyOn(window, 'location', 'get').mockReturnValue(mockedLocation);
+
+        Object.defineProperty(document, 'cookie', {
+            writable: true,
+            value: 'user=undefined',
+        });
+
+        const wrapper = ({ children }) => (
+            <FusionAuthProvider {...TEST_CONFIG}>{children}</FusionAuthProvider>
+        );
+        const { result } = renderHook(() => useFusionAuth(), {
+            wrapper,
+        });
+
+        await waitFor(() => expect(result.current.user).toEqual({}));
+    });
+
     test('Logout function will navigate to the correct url', async () => {
         mockFetchJson({});
         const mockedLocation = {
