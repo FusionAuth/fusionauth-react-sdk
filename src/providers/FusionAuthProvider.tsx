@@ -184,23 +184,15 @@ export const FusionAuthProvider: React.FC<FusionAuthConfig> = props => {
 
     // TODO - known issue of side effects in useLayoutEffect()
     useLayoutEffect(() => {
-        console.log('in useLayoutEffect');
         if (isLoading) {
             return;
         }
         const lastState = Cookies.get('lastState');
 
-        console.log(
-            `access_token_expires is ${Cookies.get('access_token_expires')}`,
-        );
-        console.log(`user is ${Cookies.get('user')}`);
-
         if (Cookies.get('access_token_expires')) {
             setIsAuthenticated(true);
 
             if (!Cookies.get('user')) {
-                console.log('in useLayoutEffect()  getting user....');
-
                 const urlParams = new URLSearchParams(window.location.search);
                 setIsLoading(true);
 

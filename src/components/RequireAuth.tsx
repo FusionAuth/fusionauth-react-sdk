@@ -12,6 +12,5 @@ export const RequireAuth: FC<Props> = ({ withRole, children }) => {
         ? isAuthenticated && user?.roles?.includes(withRole)
         : isAuthenticated;
 
-    console.log(`in RequireAuth`);
     return <>{isAuthorized && children}</>;
 };
