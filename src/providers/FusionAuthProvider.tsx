@@ -119,7 +119,13 @@ export const FusionAuthProvider: React.FC<FusionAuthConfig> = props => {
             queryParams,
         );
         window.location.assign(fullUrl);
-    }, [generateServerUrl, props.clientID, props.redirectUri, props.serverUrl]);
+    }, [
+        generateServerUrl,
+        props.clientID,
+        props.logoutPath,
+        props.redirectUri,
+        props.serverUrl,
+    ]);
 
     const register = useCallback(
         async (state = '') => {
@@ -193,7 +199,6 @@ export const FusionAuthProvider: React.FC<FusionAuthConfig> = props => {
             setIsAuthenticated(true);
 
             if (!Cookies.get('user')) {
-                const urlParams = new URLSearchParams(window.location.search);
                 setIsLoading(true);
 
                 fetch(generateServerUrl(ServerFunctionType.me, props?.mePath), {
@@ -218,7 +223,7 @@ export const FusionAuthProvider: React.FC<FusionAuthConfig> = props => {
         } else {
             setIsAuthenticated(false);
         }
-    }, [props, props.serverUrl]);
+    });
 
     const providerValue = useMemo(
         () => ({
@@ -228,17 +233,8 @@ export const FusionAuthProvider: React.FC<FusionAuthConfig> = props => {
             isAuthenticated,
             isLoading,
             user,
-            refreshToken,
         }),
-        [
-            login,
-            logout,
-            register,
-            isAuthenticated,
-            isLoading,
-            user,
-            refreshToken,
-        ],
+        [login, logout, register, isAuthenticated, isLoading, user],
     );
 
     return (
