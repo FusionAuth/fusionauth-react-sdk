@@ -238,7 +238,15 @@ export const FusionAuthProvider: React.FC<FusionAuthConfig> = props => {
             user,
             refreshToken,
         }),
-        [login, logout, register, isAuthenticated, isLoading, user],
+        [
+            login,
+            logout,
+            register,
+            isAuthenticated,
+            isLoading,
+            refreshToken,
+            user,
+        ],
     );
 
     return (
