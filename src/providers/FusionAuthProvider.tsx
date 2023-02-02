@@ -124,7 +124,6 @@ export const FusionAuthProvider: React.FC<FusionAuthConfig> = props => {
         props.clientID,
         props.logoutPath,
         props.redirectUri,
-        props.serverUrl,
     ]);
 
     const register = useCallback(
@@ -163,7 +162,7 @@ export const FusionAuthProvider: React.FC<FusionAuthConfig> = props => {
         }
     }, [setUser]);
 
-    const refreshToken = async () => {
+    const refreshToken = useCallback(async () => {
         const accessTokenExpires = Cookies.get('access_token_expires');
         const timeWindow =
             props.accessTokenExpireWindow ?? DEFAULT_ACCESS_TOKEN_EXPIRE_WINDOW;
@@ -186,7 +185,11 @@ export const FusionAuthProvider: React.FC<FusionAuthConfig> = props => {
                 },
             );
         }
-    };
+    }, [
+        generateServerUrl,
+        props.tokenRefreshPath,
+        props.accessTokenExpireWindow,
+    ]);
 
     // TODO - known issue of side effects in useLayoutEffect()
     useLayoutEffect(() => {
@@ -223,7 +226,7 @@ export const FusionAuthProvider: React.FC<FusionAuthConfig> = props => {
         } else {
             setIsAuthenticated(false);
         }
-    });
+    }, [isLoading, generateServerUrl, props]);
 
     const providerValue = useMemo(
         () => ({
@@ -233,6 +236,7 @@ export const FusionAuthProvider: React.FC<FusionAuthConfig> = props => {
             isAuthenticated,
             isLoading,
             user,
+            refreshToken,
         }),
         [login, logout, register, isAuthenticated, isLoading, user],
     );
