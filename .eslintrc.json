@@ -20,6 +20,8 @@
   ],
   "rules": {
     "react/prop-types": "off",
+    // Note: disable the base rule as it can report incorrect errors
+    "no-unused-vars": "off",
     "@typescript-eslint/ban-ts-comment": "off",
     "@typescript-eslint/ban-ts-ignore": "off",
     "@typescript-eslint/interface-name-prefix": "off",

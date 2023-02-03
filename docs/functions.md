@@ -11,7 +11,7 @@ A hook that returns an object containing the [FusionAuthContext](context.md#fusi
 | logout          | `(state?: string) => void` | Used to login to FusionAuth                                                        |
 | register        | `(state?: string) => void` | Used to register for FusionAuth                                                    |
 | logout          | `() => void`               | Used to logout of FusionAuth                                                       |
-| refreshToken    | `() => void`               | Refreshes the user's access token                                                  |
+| refreshToken    | `() => void`               | Refreshes the user's access token if about to expire                               |
 | user            | `object`                   | An object containing user data                                                     |
 | isLoading       | `boolean`                  | `true` if the token exchange is in progress, `false` otherwise                     |
 | isAuthenticated | `boolean`                  | `true` if the user is successfully authenticatd with FusionAuth, `false` otherwise |

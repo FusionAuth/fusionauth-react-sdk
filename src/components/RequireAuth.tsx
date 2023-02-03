@@ -9,7 +9,7 @@ export const RequireAuth: FC<Props> = ({ withRole, children }) => {
     const { user, isAuthenticated } = useFusionAuth();
 
     const isAuthorized = withRole
-        ? isAuthenticated && user.roles.includes(withRole)
+        ? isAuthenticated && user?.roles?.includes(withRole)
         : isAuthenticated;
 
     return <>{isAuthorized && children}</>;

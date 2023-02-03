@@ -39,7 +39,7 @@ describe('FusionAuthProvider', () => {
         await waitFor(() => result.current.login('state'));
 
         const expectedUrl =
-            'https://sandbox.fusionauth.io/oauth2/authorize?client_id=85a03867-dccf-4882-adde-1a79aeec50df&scope=openid+offline_access&response_type=code&redirect_uri=http%3A%2F%2Flocalhost&code_challenge=vQOsFCjw6ob0uDpzH_x5Z7uChm2FRTIviI0vboV__Bg&code_challenge_method=S256&state=00000000000000000000000000000000000000000000000000000000%3Astate';
+            'http://localhost:9000/app/login?client_id=85a03867-dccf-4882-adde-1a79aeec50df&scope=openid+offline_access&redirect_uri=http%3A%2F%2Flocalhost&state=00000000000000000000000000000000000000000000000000000000%3Astate';
         await waitFor(() =>
             expect(mockedLocation.assign).toBeCalledWith(expectedUrl),
         );
@@ -109,7 +109,8 @@ describe('FusionAuthProvider', () => {
         await result.current.logout();
 
         const expectedUrl =
-            'https://sandbox.fusionauth.io/oauth2/logout?client_id=85a03867-dccf-4882-adde-1a79aeec50df&post_logout_redirect_uri=http%3A%2F%2Flocalhost&id_token_hint=token_hint';
+            'http://localhost:9000/app/logout?client_id=85a03867-dccf-4882-adde-1a79aeec50df&post_logout_redirect_uri=http%3A%2F%2Flocalhost';
+
         await waitFor(() =>
             expect(mockedLocation.assign).toBeCalledWith(expectedUrl),
         );
@@ -132,7 +133,7 @@ describe('FusionAuthProvider', () => {
         await waitFor(() => result.current.register('state'));
 
         const expectedUrl =
-            'https://sandbox.fusionauth.io/oauth2/register?client_id=85a03867-dccf-4882-adde-1a79aeec50df&scope=openid+offline_access&response_type=code&redirect_uri=http%3A%2F%2Flocalhost&code_challenge=vQOsFCjw6ob0uDpzH_x5Z7uChm2FRTIviI0vboV__Bg&code_challenge_method=S256&state=00000000000000000000000000000000000000000000000000000000%3Astate';
+            'http://localhost:9000/app/register?client_id=85a03867-dccf-4882-adde-1a79aeec50df&redirect_uri=http%3A%2F%2Flocalhost&scope=openid+offline_access&state=00000000000000000000000000000000000000000000000000000000%3Astate';
         await waitFor(() =>
             expect(mockedLocation.assign).toBeCalledWith(expectedUrl),
         );
