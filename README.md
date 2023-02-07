@@ -123,7 +123,7 @@ following endpoints:
 This endpoint must:
 
 1.  Generate PKCE code.
-    a. The codeVerifier should be saved in a secure HTTP-only cookie.
+    a. The code verifier should be saved in a secure HTTP-only cookie.
     b. The code challenge is passed along
 2.  Encode and save `redirect_url` from react app to `state`.
 3.  Redirect browser to `/oauth2/authorize` with a `redirect_uri` to `/app/token-exchange`
