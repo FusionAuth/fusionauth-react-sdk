@@ -125,7 +125,7 @@ This endpoint must:
 
 . Call
 https://fusionauth.io/docs/v1/tech/oauth/endpoints#complete-the-authorization-code-grant-request[/oauth2/token]
-to complete the Authorization Code Grant request. The `code` comes from the request query param and
+to complete the Authorization Code Grant request. The `code` comes from the request query parameter and
 `code_verifier` should be available in the secure HTTP-only cookie, while
 the rest of the parameters should be set/configured on the server
 side.
@@ -149,7 +149,7 @@ implementation]
 This endpoint is similar to `/login`.  It must:
 
 . Generate PKCE code.
-a. The codeVerifier should be saved in a secure HTTP-only cookie.
+a. The code verifier should be saved in a secure HTTP-only cookie.
 b. The code challenge is passed along
 . Encode and save `redirect_url` from react app to `state`.
 . Redirect browser to `/oauth2/register` with a `redirect_uri` to `/app/token-exchange`
