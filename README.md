@@ -334,7 +334,8 @@ be returned to that location after a successful authentication.
 
 The `RequireAuth` component can be used to protect information from
 unauthorized users. It takes an optional prop `withRole` that can be
-used to ensure the user has a specific role.
+used to ensure the user has a specific role. If an array of roles is
+passed, the user must have at least one of the roles to be authorized.
 
 ```react
 import { RequireAuth, useFusionAuth } from '@fusionauth/react-sdk';
