@@ -1,5 +1,15 @@
 fusionauth-react-sdk Changes
 
+Changes in 0.25.0
+
+-   _Breaking change_ A few endpoint name updates and cookie name updates
+    -   `/app/token-refresh` is now `/app/refresh`
+    -   `/app/token-exchange` is now `/app/callback`
+    -   `access_token` cookie is now `app.at`
+    -   `access_token_expires` cookie is now `app.at_exp`
+    -   `id_token` is now `app.idt`
+    -   `refresh_token` cookie is now `app.rt`
+
 Changes in 0.24.0
 
 -   _Breaking change_ Refactoring to work with upcoming FusionAuth hosted token exchange endpoints. _Many_ changes with server communication.

@@ -54,12 +54,12 @@ then log in. After that, they are sent back to your React application.
 Once authentication succeeds, the following secure, HTTP-only cookies
 will be set:
 
--   `access_token` - an OAuth [Access
+-   `app.at` - an OAuth [Access
     Token](https://fusionauth.io/docs/v1/tech/oauth/tokens#access-token)
 
--   `refresh_token` - a [Refresh
+-   `app.rt` - a [Refresh
     Token](https://fusionauth.io/docs/v1/tech/oauth/tokens#refresh-token)
-    used to obtain a new `access_token`. This cookie will only be set if
+    used to obtain a new `app.at`. This cookie will only be set if
     refresh tokens are enabled on your FusionAuth instance.
 
 The access token can be presented to APIs to authorize the request and
@@ -131,7 +131,7 @@ This endpoint must:
 [Example
 implementation](https://github.com/FusionAuth/fusionauth-example-react-sdk/blob/main/server/routes/login.js)
 
-### `GET /app/token-exchange`
+### `GET /app/callback`
 
 This endpoint must:
 
@@ -142,14 +142,14 @@ This endpoint must:
     the rest of the parameters should be set/configured on the server
     side.
 
-2.  Once the token exchange succeeds, read the `access_token` from the
+2.  Once the token exchange succeeds, read the `app.at` from the
     response body and set it as a secure, HTTP-only cookie with the same
     name.
 
 3.  If you wish to support refresh tokens, repeat step 2 for the
-    `refresh_token` cookie.
+    `app.rt` cookie.
 
-4.  Save the expiration time in a readable `access_token_expires` cookie.  And save the `id_token` in a readable cookie.
+4.  Save the expiration time in a readable `app.at_exp` cookie.  And save the `app.idt` id token in a readable cookie.
 
 5.  Redirect browser back to encoded url saved in `state`.
 
@@ -159,7 +159,7 @@ This endpoint must:
     this object.
 
 [Example
-implementation](https://github.com/FusionAuth/fusionauth-example-react-sdk/blob/main/server/routes/token-exchange.js)
+implementation](https://github.com/FusionAuth/fusionauth-example-react-sdk/blob/main/server/routes/callback.js)
 
 ### `GET /app/register`
 
@@ -169,7 +169,7 @@ This endpoint is similar to `/login`.  It must:
     a. The code verifier should be saved in a secure HTTP-only cookie.
     b. The code challenge is passed along
 2.  Encode and save `redirect_url` from react app to `state`.
-3.  Redirect browser to `/oauth2/register` with a `redirect_uri` to `/app/token-exchange`
+3.  Redirect browser to `/oauth2/register` with a `redirect_uri` to `/app/callback`
 
 [Example
 implementation](https://github.com/FusionAuth/fusionauth-example-react-sdk/blob/main/server/routes/register.js)
@@ -178,7 +178,7 @@ implementation](https://github.com/FusionAuth/fusionauth-example-react-sdk/blob/
 
 This endpoint must:
 
-1.  Use `access_token` from cookie and use as the Bearer token to call `/oauth2/userinfo`
+1.  Use `app.at` from cookie and use as the Bearer token to call `/oauth2/userinfo`
 2.  Return json data
 
 [Example
@@ -188,9 +188,9 @@ implementation](https://github.com/FusionAuth/fusionauth-example-react-sdk/blob/
 
 This endpoint must:
 
-1.  Clear the `access_token` and `refresh_token` secure, HTTP-only
+1.  Clear the `app.at` and `app.rt` secure, HTTP-only
     cookies.
-2.  Clear the `access_token_expires` and `id_token` secure cookies.
+2.  Clear the `app.at_exp` and `app.idt` secure cookies.
 3.  Redirect to `/oauth2/logout`
 
 [Example
@@ -203,9 +203,9 @@ endpoint must:
 
 1.  Call
     [/oauth2/token](https://fusionauth.io/docs/v1/tech/oauth/endpoints#refresh-token-grant-request)
-    to get a new `access_token` and `refresh_token`.
+    to get a new `app.at` and `app.rt`.
 
-2.  Update the `access_token`, `access_token_expires`, `id_token`, and `refresh_token` cookies from the
+2.  Update the `app.at`, `app.at_exp`, `app.idt`, and `app.rt` cookies from the
     response.
 
 [Example

@@ -18,13 +18,13 @@
 
 If you set up your own server to do token exchange with different paths, set these values.
 
-| Name             | Type     | Description                                            | Example              |
-| ---------------- | -------- | ------------------------------------------------------ | -------------------- |
-| loginPath        | `string` | Server login endpoint. Initiates oauth login.          | `/app/login`         |
-| logoutPath       | `string` | Server logout endpoint                                 | `/app/logout`        |
-| registerPath     | `string` | Server register endpoint. Initiates oauth register.    | `/app/register`      |
-| tokenRefreshPath | `string` | Server token refresh endpoint. Refreshes access_token. | `/app/token-refresh` |
-| mePath           | `string` | Server userinfo endpoint                               | `/app/me`            |
+| Name             | Type     | Description                                             | Example         |
+| ---------------- | -------- | ------------------------------------------------------- | --------------- |
+| loginPath        | `string` | Server login endpoint. Initiates oauth login.           | `/app/login`    |
+| logoutPath       | `string` | Server logout endpoint                                  | `/app/logout`   |
+| registerPath     | `string` | Server register endpoint. Initiates oauth register.     | `/app/register` |
+| tokenRefreshPath | `string` | Server token refresh endpoint. Refreshes app.at cookie. | `/app/refresh`  |
+| mePath           | `string` | Server userinfo endpoint                                | `/app/me`       |
 
 ## FusionAuthContext
 
