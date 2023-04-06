@@ -56,7 +56,7 @@ export const FusionAuthProvider: React.FC<FusionAuthConfig> = props => {
     const { children } = props;
 
     const [isAuthenticated, setIsAuthenticated] = useState(
-        () => !!Cookies.get('access_token_expires'), // TODO - look at idToken?
+        () => !!Cookies.get('app.at_exp'), // TODO - look at idToken?
     );
     const [isLoading, setIsLoading] = useState(false);
 
@@ -163,7 +163,7 @@ export const FusionAuthProvider: React.FC<FusionAuthConfig> = props => {
     }, [setUser]);
 
     const refreshToken = useCallback(async () => {
-        const accessTokenExpires = Cookies.get('access_token_expires');
+        const accessTokenExpires = Cookies.get('app.at_exp');
         const timeWindow =
             props.accessTokenExpireWindow ?? DEFAULT_ACCESS_TOKEN_EXPIRE_WINDOW;
         if (
@@ -198,7 +198,7 @@ export const FusionAuthProvider: React.FC<FusionAuthConfig> = props => {
         }
         const lastState = Cookies.get('lastState');
 
-        if (Cookies.get('access_token_expires')) {
+        if (Cookies.get('app.at_exp')) {
             setIsAuthenticated(true);
 
             if (!Cookies.get('user')) {
@@ -262,7 +262,7 @@ enum ServerFunctionType {
     login = 'login',
     logout = 'logout',
     register = 'register',
-    tokenRefresh = 'token-refresh',
+    tokenRefresh = 'refresh',
     me = 'me',
 }
 
