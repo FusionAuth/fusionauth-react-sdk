@@ -1,7 +1,11 @@
 import React from 'react';
 import { screen, render, waitFor, act } from '@testing-library/react';
 import { RequireAuth } from '../components/RequireAuth';
-import { FusionAuthProvider } from '../providers/FusionAuthProvider';
+import {
+    FusionAuthContext,
+    FusionAuthProvider,
+    IFusionAuthContext,
+} from '../providers/FusionAuthProvider';
 import { FusionAuthLogoutButton } from '../components/FusionAuthLogoutButton';
 import {
     TEST_REDIRECT_URL,
@@ -57,6 +61,12 @@ describe('RequireAuth Component', () => {
         });
 
         // expect(await screen.queryByText('Logout')).toBeNull();
+        expect(await screen.findByText('Logout')).toBeInTheDocument();
+    });
+
+    test('RequireAuth Component renders children when user is present with one of the roles present', async () => {
+        renderWithContext(['admin', 'super-admin'], ['admin']);
+
         expect(await screen.findByText('Logout')).toBeInTheDocument();
     });
 
@@ -129,5 +139,29 @@ const renderProvider = (role?: string) => {
                 </RequireAuth>
             </FusionAuthProvider>,
         ),
+    );
+};
+
+const renderWithContext = (
+    providerRoles: string | string[],
+    role?: string | string[],
+) => {
+    // We mock the fusion auth context to return a user with the admin role
+    const context: IFusionAuthContext = {
+        login: () => Promise.resolve(),
+        logout: () => Promise.resolve(),
+        register: () => Promise.resolve(),
+        user: { roles: providerRoles },
+        isLoading: false,
+        isAuthenticated: true,
+        refreshToken: () => Promise.resolve(),
+    };
+
+    return render(
+        <FusionAuthContext.Provider value={context}>
+            <RequireAuth withRole={role}>
+                <FusionAuthLogoutButton />
+            </RequireAuth>
+        </FusionAuthContext.Provider>,
     );
 };
