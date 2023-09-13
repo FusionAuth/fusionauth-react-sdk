@@ -168,7 +168,7 @@ export const FusionAuthProvider: React.FC<FusionAuthConfig> = props => {
             props.accessTokenExpireWindow ?? DEFAULT_ACCESS_TOKEN_EXPIRE_WINDOW;
         if (
             accessTokenExpires === undefined ||
-            Number(accessTokenExpires) < Date.now() + timeWindow
+            Number(accessTokenExpires) * 1000 < Date.now() + timeWindow
         ) {
             await fetch(
                 generateServerUrl(
