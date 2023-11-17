@@ -108,7 +108,8 @@ const root = createRoot(container!);
     );
 ```
 
-## Server Code Requirements
+<!-- this is pulled into docs and our link checker complains if we don't have the id tag here -->
+<h2 id="server-code-requirements">Server Code Requirements</h2>
 
 Authenticating with FusionAuth requires you to set up a server that will
 be used to perform the OAuth token exchange. This server must have the
