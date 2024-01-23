@@ -1,3 +1,5 @@
+This is just a test, do not merge!
+
 An SDK for using FusionAuth in React applications.
 
 # Table of Contents
