@@ -1,8 +1,6 @@
-An SDK for using FusionAuth in React applications.
+This is just a test, do not merge!
 
-*This is currently in beta testing. We're working towards a 1.0
-release. You can https://github.com/FusionAuth/fusionauth-issues/issues/2049[track that progress
-here].*
+An SDK for using FusionAuth in React applications.
 
 == Table of Contents
 
@@ -100,6 +98,9 @@ const root = createRoot(container!);
     );
 ----
 
+// this is pulled into docs and our link checker complains if we don't have the id tag here
+
+[#server-code-requirements]
 === Server Code Requirements
 
 Authenticating with FusionAuth requires you to set up a server that will
@@ -320,7 +321,8 @@ be returned to that location after a successful authentication.
 
 The `RequireAuth` component can be used to protect information from
 unauthorized users. It takes an optional prop `withRole` that can be
-used to ensure the user has a specific role.
+used to ensure the user has a specific role. If an array of roles is
+passed, the user must have at least one of the roles to be authorized.
 
 [,react]
 ----
