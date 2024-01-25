@@ -3,8 +3,8 @@ import React, {
     useCallback,
     useContext,
     useEffect,
-    useLayoutEffect,
     useMemo,
+    useRef,
     useState,
 } from 'react';
 import Cookies from 'js-cookie';
@@ -53,7 +53,7 @@ export interface FusionAuthConfig extends PropsWithChildren {
 }
 
 export const FusionAuthProvider: React.FC<FusionAuthConfig> = props => {
-    const { children } = props;
+    const { children, onRedirectSuccess, onRedirectFail, mePath } = props;
 
     const [isAuthenticated, setIsAuthenticated] = useState(
         () => !!Cookies.get('app.at_exp'), // TODO - look at idToken?
@@ -191,42 +191,54 @@ export const FusionAuthProvider: React.FC<FusionAuthConfig> = props => {
         props.accessTokenExpireWindow,
     ]);
 
-    // TODO - known issue of side effects in useLayoutEffect()
-    useLayoutEffect(() => {
+    const didFetchUser = useRef(false);
+
+    useEffect(() => {
         if (isLoading) {
             return;
         }
+
+        if (!Cookies.get('app.at_exp')) {
+            setIsAuthenticated(false);
+            return;
+        }
+
+        if (Cookies.get('user') || didFetchUser.current) {
+            return;
+        }
+
+        setIsLoading(true);
+        didFetchUser.current = true;
         const lastState = Cookies.get('lastState');
 
-        if (Cookies.get('app.at_exp')) {
-            setIsAuthenticated(true);
+        fetch(generateServerUrl(ServerFunctionType.me, mePath), {
+            credentials: 'include',
+        })
+            .then(response => response.json())
+            .then(user => {
+                setUser(user);
+                setIsAuthenticated(true);
 
-            if (!Cookies.get('user')) {
-                setIsLoading(true);
-
-                fetch(generateServerUrl(ServerFunctionType.me, props?.mePath), {
-                    credentials: 'include',
-                })
-                    .then(response => response.json())
-                    .then(user => {
-                        Cookies.set('user', JSON.stringify(user));
-                        setUser(user);
-
-                        if (lastState) {
-                            const [, ...stateParam] = lastState.split(':');
-                            const state = stateParam.join(':');
-                            props.onRedirectSuccess?.(state);
-                        }
-                    })
-                    .catch(error => {
-                        props.onRedirectFail?.(error);
-                    })
-                    .finally(() => setIsLoading(false));
-            }
-        } else {
-            setIsAuthenticated(false);
-        }
-    }, [isLoading, generateServerUrl, props]);
+                if (lastState) {
+                    const [, ...stateParam] = lastState.split(':');
+                    const state = stateParam.join(':');
+                    onRedirectSuccess?.(state);
+                }
+            })
+            .catch(error => {
+                onRedirectFail?.(error);
+            })
+            .finally(() => {
+                setIsLoading(false);
+            });
+    }, [
+        isAuthenticated,
+        isLoading,
+        generateServerUrl,
+        onRedirectFail,
+        onRedirectSuccess,
+        mePath,
+    ]);
 
     const providerValue = useMemo(
         () => ({
