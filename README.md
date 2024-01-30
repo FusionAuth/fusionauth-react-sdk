@@ -61,9 +61,12 @@ will be set:
 The access token can be presented to APIs to authorize the request and
 the refresh token can be used to get a new access token.
 
-Note that this SDK requires you to have a server that performs the OAuth
-token exchange. See [Server Code
-Requirements](#server-code-requirements) for more details.
+There are 2 ways to interact with this SDK:
+1. Host your own server that performs the OAuth token exchange. See [Server Code
+Requirements](#server-code-requirements) for more details.
+    - Example app with server code: [fusionauth-example-react-sdk](https://github.com/FusionAuth/fusionauth-example-react-sdk)
+2. Use the endpoints hosted by your FusionAuth instance to perform the OAuth token exchange for you.
+    - Example app without server code: [fusionauth-quickstart-javascript-react-web](https://github.com/FusionAuth/fusionauth-quickstart-javascript-react-web)
 
 You can use this library against any version of FusionAuth or any OIDC
 compliant identity server.
@@ -100,7 +103,7 @@ const root = createRoot(container!);
     root.render(
         <FusionAuthProvider
             clientID=""     // Your FusionAuth client ID
-            serverUrl=""    // The base URL of your server for the token exchange
+            serverUrl=""    // The URL of the server that performs the token exchange
             redirectUri=""  // The URI that the user is directed to after the login/register/logout action
         >
             <App />
@@ -111,9 +114,7 @@ const root = createRoot(container!);
 <!-- this is pulled into docs and our link checker complains if we don't have the id tag here -->
 <h2 id="server-code-requirements">Server Code Requirements</h2>
 
-Authenticating with FusionAuth requires you to set up a server that will
-be used to perform the OAuth token exchange. This server must have the
-following endpoints:
+If you set up your own server to perform the OAuth token exchange, it must have the following endpoints:
 
 ### `GET /app/login`
 
