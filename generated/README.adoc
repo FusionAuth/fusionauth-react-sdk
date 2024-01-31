@@ -1,9 +1,5 @@
 An SDK for using FusionAuth in React applications.
 
-*This is currently in beta testing. We're working towards a 1.0
-release. You can https://github.com/FusionAuth/fusionauth-issues/issues/2049[track that progress
-here].*
-
 == Table of Contents
 
 * <<overview,Overview>>
@@ -50,9 +46,13 @@ refresh tokens are enabled on your FusionAuth instance.
 The access token can be presented to APIs to authorize the request and
 the refresh token can be used to get a new access token.
 
-Note that this SDK requires you to have a server that performs the OAuth
-token exchange. See <<server-code-requirements,Server Code
+There are 2 ways to interact with this SDK:
+
+. Host your own server that performs the OAuth token exchange. See <<server-code-requirements,Server Code
 Requirements>> for more details.
+ ** Example app with server code: https://github.com/FusionAuth/fusionauth-example-react-sdk[fusionauth-example-react-sdk]
+. Use the endpoints hosted by your FusionAuth instance to perform the OAuth token exchange for you.
+ ** Example app without server code: https://github.com/FusionAuth/fusionauth-quickstart-javascript-react-web[fusionauth-quickstart-javascript-react-web]
 
 You can use this library against any version of FusionAuth or any OIDC
 compliant identity server.
@@ -92,7 +92,7 @@ const root = createRoot(container!);
     root.render(
         <FusionAuthProvider
             clientID=""     // Your FusionAuth client ID
-            serverUrl=""    // The base URL of your server for the token exchange
+            serverUrl=""    // The URL of the server that performs the token exchange
             redirectUri=""  // The URI that the user is directed to after the login/register/logout action
         >
             <App />
@@ -100,11 +100,12 @@ const root = createRoot(container!);
     );
 ----
 
+// this is pulled into docs and our link checker complains if we don't have the id tag here
+
+[#server-code-requirements]
 === Server Code Requirements
 
-Authenticating with FusionAuth requires you to set up a server that will
-be used to perform the OAuth token exchange. This server must have the
-following endpoints:
+If you set up your own server to perform the OAuth token exchange, it must have the following endpoints:
 
 ==== `GET /app/login`
 
@@ -320,7 +321,8 @@ be returned to that location after a successful authentication.
 
 The `RequireAuth` component can be used to protect information from
 unauthorized users. It takes an optional prop `withRole` that can be
-used to ensure the user has a specific role.
+used to ensure the user has a specific role. If an array of roles is
+passed, the user must have at least one of the roles to be authorized.
 
 [,react]
 ----
