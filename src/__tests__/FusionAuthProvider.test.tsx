@@ -6,7 +6,7 @@ import {
 } from '../providers/FusionAuthProvider';
 import { mockCrypto } from './mocks/mockCrypto';
 import { mockFetchJson } from './mocks/mockFetchJson';
-import { TEST_CONFIG, TEST_COOKIE } from './mocks/testConfig';
+import { TEST_CONFIG } from './mocks/testConfig';
 
 let location: Location;
 
@@ -45,16 +45,11 @@ describe('FusionAuthProvider', () => {
         );
     });
 
-    test('User set to the value stored in the cookie', async () => {
-        const mockedLocation = {
-            ...location,
-            assign: jest.fn(),
-        };
-        jest.spyOn(window, 'location', 'get').mockReturnValue(mockedLocation);
-
+    test('User set to the value stored in the cookie', () => {
+        const trent = { name: 'trent anderson' };
         Object.defineProperty(document, 'cookie', {
             writable: true,
-            value: `user=${JSON.stringify({ name: 'trent anderson' })}`,
+            value: `user=${JSON.stringify(trent)}`,
         });
 
         const wrapper = ({ children }) => (
@@ -64,12 +59,50 @@ describe('FusionAuthProvider', () => {
             wrapper,
         });
 
-        await waitFor(() =>
-            expect(result.current.user).toEqual({ name: 'trent anderson' }),
-        );
+        expect(result.current.user).toEqual(trent);
+        expect(result.current.isAuthenticated).toBe(true);
     });
 
-    test('User to empty when user cookie is not json parsable', async () => {
+    test('Will fetch the user from the server when the id token cookie is set', async () => {
+        Object.defineProperty(document, 'cookie', {
+            writable: true,
+            value: `app.idt=12345`,
+        });
+
+        const user = { name: 'Mr. Userton' };
+        mockFetchJson(user);
+
+        const serverUrl = 'my-server.com';
+        const mePath = '/my-me-path';
+
+        const { result } = renderHook(() => useFusionAuth(), {
+            wrapper: ({ children }) => (
+                <FusionAuthProvider
+                    {...TEST_CONFIG}
+                    serverUrl={serverUrl}
+                    mePath={mePath}
+                >
+                    {children}
+                </FusionAuthProvider>
+            ),
+        });
+
+        expect(result.current.isLoading).toBe(true);
+        expect(result.current.user).toEqual({});
+        expect(result.current.isAuthenticated).toBe(false);
+        expect(fetch).toHaveBeenCalledWith(serverUrl + mePath, {
+            credentials: 'include',
+        });
+
+        await waitFor(() => {
+            expect(result.current.isLoading).toBe(false);
+            expect(result.current.user).toEqual(user);
+            expect(result.current.isAuthenticated).toBe(true);
+            expect(fetch).toHaveBeenCalledTimes(1);
+        });
+    });
+
+    test('User to empty when user cookie is not json parsable', () => {
         const mockedLocation = {
             ...location,
             assign: jest.fn(),
@@ -88,7 +121,8 @@ describe('FusionAuthProvider', () => {
             wrapper,
         });
 
-        await waitFor(() => expect(result.current.user).toEqual({}));
+        expect(result.current.user).toEqual({});
+        expect(result.current.isAuthenticated).toEqual(false);
     });
 
     test('Logout function will navigate to the correct url', async () => {
@@ -142,7 +176,7 @@ describe('FusionAuthProvider', () => {
     test('Will invoke the onRedirectFail callback only once', async () => {
         Object.defineProperty(document, 'cookie', {
             writable: true,
-            value: TEST_COOKIE,
+            value: 'app.idt=abc123;',
         });
 
         const errorThrown = 'something went wrong';
@@ -160,22 +194,21 @@ describe('FusionAuthProvider', () => {
             ),
         });
 
-        await waitFor(() =>
-            expect(redirectFailHandler).toHaveBeenCalledTimes(1),
-        );
-        await waitFor(() =>
-            expect(redirectFailHandler).toHaveBeenCalledWith(errorThrown),
-        );
+        await waitFor(() => {
+            expect(redirectFailHandler).toHaveBeenCalledTimes(1);
+            expect(redirectFailHandler).toHaveBeenCalledWith(errorThrown);
+        });
     });
 
     test('Will invoke the onRedirectSuccess callback only once', async () => {
+        const stateValue = 'some-value';
         Object.defineProperty(document, 'cookie', {
             writable: true,
-            value: TEST_COOKIE,
+            value: `lastState=12345:${stateValue}; app.idt=abc123;`,
         });
 
         const redirectSuccessHandler = jest.fn();
-        mockFetchJson({});
+        mockFetchJson({ role: 'user' });
 
         renderHook(() => useFusionAuth(), {
             wrapper: ({ children }) => (
@@ -188,8 +221,9 @@ describe('FusionAuthProvider', () => {
             ),
         });
 
-        await waitFor(() =>
-            expect(redirectSuccessHandler).toHaveBeenCalledTimes(1),
-        );
+        await waitFor(() => {
+            expect(redirectSuccessHandler).toHaveBeenCalledTimes(1);
+            expect(redirectSuccessHandler).toHaveBeenCalledWith(stateValue);
+        });
     });
 });

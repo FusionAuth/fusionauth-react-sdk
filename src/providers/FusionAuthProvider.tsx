@@ -54,12 +54,10 @@ export interface FusionAuthConfig extends PropsWithChildren {
 export const FusionAuthProvider: React.FC<FusionAuthConfig> = props => {
     const { children, onRedirectSuccess, onRedirectFail, mePath } = props;
 
-    const [isAuthenticated, setIsAuthenticated] = useState(
-        () => !!Cookies.get('app.at_exp'), // TODO - look at idToken?
-    );
     const [isLoading, setIsLoading] = useState(false);
 
     const [user, setUser] = useState<Record<string, any>>({});
+    const isAuthenticated = useMemo(() => Object.keys(user).length > 0, [user]);
 
     const generateServerUrl = useCallback(
         (
@@ -150,17 +148,6 @@ export const FusionAuthProvider: React.FC<FusionAuthConfig> = props => {
         ],
     );
 
-    useEffect(() => {
-        const userCookie = Cookies.get('user');
-        if (userCookie) {
-            try {
-                setUser(JSON.parse(userCookie));
-            } catch {
-                /* if JSON parse fails doesn't crash the app */
-            }
-        }
-    }, [setUser]);
-
     const refreshToken = useCallback(async () => {
         const accessTokenExpires = Cookies.get('app.at_exp');
         const timeWindow =
@@ -193,54 +180,59 @@ export const FusionAuthProvider: React.FC<FusionAuthConfig> = props => {
         generateServerUrl,
     ]);
 
-    const didFetchUser = useRef(false);
-
-    useEffect(() => {
-        if (isLoading) {
-            return;
+    const setUserFromCookie = useCallback((cookie: string) => {
+        try {
+            const parsedUserCookie = JSON.parse(cookie);
+            setUser(parsedUserCookie);
+        } catch {
+            /* if JSON parse fails doesn't crash the app */
         }
+    }, []);
 
-        if (!Cookies.get('app.at_exp')) {
-            setIsAuthenticated(false);
-            return;
-        }
-
-        if (Cookies.get('user') || didFetchUser.current) {
-            return;
-        }
-
+    const fetchUserFromServer = useCallback(async () => {
         setIsLoading(true);
-        didFetchUser.current = true;
-        const lastState = Cookies.get('lastState');
+        try {
+            const response = await fetch(
+                generateServerUrl(ServerFunctionType.me, mePath),
+                {
+                    credentials: 'include',
+                },
+            );
+            const user = await response.json();
+            setUser(user);
 
-        fetch(generateServerUrl(ServerFunctionType.me, mePath), {
-            credentials: 'include',
-        })
-            .then(response => response.json())
-            .then(user => {
-                setUser(user);
-                setIsAuthenticated(true);
+            const lastState = Cookies.get('lastState');
+            if (lastState) {
+                const [, ...stateParam] = lastState.split(':');
+                const state = stateParam.join(':');
+                onRedirectSuccess?.(state);
+            }
+        } catch (error) {
+            onRedirectFail?.(error);
+        }
 
-                if (lastState) {
-                    const [, ...stateParam] = lastState.split(':');
-                    const state = stateParam.join(':');
-                    onRedirectSuccess?.(state);
-                }
-            })
-            .catch(error => {
-                onRedirectFail?.(error);
-            })
-            .finally(() => {
-                setIsLoading(false);
-            });
-    }, [
-        isAuthenticated,
-        isLoading,
-        generateServerUrl,
-        onRedirectFail,
-        onRedirectSuccess,
-        mePath,
-    ]);
+        setIsLoading(false);
+    }, [generateServerUrl, mePath, onRedirectSuccess, onRedirectFail]);
+
+    const didSetUser = useRef(false);
+    useEffect(() => {
+        if (isLoading || isAuthenticated || didSetUser.current) {
+            return;
+        }
+
+        didSetUser.current = true;
+
+        const userCookie = Cookies.get('user');
+        if (userCookie) {
+            setUserFromCookie(userCookie);
+            return;
+        }
+
+        const hasIdToken = Boolean(Cookies.get('app.idt'));
+        if (hasIdToken) {
+            fetchUserFromServer();
+        }
+    }, [isAuthenticated, isLoading, setUserFromCookie, fetchUserFromServer]);
 
     const providerValue = useMemo(
         () => ({
