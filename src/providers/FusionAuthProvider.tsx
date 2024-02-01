@@ -168,7 +168,7 @@ export const FusionAuthProvider: React.FC<FusionAuthConfig> = props => {
         const fallbackTokenRefreshPath = `/app/refresh/${props.clientID}`;
         if (
             accessTokenExpires === undefined ||
-            Number(accessTokenExpires) < Date.now() + timeWindow
+            Number(accessTokenExpires) * 1000 < Date.now() + timeWindow
         ) {
             await fetch(
                 generateServerUrl(
