@@ -6,7 +6,7 @@ import {
 } from '../providers/FusionAuthProvider';
 import { mockCrypto } from './mocks/mockCrypto';
 import { mockFetchJson } from './mocks/mockFetchJson';
-import { TEST_CONFIG } from './mocks/testConfig';
+import { TEST_CONFIG, TEST_COOKIE } from './mocks/testConfig';
 
 let location: Location;
 
@@ -136,6 +136,60 @@ describe('FusionAuthProvider', () => {
             'http://localhost:9000/app/register?client_id=85a03867-dccf-4882-adde-1a79aeec50df&redirect_uri=http%3A%2F%2Flocalhost&scope=openid+offline_access&state=00000000000000000000000000000000000000000000000000000000%3Astate';
         await waitFor(() =>
             expect(mockedLocation.assign).toBeCalledWith(expectedUrl),
+        );
+    });
+
+    test('Will invoke the onRedirectFail callback only once', async () => {
+        Object.defineProperty(document, 'cookie', {
+            writable: true,
+            value: TEST_COOKIE,
+        });
+
+        const errorThrown = 'something went wrong';
+        const redirectFailHandler = jest.fn();
+        jest.spyOn(global, 'fetch').mockRejectedValue(errorThrown);
+
+        renderHook(() => useFusionAuth(), {
+            wrapper: ({ children }) => (
+                <FusionAuthProvider
+                    {...TEST_CONFIG}
+                    onRedirectFail={redirectFailHandler}
+                >
+                    {children}
+                </FusionAuthProvider>
+            ),
+        });
+
+        await waitFor(() =>
+            expect(redirectFailHandler).toHaveBeenCalledTimes(1),
+        );
+        await waitFor(() =>
+            expect(redirectFailHandler).toHaveBeenCalledWith(errorThrown),
+        );
+    });
+
+    test('Will invoke the onRedirectSuccess callback only once', async () => {
+        Object.defineProperty(document, 'cookie', {
+            writable: true,
+            value: TEST_COOKIE,
+        });
+
+        const redirectSuccessHandler = jest.fn();
+        mockFetchJson({});
+
+        renderHook(() => useFusionAuth(), {
+            wrapper: ({ children }) => (
+                <FusionAuthProvider
+                    {...TEST_CONFIG}
+                    onRedirectSuccess={redirectSuccessHandler}
+                >
+                    {children}
+                </FusionAuthProvider>
+            ),
+        });
+
+        await waitFor(() =>
+            expect(redirectSuccessHandler).toHaveBeenCalledTimes(1),
         );
     });
 });
