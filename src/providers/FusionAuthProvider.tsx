@@ -44,7 +44,6 @@ export interface FusionAuthConfig extends PropsWithChildren {
     onRedirectFail?: RedirectFail;
     scope?: string;
     accessTokenExpireWindow?: number;
-
     loginPath?: string;
     logoutPath?: string;
     registerPath?: string;
@@ -166,6 +165,7 @@ export const FusionAuthProvider: React.FC<FusionAuthConfig> = props => {
         const accessTokenExpires = Cookies.get('app.at_exp');
         const timeWindow =
             props.accessTokenExpireWindow ?? DEFAULT_ACCESS_TOKEN_EXPIRE_WINDOW;
+        const fallbackTokenRefreshPath = `/app/refresh/${props.clientID}`;
         if (
             accessTokenExpires === undefined ||
             Number(accessTokenExpires) < Date.now() + timeWindow
@@ -173,7 +173,8 @@ export const FusionAuthProvider: React.FC<FusionAuthConfig> = props => {
             await fetch(
                 generateServerUrl(
                     ServerFunctionType.tokenRefresh,
-                    props.tokenRefreshPath,
+                    // add fallback so the optional tokenRefreshPath prop isn't required to construct the refresh URL
+                    props.tokenRefreshPath || fallbackTokenRefreshPath,
                 ),
                 {
                     method: 'POST',
@@ -186,9 +187,10 @@ export const FusionAuthProvider: React.FC<FusionAuthConfig> = props => {
             );
         }
     }, [
-        generateServerUrl,
-        props.tokenRefreshPath,
         props.accessTokenExpireWindow,
+        props.tokenRefreshPath,
+        props.clientID,
+        generateServerUrl,
     ]);
 
     // TODO - known issue of side effects in useLayoutEffect()
