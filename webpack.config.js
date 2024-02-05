@@ -13,6 +13,7 @@ module.exports = {
             react: path.resolve('./node_modules/react'),
         },
     },
+    devtool: 'source-map',
     externals: [nodeExternals()],
     output: {
         filename: 'index.js',
