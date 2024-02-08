@@ -19,6 +19,10 @@
   "bugs": {
     "url": "https://github.com/FusionAuth/fusionauth-react-sdk/issues"
   },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=10.0.0"
+  },
   "homepage": "https://github.com/FusionAuth/fusionauth-react-sdk#readme",
   "devDependencies": {
     "@babel/core": "^7.20.2",
