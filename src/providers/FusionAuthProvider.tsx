@@ -214,13 +214,14 @@ export const FusionAuthProvider: React.FC<FusionAuthConfig> = props => {
         setIsLoading(false);
     }, [generateServerUrl, mePath, onRedirectSuccess, onRedirectFail]);
 
-    const didSetUser = useRef(false);
+    const didAttemptToSetUser = useRef(false);
     useEffect(() => {
-        if (isLoading || isAuthenticated || didSetUser.current) {
+        if (isLoading || isAuthenticated || didAttemptToSetUser.current) {
             return;
         }
 
-        didSetUser.current = true;
+        // ensures this effect does not run multiple times if we fail to set the user
+        didAttemptToSetUser.current = true;
 
         const userCookie = Cookies.get('user');
         if (userCookie) {
@@ -229,6 +230,8 @@ export const FusionAuthProvider: React.FC<FusionAuthConfig> = props => {
         }
 
         const hasIdToken = Boolean(Cookies.get('app.idt'));
+        // the presence of app.idt indicates that this is a redirect from login
+        // which means we want to fetch the user
         if (hasIdToken) {
             fetchUserFromServer();
         }
