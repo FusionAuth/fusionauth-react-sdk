@@ -24,6 +24,8 @@ An SDK for using FusionAuth in React applications.
 
 -   [Example App](#example-app)
 
+-   [Quickstart](#quickstart)
+
 -   [Documentation](#documentation)
 
 -   [Releases](#releases)
@@ -34,11 +36,11 @@ this tag, and the corresponding end tag, are used to delineate what is pulled in
 Please also use ``` instead of indenting for code blocks. The backticks are translated correctly to adoc format.
 -->
 
+# Overview
+
 <!--
 tag::forDocSite[]
 -->
-
-# Overview
 
 This SDK allows you to add login, logout, and registration buttons to
 your React application. You can do this via pre-built buttons, hooks, or
@@ -71,9 +73,9 @@ Requirements](#server-code-requirements) for more details.
 You can use this library against any version of FusionAuth or any OIDC
 compliant identity server.
 
-# Getting Started
+## Getting Started
 
-## Installation
+### Installation
 
 NPM:
 
@@ -87,7 +89,7 @@ Yarn:
 yarn add @fusionauth/react-sdk
 ```
 
-## Configuring Provider
+### Configuring Provider
 
 To configure the SDK, wrap your app with `FusionAuthProvider`:
 
@@ -116,7 +118,7 @@ const root = createRoot(container!);
 
 If you set up your own server to perform the OAuth token exchange, it must have the following endpoints:
 
-### `GET /app/login`
+#### `GET /app/login`
 
 This endpoint must:
 
@@ -129,7 +131,7 @@ This endpoint must:
 [Example
 implementation](https://github.com/FusionAuth/fusionauth-example-react-sdk/blob/main/server/routes/login.js)
 
-### `GET /app/callback`
+#### `GET /app/callback`
 
 This endpoint must:
 
@@ -159,7 +161,7 @@ This endpoint must:
 [Example
 implementation](https://github.com/FusionAuth/fusionauth-example-react-sdk/blob/main/server/routes/callback.js)
 
-### `GET /app/register`
+#### `GET /app/register`
 
 This endpoint is similar to `/login`.  It must:
 
@@ -172,7 +174,7 @@ This endpoint is similar to `/login`.  It must:
 [Example
 implementation](https://github.com/FusionAuth/fusionauth-example-react-sdk/blob/main/server/routes/register.js)
 
-### `GET /app/me`
+#### `GET /app/me`
 
 This endpoint must:
 
@@ -182,7 +184,7 @@ This endpoint must:
 [Example
 implementation](https://github.com/FusionAuth/fusionauth-example-react-sdk/blob/main/server/routes/me.js)
 
-### `GET /app/logout`
+#### `GET /app/logout`
 
 This endpoint must:
 
@@ -194,7 +196,7 @@ This endpoint must:
 [Example
 implementation](https://github.com/FusionAuth/fusionauth-example-react-sdk/blob/main/server/routes/logout.js)
 
-### `POST /app/token-refresh` (optional)
+#### `POST /app/token-refresh` (optional)
 
 This endpoint is necessary if you wish to use refresh tokens. This
 endpoint must:
@@ -209,9 +211,9 @@ endpoint must:
 [Example
 implementation](https://github.com/FusionAuth/fusionauth-example-react-sdk/blob/main/server/routes/token-refresh.js)
 
-# Usage
+## Usage
 
-## Pre-built buttons
+### Pre-built buttons
 
 There are three pre-styled buttons that are configured to perform
 login/logout/registration. They can be placed anywhere in your app as
@@ -240,12 +242,12 @@ export const AccountPage = () => (
 );
 ```
 
-## Programmatic usage
+### Programmatic usage
 
 Alternatively, you may interact with the SDK programmatically using the
 `useFusionAuth` hook or `withFusionAuth` HOC.
 
-### useFusionAuth
+#### useFusionAuth
 
 Use the `useFusionAuth` hook with your functional components to get
 access to the properties exposed by
@@ -276,14 +278,14 @@ See
 [useFusionAuth](https://github.com/FusionAuth/fusionauth-react-sdk/blob/main/docs/functions.md#usefusionauth)
 for more details.
 
-### withFusionAuth
+#### withFusionAuth
 
 The `withFusionAuth` higher-order component can be used to wrap your
 components and give them access to a `fusionAuth` prop which contains
 all the properties exposed by the `FusionAuthContext`. This works with
 both functional and class components:
 
-#### Functional Component
+##### Functional Component
 
 ```react
 import React from 'react';
@@ -298,7 +300,7 @@ const LogoutButton: React.FC<WithFusionAuthProps> = props => {
 export default withFusionAuth(LogoutButton);
 ```
 
-#### Class Component
+##### Class Component
 
 ```react
 import React, { Component } from 'react';
@@ -318,7 +320,7 @@ See
 [withFusionAuth](https://github.com/FusionAuth/fusionauth-react-sdk/blob/main/docs/functions.md#withfusionauth)
 for more details.
 
-### State parameter
+#### State parameter
 
 The `login` and `register` functions both accept an optional string
 parameter called `state`. The state that is passed in to the function
@@ -328,7 +330,7 @@ the state parameter, it is often used to indicate which page the user
 was on before redirecting to login or registration, so that the user can
 be returned to that location after a successful authentication.
 
-## Protecting Content
+### Protecting Content
 
 The `RequireAuth` component can be used to protect information from
 unauthorized users. It takes an optional prop `withRole` that can be
@@ -355,9 +357,9 @@ const AdminPanel = () => (
 );
 ```
 
-## Known Issues
+### Known Issues
 
-### Token exchange endpoint being called repeatedly
+#### Token exchange endpoint being called repeatedly
 
 If you see the token exchange endpoint being called multiple times, this
 is due to a dev time setting in React 18. When running using
@@ -371,14 +373,18 @@ disabled.
 If you remove the `React.StrictMode` tags in `index.tsx` of the example
 app, the call is only made once.
 
-# Example App
+## Example App
 
 See the [FusionAuth React SDK
 Example](https://github.com/FusionAuth/fusionauth-example-react-sdk) for
 functional example of a React client that utilizes the SDK as well as an
 Express server that performs the token exchange.
 
-# Documentation
+## Quickstart
+
+See the [FusionAuth React Quickstart](https://fusionauth.io/docs/quickstarts/quickstart-javascript-react-web) for a full tutorial on using FusionAuth and React.
+
+## Documentation
 
 [Full library
 documentation](https://github.com/FusionAuth/fusionauth-react-sdk/blob/main/docs/documentation.md)
@@ -387,9 +393,9 @@ documentation](https://github.com/FusionAuth/fusionauth-react-sdk/blob/main/docs
 end::forDocSite[]
 -->
 
-Use backticks for code in this readme. This readme gets turned into asciidoc and included on the fusionauth website, and backticks show the code in the best light there.
+Use backticks for code in this readme. This readme is included on the FusionAuth website, and backticks show the code in the best light there.
 
-# Formatting
+## Formatting
 
 There are several linting packages run when you push to a branch. One is `prettier`. If this fails, you can fix the files from the command line:
 
@@ -398,21 +404,6 @@ There are several linting packages run when you push to a branch. One is `pretti
 
 Doing this will overwrite your file, but fix prettier's objections.
 
-# Releases
+## Releases
 
-To perform a release:
-
--   Pull the code to your local machine
-
--   Bump the version in `package.json`
-
--   Run `npm run webpack`
-
--   Run `npm publish`
-
-You may have to set up your machine to be able to publish, which will
-involve updating your .npmrc file.
-
-There’s information [here that you can
-use](https://dev.to/alexeagleson/how-to-create-and-publish-a-react-component-library-2oe)
-to do that (look for the `.npmrc` section).
+To perform a release to NPM, create a release on GitHub. That will automatically publish a release to GitHub.
