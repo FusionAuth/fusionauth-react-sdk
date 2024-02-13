@@ -56,7 +56,8 @@ export const FusionAuthProvider: React.FC<FusionAuthConfig> = props => {
 
     const [isLoading, setIsLoading] = useState(false);
 
-    const [user, setUser] = useState<Record<string, any>>({});
+    type User = Record<string, any>;
+    const [user, setUser] = useState<User>({});
     const isAuthenticated = useMemo(() => Object.keys(user).length > 0, [user]);
 
     const generateServerUrl = useCallback(
@@ -77,8 +78,7 @@ export const FusionAuthProvider: React.FC<FusionAuthConfig> = props => {
 
     const login = useCallback(
         async (state = '') => {
-            const stateParam = `${generateRandomString()}:${state}`;
-            Cookies.set('lastState', stateParam);
+            const stateParam = setUpRedirect(state);
             const fullUrl = generateServerUrl(
                 ServerFunctionType.login,
                 props.loginPath,
@@ -125,8 +125,7 @@ export const FusionAuthProvider: React.FC<FusionAuthConfig> = props => {
 
     const register = useCallback(
         async (state = '') => {
-            const stateParam = `${generateRandomString()}:${state}`;
-            Cookies.set('lastState', stateParam);
+            const stateParam = setUpRedirect(state);
             const fullUrl = generateServerUrl(
                 ServerFunctionType.register,
                 props.registerPath,
@@ -182,15 +181,20 @@ export const FusionAuthProvider: React.FC<FusionAuthConfig> = props => {
 
     const setUserFromCookie = useCallback((cookie: string) => {
         try {
+            /* JSON parse needs try/catch to not crash app */
             const parsedUserCookie = JSON.parse(cookie);
             setUser(parsedUserCookie);
         } catch {
-            /* if JSON parse fails doesn't crash the app */
+            setUser({});
+            Cookies.remove('user');
         }
     }, []);
 
     const fetchUserFromServer = useCallback(async () => {
         setIsLoading(true);
+        // lastState indicates that this is a redirect
+        const lastState = Cookies.get('lastState');
+
         try {
             const response = await fetch(
                 generateServerUrl(ServerFunctionType.me, mePath),
@@ -198,19 +202,29 @@ export const FusionAuthProvider: React.FC<FusionAuthConfig> = props => {
                     credentials: 'include',
                 },
             );
+
+            if (!response.ok) {
+                throw new Error(
+                    `Unable to fetch user. Request failed with status code ${response?.status}`,
+                );
+            }
+
             const user = await response.json();
             setUser(user);
+            Cookies.set('user', JSON.stringify(user));
 
-            const lastState = Cookies.get('lastState');
             if (lastState) {
                 const [, ...stateParam] = lastState.split(':');
                 const state = stateParam.join(':');
                 onRedirectSuccess?.(state);
             }
         } catch (error) {
-            onRedirectFail?.(error);
+            if (lastState) {
+                onRedirectFail?.(error);
+            }
         }
 
+        Cookies.remove('lastState');
         setIsLoading(false);
     }, [generateServerUrl, mePath, onRedirectSuccess, onRedirectFail]);
 
@@ -230,8 +244,7 @@ export const FusionAuthProvider: React.FC<FusionAuthConfig> = props => {
         }
 
         const hasIdToken = Boolean(Cookies.get('app.idt'));
-        // the presence of app.idt indicates that this is a redirect from login
-        // which means we want to fetch the user
+        // the presence of app.idt indicates that we can fetch the user
         if (hasIdToken) {
             fetchUserFromServer();
         }
@@ -273,6 +286,12 @@ enum ServerFunctionType {
     register = 'register',
     tokenRefresh = 'refresh',
     me = 'me',
+}
+
+function setUpRedirect(state = '') {
+    const stateParam = `${generateRandomString()}:${state}`;
+    Cookies.set('lastState', stateParam);
+    return stateParam;
 }
 
 function dec2hex(dec: number) {

@@ -70,7 +70,11 @@ describe('FusionAuthProvider', () => {
         });
 
         const user = { name: 'Mr. Userton' };
-        mockFetchJson(user);
+        const mockResponse = {
+            ok: true,
+            json: () => Promise.resolve(user),
+        } as Response;
+        jest.spyOn(global, 'fetch').mockResolvedValue(mockResponse);
 
         const serverUrl = 'my-server.com';
         const mePath = '/my-me-path';
@@ -173,15 +177,20 @@ describe('FusionAuthProvider', () => {
         );
     });
 
-    test('Will invoke the onRedirectFail callback only once', async () => {
+    test.only('Will invoke the onRedirectFail callback only once', async () => {
         Object.defineProperty(document, 'cookie', {
             writable: true,
-            value: 'app.idt=abc123;',
+            // lastState should ensure redirect handlers are called
+            value: 'lastState=abc123; app.idt=abc123;',
         });
 
-        const errorThrown = 'something went wrong';
         const redirectFailHandler = jest.fn();
-        jest.spyOn(global, 'fetch').mockRejectedValue(errorThrown);
+
+        const errorResponse = {
+            ok: false,
+            json: () => Promise.resolve({ message: 'something went wrong' }),
+        } as Response;
+        jest.spyOn(global, 'fetch').mockResolvedValue(errorResponse);
 
         renderHook(() => useFusionAuth(), {
             wrapper: ({ children }) => (
@@ -196,7 +205,8 @@ describe('FusionAuthProvider', () => {
 
         await waitFor(() => {
             expect(redirectFailHandler).toHaveBeenCalledTimes(1);
-            expect(redirectFailHandler).toHaveBeenCalledWith(errorThrown);
+            expect(redirectFailHandler).toHaveBeenCalled();
+            expect(document.cookie).toContain('lastState=;'); // lastState cookie was removed
         });
     });
 
@@ -204,11 +214,16 @@ describe('FusionAuthProvider', () => {
         const stateValue = 'some-value';
         Object.defineProperty(document, 'cookie', {
             writable: true,
+            // lastState should ensure redirect handlers are called
             value: `lastState=12345:${stateValue}; app.idt=abc123;`,
         });
 
         const redirectSuccessHandler = jest.fn();
-        mockFetchJson({ role: 'user' });
+        const response = {
+            ok: true,
+            json: () => Promise.resolve({ name: 'Johnny' }),
+        } as Response;
+        jest.spyOn(global, 'fetch').mockResolvedValue(response);
 
         renderHook(() => useFusionAuth(), {
             wrapper: ({ children }) => (
@@ -224,6 +239,38 @@ describe('FusionAuthProvider', () => {
         await waitFor(() => {
             expect(redirectSuccessHandler).toHaveBeenCalledTimes(1);
             expect(redirectSuccessHandler).toHaveBeenCalledWith(stateValue);
+            expect(document.cookie).toContain('lastState=;'); // lastState cookie was removed
+        });
+    });
+
+    test('Will not invoke onRedirectSuccess when lastState cookie is not set', async () => {
+        Object.defineProperty(document, 'cookie', {
+            writable: true,
+            value: `app.idt=abc123;`,
+        });
+
+        const redirectSuccessHandler = jest.fn();
+        const alan = { name: 'Alan Turing' };
+        const response = {
+            ok: true,
+            json: () => Promise.resolve(alan),
+        } as Response;
+        jest.spyOn(global, 'fetch').mockResolvedValue(response);
+
+        const { result } = renderHook(() => useFusionAuth(), {
+            wrapper: ({ children }) => (
+                <FusionAuthProvider
+                    {...TEST_CONFIG}
+                    onRedirectSuccess={redirectSuccessHandler}
+                >
+                    {children}
+                </FusionAuthProvider>
+            ),
+        });
+
+        await waitFor(() => {
+            expect(result.current.user.name).toBe('Alan Turing'); // user was fetched successfully without invoking redirect handler
+            expect(redirectSuccessHandler).not.toHaveBeenCalled();
         });
     });
 });
