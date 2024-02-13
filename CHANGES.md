@@ -1,5 +1,9 @@
 fusionauth-react-sdk Changes
 
+Changes in 1.0.1
+
+-   Add error handling to FusionAuthProvider for failed `/me` requests
+
 Changes in 1.0.0
 
 -   Move react and react-dom packages to peerDependencies in package.json
