@@ -13,7 +13,10 @@
     "prettier:fix": "prettier --write .",
     "prepare": "husky install"
   },
-  "repository": "git+https://github.com/FusionAuth/fusionauth-react-sdk.git",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FusionAuth/fusionauth-react-sdk.git"
+  },
   "author": "FusionAuth",
   "license": "Apache",
   "bugs": {
