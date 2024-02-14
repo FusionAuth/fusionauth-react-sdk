@@ -22,7 +22,7 @@ describe('FusionAuthProvider', () => {
         jest.clearAllMocks();
     });
 
-    test('Login function will navigate to the correct url', async () => {
+    test('Login function will navigate to the correct url', () => {
         const mockedLocation = {
             ...location,
             assign: jest.fn(),
@@ -36,13 +36,11 @@ describe('FusionAuthProvider', () => {
             wrapper,
         });
 
-        await waitFor(() => result.current.login('state'));
+        result.current.login('state');
 
         const expectedUrl =
             'http://localhost:9000/app/login?client_id=85a03867-dccf-4882-adde-1a79aeec50df&scope=openid+offline_access&redirect_uri=http%3A%2F%2Flocalhost&state=00000000000000000000000000000000000000000000000000000000%3Astate';
-        await waitFor(() =>
-            expect(mockedLocation.assign).toBeCalledWith(expectedUrl),
-        );
+        expect(mockedLocation.assign).toHaveBeenCalledWith(expectedUrl);
     });
 
     test('User set to the value stored in the cookie', () => {
@@ -129,7 +127,7 @@ describe('FusionAuthProvider', () => {
         expect(result.current.isAuthenticated).toEqual(false);
     });
 
-    test('Logout function will navigate to the correct url', async () => {
+    test('Logout function will navigate to the correct url', () => {
         mockFetchJson({});
         const mockedLocation = {
             ...location,
@@ -144,17 +142,15 @@ describe('FusionAuthProvider', () => {
             wrapper,
         });
 
-        await result.current.logout();
+        result.current.logout();
 
         const expectedUrl =
             'http://localhost:9000/app/logout?client_id=85a03867-dccf-4882-adde-1a79aeec50df&post_logout_redirect_uri=http%3A%2F%2Flocalhost';
 
-        await waitFor(() =>
-            expect(mockedLocation.assign).toBeCalledWith(expectedUrl),
-        );
+        expect(mockedLocation.assign).toHaveBeenCalledWith(expectedUrl);
     });
 
-    test('Register function will navigate to the correct url', async () => {
+    test('Register function will navigate to the correct url', () => {
         const mockedLocation = {
             ...location,
             assign: jest.fn(),
@@ -168,16 +164,14 @@ describe('FusionAuthProvider', () => {
             wrapper,
         });
 
-        await waitFor(() => result.current.register('state'));
+        result.current.register('state');
 
         const expectedUrl =
             'http://localhost:9000/app/register?client_id=85a03867-dccf-4882-adde-1a79aeec50df&redirect_uri=http%3A%2F%2Flocalhost&scope=openid+offline_access&state=00000000000000000000000000000000000000000000000000000000%3Astate';
-        await waitFor(() =>
-            expect(mockedLocation.assign).toBeCalledWith(expectedUrl),
-        );
+        expect(mockedLocation.assign).toHaveBeenCalledWith(expectedUrl);
     });
 
-    test.only('Will invoke the onRedirectFail callback only once', async () => {
+    test('Will invoke the onRedirectFail callback only once', async () => {
         Object.defineProperty(document, 'cookie', {
             writable: true,
             // lastState should ensure redirect handlers are called

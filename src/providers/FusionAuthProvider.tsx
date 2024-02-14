@@ -14,9 +14,9 @@ const DEFAULT_SCOPE = 'openid offline_access';
 const DEFAULT_ACCESS_TOKEN_EXPIRE_WINDOW = 30000;
 
 export interface IFusionAuthContext {
-    login: (state?: string) => Promise<void>;
-    logout: () => Promise<void>;
-    register: (state?: string) => Promise<void>;
+    login: (state?: string) => void;
+    logout: () => void;
+    register: (state?: string) => void;
     user: Record<string, any>;
     isLoading: boolean;
     isAuthenticated: boolean;
@@ -24,9 +24,9 @@ export interface IFusionAuthContext {
 }
 
 export const FusionAuthContext = React.createContext<IFusionAuthContext>({
-    login: () => Promise.resolve(),
-    logout: () => Promise.resolve(),
-    register: () => Promise.resolve(),
+    login: () => {},
+    logout: () => {},
+    register: () => {},
     user: {},
     isLoading: false,
     isAuthenticated: false,
@@ -77,7 +77,7 @@ export const FusionAuthProvider: React.FC<FusionAuthConfig> = props => {
     );
 
     const login = useCallback(
-        async (state = '') => {
+        (state = '') => {
             const stateParam = setUpRedirect(state);
             const fullUrl = generateServerUrl(
                 ServerFunctionType.login,
@@ -100,7 +100,7 @@ export const FusionAuthProvider: React.FC<FusionAuthConfig> = props => {
         ],
     );
 
-    const logout = useCallback(async () => {
+    const logout = useCallback(() => {
         // Clear cookies
         Cookies.remove('user');
         Cookies.remove('lastState');
@@ -124,7 +124,7 @@ export const FusionAuthProvider: React.FC<FusionAuthConfig> = props => {
     ]);
 
     const register = useCallback(
-        async (state = '') => {
+        (state = '') => {
             const stateParam = setUpRedirect(state);
             const fullUrl = generateServerUrl(
                 ServerFunctionType.register,
