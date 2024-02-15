@@ -44,6 +44,7 @@ export interface FusionAuthConfig extends PropsWithChildren {
     onRedirectFail?: RedirectFail;
     scope?: string;
     accessTokenExpireWindow?: number;
+    accessTokenExpireCookieName?: string;
     loginPath?: string;
     logoutPath?: string;
     registerPath?: string;
@@ -59,6 +60,11 @@ export const FusionAuthProvider: React.FC<FusionAuthConfig> = props => {
     type User = Record<string, any>;
     const [user, setUser] = useState<User>({});
     const isAuthenticated = useMemo(() => Object.keys(user).length > 0, [user]);
+
+    const accessTokenExpireCookieName = useMemo(
+        () => props.accessTokenExpireCookieName ?? 'app.at_exp',
+        [props.accessTokenExpireCookieName],
+    );
 
     const generateServerUrl = useCallback(
         (
@@ -148,7 +154,7 @@ export const FusionAuthProvider: React.FC<FusionAuthConfig> = props => {
     );
 
     const refreshToken = useCallback(async () => {
-        const accessTokenExpires = Cookies.get('app.at_exp');
+        const accessTokenExpires = Cookies.get(accessTokenExpireCookieName);
         const timeWindow =
             props.accessTokenExpireWindow ?? DEFAULT_ACCESS_TOKEN_EXPIRE_WINDOW;
         const fallbackTokenRefreshPath = `/app/refresh/${props.clientID}`;
@@ -173,6 +179,7 @@ export const FusionAuthProvider: React.FC<FusionAuthConfig> = props => {
             );
         }
     }, [
+        accessTokenExpireCookieName,
         props.accessTokenExpireWindow,
         props.tokenRefreshPath,
         props.clientID,
