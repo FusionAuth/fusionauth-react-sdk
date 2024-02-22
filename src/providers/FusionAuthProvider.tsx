@@ -61,10 +61,17 @@ export const FusionAuthProvider: React.FC<FusionAuthConfig> = props => {
     const [user, setUser] = useState<User>({});
     const isAuthenticated = useMemo(() => Object.keys(user).length > 0, [user]);
 
-    const accessTokenExpireCookieName = useMemo(
-        () => props.accessTokenExpireCookieName ?? 'app.at_exp',
-        [props.accessTokenExpireCookieName],
-    );
+    const accessTokenExpireCookieName = useMemo(() => {
+        if (props.accessTokenExpireCookieName?.length) {
+            return props.accessTokenExpireCookieName;
+        }
+
+        console.warn(
+            'Cannot set access token cookie name to empty string. Using default value.',
+        );
+
+        return 'app.at_exp';
+    }, [props.accessTokenExpireCookieName]);
 
     const generateServerUrl = useCallback(
         (
