@@ -1,38 +1,23 @@
 import React from 'react';
-import { screen, render, fireEvent, waitFor } from '@testing-library/react';
+import { screen, render, fireEvent } from '@testing-library/react';
 import { FusionAuthLoginButton } from '../components/FusionAuthLoginButton';
 import { FusionAuthProvider } from '../providers/FusionAuthProvider';
 import { mockUseFusionAuth } from './mocks/mockUseFusionAuth';
 import { TEST_CONFIG } from './mocks/testConfig';
 
 describe('FusionAuthLoginButton', () => {
-    afterEach(() => {
-        jest.clearAllMocks();
-    });
-
-    test('Login buttons renders the correct text', async () => {
-        await renderProvider();
-        expect(await screen.findByText('Login')).toBeInTheDocument();
-    });
-
-    test('Login button will call the useFusionAuth hook', async () => {
+    test('Login button will call the useFusionAuth hook', () => {
         const login = jest.fn();
         mockUseFusionAuth({ login });
 
-        await renderProvider();
-
-        fireEvent.click(screen.getByText('Login'));
-
-        expect(login).toBeCalledWith('state');
-    });
-});
-
-const renderProvider = () => {
-    return waitFor(() =>
+        const stateValue = 'state-value-for-login';
         render(
             <FusionAuthProvider {...TEST_CONFIG}>
-                <FusionAuthLoginButton state="state" />
+                <FusionAuthLoginButton state={stateValue} />
             </FusionAuthProvider>,
-        ),
-    );
-};
+        );
+
+        fireEvent.click(screen.getByText('Login'));
+        expect(login).toHaveBeenCalledWith(stateValue);
+    });
+});
