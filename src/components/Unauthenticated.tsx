@@ -4,9 +4,5 @@ import { useFusionAuth } from '../providers/FusionAuthProvider';
 export const Unauthenticated: FC<PropsWithChildren> = props => {
     const { isAuthenticated } = useFusionAuth();
 
-    if (isAuthenticated) {
-        return null;
-    }
-
-    return <>{props.children}</>;
+    return isAuthenticated ? null : <>{props.children}</>;
 };
