@@ -393,8 +393,6 @@ documentation](https://github.com/FusionAuth/fusionauth-react-sdk/blob/main/docs
 end::forDocSite[]
 -->
 
-Use backticks for code in this readme. This readme is included on the FusionAuth website, and backticks show the code in the best light there.
-
 ## Formatting
 
 There are several linting packages run when you push to a branch. One is `prettier`. If this fails, you can fix the files from the command line:
