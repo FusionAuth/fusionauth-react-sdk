@@ -28,6 +28,8 @@ An SDK for using FusionAuth in React applications.
 
 -   [Releases](#releases)
 
+-   [Upgrade Policy](#upgrade-policy)
+
 <!--
 this tag, and the corresponding end tag, are used to delineate what is pulled into the FusionAuth docs site (the client libraries pages). Don't remove unless you also change the docs site.
 
@@ -299,3 +301,11 @@ Doing this will overwrite your file, but fix prettier's objections.
 ## Releases
 
 To perform a release to NPM, create a release on GitHub. That will automatically publish a release to GitHub.
+
+## Upgrade Policy
+
+This library may periodically receive updates with bug fixes, security patches, tests, code samples, or documentation changes.
+
+These releases may also update dependencies, language engines, and operating systems, as we\'ll follow the deprecation and sunsetting policies of the underlying technologies that the libraries use.
+
+This means that after a dependency (e.g. language, framework, or operating system) is deprecated by its maintainer, this library will also be deprecated by us, and may eventually be updated to use a newer version.
