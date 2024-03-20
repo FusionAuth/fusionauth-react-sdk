@@ -1,3 +1,5 @@
+**This repo is out of date and is archived. `@fusionauth/react-sdk` is currently maintained at https://github.com/FusionAuth/fusionauth-javascript-sdk/tree/main/packages/sdk-react.**
+
 An SDK for using FusionAuth in React applications.
 
 # Table of Contents
@@ -19,8 +21,6 @@ An SDK for using FusionAuth in React applications.
     -   [Protecting content](#protecting-content)
 
     -   [Known issues](#known-issues)
-
--   [Example App](#example-app)
 
 -   [Quickstart](#quickstart)
 
